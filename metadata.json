@@ -1,0 +1,6 @@
+{
+  "name": "University of Central Punjab",
+  "description": "Official portal of the University of Central Punjab (UCP) Bahawalpur Campus, featuring academic faculties, degree programs, campus life, research, and institutional facilities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
