@@ -17,6 +17,7 @@ import { FacultyPage } from './components/FacultyPage';
 import { AcademicProgrammesPage } from './components/AcademicProgrammesPage';
 import { OurLegacyPage } from './components/OurLegacyPage';
 import { ScholarshipsPage } from './components/ScholarshipsPage';
+import { FeeStructurePage } from './components/FeeStructurePage';
 import { NewsAndEvents } from './components/NewsAndEvents';
 import { CampusLife } from './components/CampusLife';
 import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
@@ -41,7 +42,7 @@ import { FACULTIES, UCP_CONTACT } from './data/ucpData';
 
 export default function App() {
   // Navigation / Page state
-  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure'>('home');
   const [facultyCategory, setFacultyCategory] = useState<string>('all');
   const [selectedProgrammeId, setSelectedProgrammeId] = useState<string | null>(null);
   const [selectedProgrammeCategory, setSelectedProgrammeCategory] = useState<string | null>(null);
@@ -107,6 +108,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenFeeStructurePage = () => {
+    setCurrentPage('fee-structure');
+    setSelectedProgrammeId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleOpenApply = (progName?: string) => {
     if (progName) {
       setPreselectedProgramName(progName);
@@ -119,7 +126,7 @@ export default function App() {
   };
 
   const handleOpenFee = () => {
-    window.open('https://ucpcolleges.pgc.edu/campus-network/', '_blank', 'noopener,noreferrer');
+    handleOpenFeeStructurePage();
   };
 
   const handleOpenInfo = (type: InfoModalType) => {
@@ -128,7 +135,7 @@ export default function App() {
       return;
     }
     if (type === 'fee-structure') {
-      window.open('https://ucpcolleges.pgc.edu/campus-network/', '_blank', 'noopener,noreferrer');
+      handleOpenFeeStructurePage();
       return;
     }
     if (type === 'rules-regulations') {
@@ -313,6 +320,14 @@ export default function App() {
             onOpenProgrammesPage={handleOpenProgrammesPage}
             onOpenFee={handleOpenFee}
           />
+        ) : currentPage === 'fee-structure' ? (
+          /* Dedicated Official Fee Structure & Tuition Schedules Page */
+          <FeeStructurePage
+            onBackToHome={handleBackToHome}
+            onOpenApply={(progName?: string) => handleOpenApply(progName)}
+            onOpenProgrammesPage={handleOpenProgrammesPage}
+            onOpenScholarshipsPage={handleOpenScholarshipsPage}
+          />
         ) : (
           /* Main Homepage Sections following Authentic Image Hierarchy */
           <>
@@ -413,7 +428,7 @@ export default function App() {
               viewport={{ once: true, amount: 0.12 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <StatisticsSection />
+              <StatisticsSection onOpenScholarshipsPage={handleOpenScholarshipsPage} />
             </motion.div>
 
             {/* 9. NEWS & EVENTS */}
@@ -502,6 +517,7 @@ export default function App() {
         onOpenCampusLifePage={handleOpenCampusLifePage}
         onOpenProgrammesPage={() => handleOpenProgrammesPage()}
         onOpenScholarshipsPage={handleOpenScholarshipsPage}
+        onOpenFeeStructurePage={handleOpenFeeStructurePage}
       />
 
       {/* Modal Dialogs */}

@@ -1,217 +1,215 @@
-import React, { useState } from 'react';
-import { 
-  GraduationCap, BookOpenCheck, Award, Users, Globe, Scale, 
-  UserCheck, HeartHandshake, Smile, TrendingUp, Leaf, ShieldCheck, 
-  Coins, HelpingHand, Briefcase, Sparkles, ExternalLink
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { OFFICIAL_STATS } from '../data/ucpData';
-import { AnimatedCounter } from './AnimatedCounter';
 
-const iconMap: Record<string, React.ReactNode> = {
-  GraduationCap: <GraduationCap size={22} strokeWidth={1.75} />,
-  BookOpenCheck: <BookOpenCheck size={22} strokeWidth={1.75} />,
-  Award: <Award size={22} strokeWidth={1.75} />,
-  Users: <Users size={22} strokeWidth={1.75} />,
-  Globe: <Globe size={22} strokeWidth={1.75} />,
-  Scale: <Scale size={22} strokeWidth={1.75} />,
-  UserCheck: <UserCheck size={22} strokeWidth={1.75} />,
-  HeartHandshake: <HeartHandshake size={22} strokeWidth={1.75} />,
-  Smile: <Smile size={22} strokeWidth={1.75} />,
-  TrendingUp: <TrendingUp size={22} strokeWidth={1.75} />,
-  Leaf: <Leaf size={22} strokeWidth={1.75} />,
-  ShieldCheck: <ShieldCheck size={22} strokeWidth={1.75} />,
-  Coins: <Coins size={22} strokeWidth={1.75} />,
-  HelpingHand: <HelpingHand size={22} strokeWidth={1.75} />,
-  Briefcase: <Briefcase size={22} strokeWidth={1.75} />,
-  Sparkles: <Sparkles size={22} strokeWidth={1.75} />,
-};
+interface StatisticsSectionProps {
+  onOpenScholarshipsPage?: () => void;
+}
 
-// Official image icons from ucp.edu.pk
-const officialIconUrls: Record<string, string> = {
-  'undergrad-prog': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Undergraduate-Programs-Offered.webp',
-  'postgrad-prog': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Postgraduate-Programs-Offered.webp',
-  'phd-prog': 'https://ucp.edu.pk/wp-content/uploads/2023/01/PhD-Programs-Offered.webp',
-  'phd-faculty': 'https://ucp.edu.pk/wp-content/uploads/2023/01/PhD-Faculty-Members.webp',
-  'intl-faculty': 'https://ucp.edu.pk/wp-content/uploads/2023/01/International-Faculty-Members.webp',
-  'student-ratio': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Student-Teacher-Ratio.webp',
-  'women-leadership': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Women-in-Senior-Leadership.webp',
-  'women-faculty': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Women-in-Faculty.webp',
-  'female-students': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Female-Students-Population.webp',
-  'qs-ranking': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Top-Asian-QS-Ranking.webp',
-  'green-metric': 'https://ucp.edu.pk/wp-content/uploads/2023/01/UI-Green-Matrix-Ranking-.webp',
-  'hec-qec': 'https://ucp.edu.pk/wp-content/uploads/2023/01/HEC-Score-Quality-Assurance.webp',
-  'scholarships': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Scholarships-Awarded.webp',
-  'financial-aid': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Students-on-Financial-Aid-1.webp',
-  'alumni': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Alumni.webp',
-  'clubs-societies': 'https://ucp.edu.pk/wp-content/uploads/2023/01/Dynamic-Student-Clubs-Societies.webp',
-};
+export const StatisticsSection: React.FC<StatisticsSectionProps> = ({ onOpenScholarshipsPage }) => {
+  // Comprehensive list of all statistics present across the UCP website
+  const allStatsList = [
+    // Core requested figures & rankings
+    { value: '1,620', label: 'ADP Programs' },
+    { value: '165', label: 'Merit Scholarships' },
+    { value: '130+', label: 'PhD Faculty' },
+    { value: '715', label: 'Top Ranked' },
+    
+    // Global & National Rankings
+    { value: '#362', label: 'QS Asia Ranking' },
+    { value: '#206', label: 'GreenMetric Ranking' },
+    { value: '91.3', label: 'HEC QEC Score' },
+    { value: '29,000+', label: 'Alumni Network' },
 
-export const StatisticsSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('all');
+    // Academic Breadth
+    { value: '33+', label: 'Undergraduate BS' },
+    { value: '34+', label: 'Postgraduate MS' },
+    { value: '19', label: 'Doctoral PhD Fields' },
+    { value: '25', label: 'BWP Campus Degrees' },
 
-  const categories = [
-    { id: 'all', label: 'All Indicators' },
-    { id: 'academics', label: 'Academic Breadth' },
-    { id: 'faculty', label: 'Faculty & Mentorship' },
-    { id: 'diversity', label: 'Diversity & Inclusion' },
-    { id: 'rankings', label: 'Rankings & Accreditations' },
-    { id: 'aid', label: 'Scholarships & Aid' },
+    // Faculty & Mentorship Excellence
+    { value: '199', label: 'Full PhD Faculty' },
+    { value: '16', label: 'Intl Faculty' },
+    { value: '20:1', label: 'Student Ratio' },
+    { value: '13', label: 'ADP Disciplines' },
+
+    // Diversity & Institutional Aid
+    { value: '42%', label: 'Women Leadership' },
+    { value: '43%', label: 'Women in Faculty' },
+    { value: '42%', label: 'Female Students' },
+    { value: '65', label: 'Active Societies' },
+
+    // Financial Aid & Community Impact
+    { value: '1.3B+', label: 'PKR Scholarships' },
+    { value: '37%+', label: 'Financial Aid Rate' },
+    { value: '50%', label: 'Top Merit Waiver' },
+    { value: '100%', label: 'Apex Accreditations' },
   ];
 
-  const displayedStats = OFFICIAL_STATS.filter((item) => {
-    if (activeTab === 'all') return true;
-    return item.category === activeTab;
-  });
+  // Group all statistics into slides of 4 stats each
+  const statsPerSlide = 4;
+  const slides: Array<typeof allStatsList> = [];
+  for (let i = 0; i < allStatsList.length; i += statsPerSlide) {
+    slides.push(allStatsList.slice(i, i + statsPerSlide));
+  }
+
+  // Active slide state (cycles every 3 seconds)
+  const [activeSlide, setActiveSlide] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [slides.length, isPaused]);
 
   return (
     <section 
       id="stats-section" 
-      className="py-[100px] bg-[#FAF8F5] text-[#0A1931] relative border-t border-b border-[#0A1931]/10 selection:bg-[#A51C30] selection:text-white"
+      className="py-[60px] sm:py-[80px] bg-[#FAF8F5] text-[#0A1931] relative"
       aria-labelledby="stats-heading"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header: Prestigious Institutional Typography */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="h-px w-8 bg-[#A51C30]/40" aria-hidden="true" />
-            <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#A51C30]">
+        {/* Section Header: Preserved Institutional Headings */}
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <span className="h-px w-8 bg-[#C41E3A]/40" aria-hidden="true" />
+            <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#C41E3A]">
               INSTITUTIONAL EXCELLENCE & IMPACT
             </span>
-            <span className="h-px w-8 bg-[#A51C30]/40" aria-hidden="true" />
+            <span className="h-px w-8 bg-[#C41E3A]/40" aria-hidden="true" />
           </div>
 
           <h2 
             id="stats-heading"
-            className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-semibold text-[#0A1931] tracking-tight leading-[1.18]"
+            className="text-3xl sm:text-4xl lg:text-[44px] font-serif font-semibold text-[#0A1931] tracking-tight leading-[1.18]"
             style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', 'Playfair Display', Georgia, serif" }}
           >
             Key Facts & Performance Figures
           </h2>
 
-          <p className="mt-4 text-slate-600 text-[16.5px] sm:text-[18px] leading-relaxed font-sans max-w-2xl mx-auto">
+          <p className="mt-3 text-slate-600 text-[15px] sm:text-[16.5px] leading-relaxed font-sans max-w-2xl mx-auto">
             Benchmarked against premier national and international accreditation standards. Discover the official metrics that define the University of Central Punjab's academic standing.
           </p>
-
-          <div className="h-px w-20 bg-[#A51C30]/40 mx-auto mt-6" aria-hidden="true" />
         </div>
 
-        {/* Filter Navigation: Clean Institutional Bar (No Bouncy Candy Pills) */}
-        <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap mb-12 border-b border-[#0A1931]/10 pb-3">
-          {categories.map((cat) => {
-            const isActive = activeTab === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveTab(cat.id)}
-                className={`text-xs sm:text-[13px] px-3.5 py-2 uppercase tracking-[0.14em] font-medium transition-colors relative cursor-pointer ${
-                  isActive
-                    ? 'text-[#0A1931] font-bold'
-                    : 'text-slate-500 hover:text-[#0A1931]'
-                }`}
-              >
-                {cat.label}
-                {isActive && (
-                  <span 
-                    className="absolute bottom-0 inset-x-2 h-[2px] bg-[#A51C30]" 
-                    aria-hidden="true" 
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Statistics Grid: Refined Institutional Editorial Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
-          {displayedStats.map((item) => {
-            const officialImg = officialIconUrls[item.id];
-            return (
-              <div
-                key={item.id}
-                id={`stat-card-${item.id}`}
-                className="bg-white border border-[#0A1931]/10 hover:border-[#0A1931]/25 p-5 sm:p-6 transition-all duration-300 hover:shadow-[0_8px_25px_rgba(10,25,49,0.05)] flex flex-col justify-between group relative"
-              >
-                {/* Thin crimson hairline indicator on hover */}
-                <div 
-                  className="absolute top-0 left-0 h-[2px] w-0 bg-[#A51C30] transition-all duration-300 ease-out group-hover:w-full"
-                  aria-hidden="true"
-                />
-
-                <div>
-                  {/* Clean Icon Container */}
-                  <div className="w-11 h-11 bg-[#FAF8F5] border border-[#0A1931]/10 rounded-sm flex items-center justify-center text-[#0A1931] group-hover:bg-[#0A1931] group-hover:text-white transition-colors duration-300 mb-4 overflow-hidden">
-                    {officialImg ? (
-                      <img
-                        src={officialImg}
-                        alt=""
-                        className="w-6 h-6 object-contain opacity-80 group-hover:opacity-100 group-hover:invert transition-all"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
-                    ) : null}
-                    <div className="only-if-no-img">
-                      {iconMap[item.iconName] || <Award size={20} strokeWidth={1.75} />}
-                    </div>
-                  </div>
-
-                  {/* Number Value: Bold Serif Number */}
-                  <div className="flex items-baseline gap-1">
-                    <span 
-                      className="text-3xl sm:text-4xl lg:text-[42px] font-serif font-bold text-[#0A1931] tracking-tight group-hover:text-[#A51C30] transition-colors leading-none"
-                      style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                    >
-                      <AnimatedCounter value={item.value} duration={850} />
-                    </span>
-                  </div>
-
-                  {/* Metric Label */}
-                  <h3 className="text-sm sm:text-[15px] font-sans font-bold text-[#0A1931] mt-3 leading-snug">
-                    {item.label}
-                  </h3>
-                </div>
-
-                {/* Subtitle / Context */}
-                <p className="text-xs sm:text-[13px] text-slate-500 mt-3 pt-3 border-t border-[#0A1931]/10 leading-relaxed font-sans font-normal">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Official Scholarship Notice Panel (Dignified Institutional Announcement) */}
-        <div className="mt-14 bg-white border border-[#0A1931]/15 border-l-4 border-l-[#A51C30] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
-          <div className="text-center md:text-left space-y-2">
-            <span className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#A51C30] block">
-              Financial Accessibility & Merit Concessions
-            </span>
-            <h3 
-              className="text-2xl sm:text-3xl font-serif font-semibold text-[#0A1931] tracking-tight"
-              style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-            >
-              <AnimatedCounter value="1.3" duration={850} /> Billion PKR Awarded in Scholarships
-            </h3>
-            <p className="text-sm sm:text-[15px] text-slate-600 max-w-2xl leading-relaxed font-sans">
-              UCP ensures academic access for deserving scholars. Over 37% of our student body benefits from merit, sports, PGC alumni kinship, and need-based financial concessions.
-            </p>
-          </div>
+        {/* =========================================================================
+            KIPS STYLE NO-BORDER BLUE SECTION (CONTAINING ALL OFFICIAL STATS)
+            Height 380px, bg #0F2C52, overflow hidden, position relative.
+            No borders, no cards, no shadows.
+            ========================================================================= */}
+        <div 
+          className="relative w-full min-h-[380px] lg:h-[380px] bg-[#0F2C52] overflow-hidden rounded-none text-white font-['Inter',sans-serif]"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           
-          <div className="shrink-0 flex flex-wrap items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0A1931] bg-[#FAF8F5] border border-[#0A1931]/15 px-3.5 py-2.5 rounded-sm font-sans">
-              <AnimatedCounter value="50%" duration={850} /> PGC Alumni Waiver
-            </span>
-            <a
-              href="https://ucpcolleges.pgc.edu/scholarship/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold uppercase tracking-[0.14em] text-white bg-[#0A1931] hover:bg-[#A51C30] px-5 py-3 transition-colors flex items-center gap-2 rounded-sm shadow-xs cursor-pointer font-sans"
-            >
-              <span>Explore Scholarships</span>
-              <ExternalLink size={13} />
-            </a>
+          {/* Left Big Circle:
+              Absolute left -10% bottom -20%, width 620px height 620px bg #123A70 border-radius 50%
+              Lighter blue circle like KIPS. Inside centered: Big text "37%+" font 88px bold white Inter.
+              Below small text white/70% 13px. */}
+          <div 
+            onClick={onOpenScholarshipsPage}
+            className="absolute left-[-220px] sm:left-[-140px] lg:left-[-10%] bottom-[-160px] sm:bottom-[-180px] lg:bottom-[-20%] w-[520px] sm:w-[620px] lg:w-[620px] h-[520px] sm:h-[620px] lg:h-[620px] bg-[#123A70] rounded-full flex flex-col items-center justify-center select-none pointer-events-auto cursor-pointer transition-transform duration-500 hover:scale-[1.02]"
+            title="Click to explore Scholarships & Financial Aid"
+          >
+            {/* Centered Content inside the circle */}
+            <div className="flex flex-col items-center justify-center text-center translate-x-12 lg:translate-x-16 -translate-y-8 lg:-translate-y-10 px-6">
+              <span className="text-[64px] sm:text-[80px] lg:text-[88px] font-bold text-white leading-none tracking-tight font-sans">
+                37%+
+              </span>
+              <span className="text-[13px] text-white/70 font-normal mt-2 max-w-[240px] leading-snug">
+                Students on Financial Aid & Merit Concessions
+              </span>
+              <div className="flex items-center gap-1.5 mt-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C41E3A]"></span>
+                <span className="text-[11px] uppercase tracking-wider text-white/50 font-semibold">
+                  1.3B+ PKR Disbursed
+                </span>
+              </div>
+            </div>
           </div>
+
+          {/* Right Content:
+              Position right side top 30% left 45% (responsive on mobile/tablet).
+              Title "Achievements Secured by UCPians Every Year" font 22px white bold.
+              Description 12px white/70% max 420px line 1.6. */}
+          <div className="relative z-10 lg:absolute lg:top-[16%] lg:left-[45%] lg:right-[5%] p-6 pt-7 sm:p-8 lg:p-0 flex flex-col justify-center h-full max-w-2xl ml-auto lg:ml-0">
+            
+            {/* Title with subtle red accent dot */}
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#C41E3A] shrink-0" aria-hidden="true" />
+              <h3 className="text-[20px] sm:text-[22px] font-bold text-white tracking-tight leading-snug font-sans">
+                Achievements Secured by UCPians Every Year
+              </h3>
+            </div>
+
+            {/* Description */}
+            <p className="mt-2.5 text-[12px] text-white/70 max-w-[420px] leading-[1.6] font-normal">
+              UCP has been achieving remarkable success across academics, research, and national competitions. Over 29,000 alumni network secured seats in top professional institutes and corporate sectors nationwide.
+            </p>
+
+            {/* Bottom Moving Numbers - No Border:
+                Displays all numbers across the website 4 at a time with 48px gap.
+                Number 18px bold color #FFFFFF, label 10px uppercase color rgba(255,255,255,0.6).
+                Auto moves left every 3s seamlessly with cubic-bezier transition. */}
+            <div className="mt-7 sm:mt-8 overflow-hidden w-full max-w-[560px]">
+              <div 
+                className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+              >
+                {slides.map((group, groupIdx) => (
+                  <div 
+                    key={groupIdx} 
+                    className="w-full shrink-0 flex items-center justify-between sm:justify-start gap-5 sm:gap-[48px]"
+                  >
+                    {group.map((stat, statIdx) => (
+                      <div key={statIdx} className="flex flex-col select-none min-w-[70px]">
+                        <div className="flex items-center gap-1">
+                          <span className="text-[17px] sm:text-[18px] font-bold text-[#FFFFFF] font-sans tracking-tight">
+                            {stat.value}
+                          </span>
+                          <span className="w-1 h-1 rounded-full bg-[#C41E3A]" aria-hidden="true" />
+                        </div>
+                        <span className="text-[10px] uppercase text-white/60 tracking-wider font-medium mt-0.5 whitespace-nowrap">
+                          {stat.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation Dots Indicator:
+                Allows viewing all pages of website statistics seamlessly */}
+            <div className="flex items-center gap-1.5 mt-5">
+              {slides.map((_, dotIdx) => {
+                const isActive = activeSlide === dotIdx;
+                return (
+                  <button
+                    key={dotIdx}
+                    onClick={() => setActiveSlide(dotIdx)}
+                    aria-label={`Go to slide ${dotIdx + 1} of ${slides.length}`}
+                    className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${
+                      isActive 
+                        ? 'w-6 bg-white' 
+                        : 'w-1.5 bg-white/30 hover:bg-white/60'
+                    }`}
+                  />
+                );
+              })}
+              <span className="text-[10px] text-white/40 ml-2 font-mono">
+                {activeSlide + 1}/{slides.length}
+              </span>
+            </div>
+
+          </div>
+
         </div>
 
       </div>

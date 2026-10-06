@@ -9,6 +9,7 @@ interface FloatingSideRibbonsProps {
   onOpenCampusLifePage?: () => void;
   onOpenProgrammesPage?: () => void;
   onOpenScholarshipsPage?: () => void;
+  onOpenFeeStructurePage?: () => void;
 }
 
 export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
@@ -18,6 +19,7 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
   onOpenCampusLifePage,
   onOpenProgrammesPage,
   onOpenScholarshipsPage,
+  onOpenFeeStructurePage,
 }) => {
   const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
 
@@ -105,6 +107,23 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
         >
           <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-bold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
             Scholarships
+          </span>
+        </button>
+
+        {/* Tab 5: Fee Structure (Dark Navy) */}
+        <button
+          id="ribbon-fee-structure"
+          onClick={() => {
+            if (onOpenFeeStructurePage) {
+              onOpenFeeStructurePage();
+            }
+          }}
+          className="group relative bg-[#0b2341] hover:bg-[#07172b] active:bg-[#07172b] text-white border-l border-t border-b border-slate-700/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 focus:outline-none cursor-pointer"
+          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+          title="Official Fee Structure & Tuition Schedules"
+        >
+          <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-semibold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
+            Fee Structure
           </span>
         </button>
       </aside>

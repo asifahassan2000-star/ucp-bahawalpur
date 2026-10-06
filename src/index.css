@@ -445,5 +445,49 @@ html:not(.reveal-ready) .quote-premium-scroll .quote-accent-bar {
   will-change: transform;
 }
 
+/* ==========================================================================
+   Neat Word Jumping Animation (clean, official, without extra borders)
+   ========================================================================== */
+@keyframes neatWordJump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
+}
+
+.animate-word-jump {
+  display: inline-block;
+  animation: neatWordJump 1.3s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  will-change: transform;
+}
+
+.animate-word-jump-fast {
+  display: inline-block;
+  animation: neatWordJump 0.85s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  will-change: transform;
+}
+
+/* Excel Spreadsheet Style Grid for Concessions & Scholarships */
+.excel-table-grid {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.excel-table-grid th,
+.excel-table-grid td {
+  border: 1px solid #d1d5db;
+}
+
+.excel-table-grid th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 
 

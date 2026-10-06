@@ -48,15 +48,13 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenPortal, onOpenFee, onOpenA
               <span>Helpline: <strong className="text-white">{UCP_CONTACT.tollFree}</strong> / {UCP_CONTACT.phone}</span>
             </div>
 
-            <a 
+            <button 
               id="topbar-fee-btn"
-              href="https://ucpcolleges.pgc.edu/campus-network/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors flex items-center gap-1 text-slate-300"
+              onClick={onOpenFee}
+              className="hover:text-white transition-colors flex items-center gap-1 text-slate-300 cursor-pointer"
             >
               <FileText size={12} /> Fee Structure
-            </a>
+            </button>
 
             <a 
               id="topbar-portal-btn"

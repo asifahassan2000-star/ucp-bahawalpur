@@ -7,6 +7,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FadingStackLightbox } from './FadingStackLightbox';
+import { UcpEliteNetworkSection } from './UcpEliteNetworkSection';
 
 // Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -967,6 +968,9 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
         </div>
 
       </section>
+
+      {/* UCP ELITE STUDENT NETWORK — Volunteer Team Members Section */}
+      <UcpEliteNetworkSection />
 
       {/* 8. FINAL SECTION — Exception Full-Width Authentic Campus Photograph (Scale 1.08 -> 1.00) */}
       <section 

@@ -4,6 +4,7 @@ import {
   Compass, Award, BookOpen, Music, Flag
 } from 'lucide-react';
 import { FadingStackLightbox } from './FadingStackLightbox';
+import { UcpEliteNetworkSection } from './UcpEliteNetworkSection';
 
 // Authentic project assets from src/assets/images
 import businessSeminarImg from '../assets/images/academic_business_seminar_1790317693556.jpg';
@@ -186,6 +187,7 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
   ];
 
   return (
+    <>
     <section 
       id="campus-section" 
       className="relative py-[100px] bg-[#FDFBF7] text-[#0A1931] border-b border-[#0A1931]/10 overflow-hidden"
@@ -590,6 +592,10 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
         categoryName={stackLightboxCategory}
       />
     </section>
+
+    {/* UCP ELITE STUDENT NETWORK — Volunteer Team Members Section */}
+    <UcpEliteNetworkSection />
+    </>
   );
 };
 

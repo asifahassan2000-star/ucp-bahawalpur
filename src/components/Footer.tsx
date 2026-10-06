@@ -375,15 +375,14 @@ export const Footer: React.FC<FooterProps> = ({
                 </a>
               </li>
               <li>
-                <a 
-                  href="https://ucpcolleges.pgc.edu/campus-network/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button 
+                  type="button"
+                  onClick={onOpenFee}
                   className="group w-full text-left px-3 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-2 hover:bg-white/10 hover:text-amber-300 hover:drop-shadow-[0_0_8px_rgba(253,224,71,0.6)] focus:outline-none focus:ring-1 focus:ring-amber-300/50 cursor-pointer"
                 >
                   <span className="text-slate-400 font-bold group-hover:text-amber-400 group-hover:translate-x-1 transition-all duration-200">›</span>
                   <span className="group-hover:font-semibold transition-all">Programs & Fee Structure</span>
-                </a>
+                </button>
               </li>
               <li>
                 <a 

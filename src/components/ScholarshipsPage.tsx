@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Award, GraduationCap, Users, ShieldCheck, ArrowLeft, ArrowRight,
   CheckCircle2, Calculator, Info, ExternalLink, Sparkles, AlertCircle,
-  Building2, Percent, HelpCircle, PhoneCall, ChevronRight, BookOpen
+  Building2, Percent, HelpCircle, PhoneCall, ChevronRight, BookOpen,
+  FileSpreadsheet, Table, Check, Layers
 } from 'lucide-react';
 import { UCP_CONTACT } from '../data/ucpData';
 
@@ -14,12 +14,57 @@ interface ScholarshipsPageProps {
   onOpenFee: () => void;
 }
 
+// Subtle, neat jumping word animation component without extra borders
+const JumpingWord: React.FC<{ text: string; className?: string; delay?: number }> = ({ 
+  text, 
+  className = '', 
+  delay = 0 
+}) => {
+  return (
+    <span 
+      className={`inline-block animate-word-jump ${className}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {text}
+    </span>
+  );
+};
+
+// Subtle neat jumping phrase where each word bounces with gentle stagger
+const JumpingPhrase: React.FC<{ 
+  phrase: string; 
+  className?: string; 
+  wordClassName?: string;
+  baseDelay?: number;
+}> = ({ 
+  phrase, 
+  className = '', 
+  wordClassName = '',
+  baseDelay = 0 
+}) => {
+  const words = phrase.split(' ');
+  return (
+    <span className={`inline-flex flex-wrap gap-x-1 items-center ${className}`}>
+      {words.map((word, idx) => (
+        <span
+          key={idx}
+          className={`inline-block animate-word-jump ${wordClassName}`}
+          style={{ animationDelay: `${baseDelay + idx * 110}ms` }}
+        >
+          {word}
+        </span>
+      ))}
+    </span>
+  );
+};
+
 export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
   onBackToHome,
   onOpenApply,
   onOpenProgrammesPage,
   onOpenFee,
 }) => {
+  // Navigation & Category Tab state
   const [activeTab, setActiveTab] = useState<'all' | 'bs' | 'kinship' | 'adp' | 'cgpa'>('all');
 
   // Interactive Calculator State
@@ -44,13 +89,13 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
           if (calcMarks >= 80) {
             bestPercent = Math.max(bestPercent, 50);
             tierTitle = '50% Merit Scholarship (At Admission)';
-            rationale = 'Marks ≥ 80% in intermediate for BS (Computing, BBA, Natural Sciences)';
+            rationale = 'Intermediate Marks ≥ 80% for BSCS, BBA & Natural Sciences';
           }
         } else {
           if (calcMarks >= 75) {
             bestPercent = Math.max(bestPercent, 50);
             tierTitle = '50% Merit Scholarship (At Admission)';
-            rationale = 'Marks ≥ 75% in intermediate for BS (Accounting, Psychology, English, Economics)';
+            rationale = 'Intermediate Marks ≥ 75% for BS Accounting, Psychology, English & Economics';
           }
         }
 
@@ -58,7 +103,7 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
         if (isOldStudent && bestPercent < 25) {
           bestPercent = 25;
           tierTitle = '25% Old Student Concession';
-          rationale = 'Punjab Group of Colleges / UCP Alumni Privilege';
+          rationale = 'Punjab Group of Colleges (PGC) / UCP Alumni Privilege';
         }
 
         // Kinship or Armed Forces (BS: 25%)
@@ -72,7 +117,7 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
         if (calcMarks >= 75) {
           bestPercent = Math.max(bestPercent, 50);
           tierTitle = '50% Merit Scholarship (At Admission)';
-          rationale = 'Marks ≥ 75% in intermediate for ADP Degrees';
+          rationale = 'Intermediate Marks ≥ 75% for 2-Year Associate Degree Programs';
         }
 
         // ADP Old Student
@@ -103,12 +148,12 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
       // Subsequent Semesters (CGPA based)
       if (calcCgpa >= 3.5) {
         bestPercent = Math.max(bestPercent, 50);
-        tierTitle = '50% Performance / Merit Scholarship';
-        rationale = 'CGPA ≥ 3.50 in subsequent semester';
+        tierTitle = '50% Dean’s Honor List Performance Scholarship';
+        rationale = 'Semester CGPA ≥ 3.50 in subsequent semester';
       } else if (calcCgpa >= 3.25) {
         bestPercent = Math.max(bestPercent, 25);
-        tierTitle = '25% Performance / Merit Scholarship';
-        rationale = 'CGPA 3.25 to 3.49 in subsequent semester';
+        tierTitle = '25% Merit Honor List Performance Scholarship';
+        rationale = 'Semester CGPA 3.25 to 3.49 in subsequent semester';
       }
 
       // Old student / Kinship subsequent discount
@@ -151,7 +196,7 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
     }
 
     if (bestPercent === 0) {
-      rationale = 'Score below concession thresholds. Inquire at Admissions for need-based evaluation.';
+      rationale = 'Score below standard concession threshold. Need-based review available at Admissions Office.';
     }
 
     return { percent: bestPercent, rationale, tierTitle };
@@ -163,113 +208,114 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
     <div className="min-h-screen bg-[#FFFFFF] text-[#1F2937] font-['Inter',sans-serif] selection:bg-[#0F2C52] selection:text-white">
       
       {/* =========================================================================
-          1. HERO HEADER SECTION — CLEAN OFFICIAL WORDPRESS ELEMENTOR STYLE
-          Section bg #FFFFFF not dark blue, padding 80px 0. Container max 1200px.
+          1. HERO HEADER SECTION — CLEAN INSTITUTIONAL STYLE (NO RED BORDERS)
           ========================================================================= */}
-      <section className="bg-[#FFFFFF] py-16 sm:py-20 border-b border-[#E5E7EB]">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-[#FFFFFF] py-14 sm:py-18 border-b border-[#E5E7EB]">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Breadcrumb & Back */}
+          {/* Breadcrumb & Navigation */}
           <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#E5E7EB]">
             <button
               onClick={onBackToHome}
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#4B5563] hover:text-[#0F2C52] transition-colors cursor-pointer group"
             >
-              <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1 text-[#6B7280]" />
+              <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1 text-[#6B7280] group-hover:text-[#0F2C52]" />
               <span>Back to Campus Home</span>
             </button>
 
             <div className="flex items-center gap-2 text-xs text-[#6B7280] font-normal">
               <span>Home</span>
               <span className="text-[#9CA3AF]">/</span>
+              <span>Financial Aid</span>
+              <span className="text-[#9CA3AF]">/</span>
               <span className="text-[#0F2C52] font-semibold">Scholarships & Concessions</span>
             </div>
           </div>
 
-          {/* Badge: bg #FFF7ED text #9A3412 border 1px #FED7AA font 11px uppercase 600 Inter letter-spacing 0.5px radius 20px padding 6px 14px */}
-          <div className="inline-block bg-[#FFF7ED] text-[#9A3412] border border-[#FED7AA] text-[11px] uppercase font-[600] tracking-[0.5px] rounded-[20px] px-[14px] py-[6px] mb-5">
-            Official Financial Aid & Merit Policies — Fall 2026
+          {/* Official Badge */}
+          <div className="inline-block bg-[#FFF7ED] text-[#9A3412] border border-[#FED7AA] text-[11px] uppercase font-semibold tracking-[0.5px] rounded-[4px] px-[14px] py-[6px] mb-5">
+            Official University Scholarships & Concession Schedules — Fall 2026
           </div>
 
-          {/* Title: font 36px font-weight 700 color #111827 font-family Inter, line 1.2, no cursive, no italic. First word "Scholarships" color #0F2C52. */}
-          <h1 className="text-[36px] font-[700] text-[#111827] leading-[1.2] tracking-tight">
-            <span className="text-[#0F2C52]">Scholarships</span> & Concessions
+          {/* Title */}
+          <h1 className="text-3xl sm:text-[40px] font-bold text-[#111827] leading-[1.2] tracking-tight">
+            <span className="text-[#0F2C52]">Scholarships</span> & Academic Concessions
           </h1>
 
-          {/* Paragraph: font 15px color #4B5563 line 1.7 max-width 760px. */}
-          <p className="mt-4 text-[15px] text-[#4B5563] leading-[1.7] max-w-[760px] font-normal">
+          {/* Paragraph */}
+          <p className="mt-4 text-[15px] text-[#4B5563] leading-[1.7] max-w-[800px] font-normal">
             At the University of Central Punjab, education is an investment in human potential. 
             With over <strong className="text-[#0F2C52] font-semibold">PKR 1.3 Billion</strong> disbursed annually 
-            across the Punjab Group network, we ensure financial constraints never hinder academic excellence.
+            across the Punjab Group network, we ensure financial accessibility for all deserving scholars through 
+            transparent, merit-based tuition waivers.
           </p>
 
-          {/* 4 Cards: bg #F9FAFB border 1px solid #E5E7EB border-radius 12px padding 20px, no glow, no dark bg. 
-              Label top 10px uppercase 600 color #6B7280 tracking 0.6px. Big number 22px bold color #0F2C52. 
-              Small desc 12px color #6B7280. On hover border #0F2C52/20 shadow 0 4px 12px rgba(0,0,0,0.04) */}
+          {/* 4 Clean Metric Cards (No red borders, no selected red boxes) */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
             
             {/* Box 1: Merit Tier */}
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-[20px] transition-all hover:border-[#0F2C52]/20 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <span className="text-[10px] uppercase font-[600] text-[#6B7280] tracking-[0.6px] block">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] p-5 transition-all hover:border-[#CBD5E1] hover:shadow-xs">
+              <span className="text-[10px] uppercase font-semibold text-[#6B7280] tracking-[0.6px] block">
                 Merit Tier
               </span>
-              <span className="text-[22px] font-bold text-[#0F2C52] mt-1 block">
-                Up to 50%
-              </span>
-              <span className="text-[12px] text-[#6B7280] mt-0.5 block font-normal">
-                At Admission & Later
+              <div className="text-[26px] font-bold text-[#0F2C52] mt-1.5 flex items-baseline gap-1">
+                <span>Up to</span>
+                <JumpingWord text="50%" className="text-[#a30f16]" />
+              </div>
+              <span className="text-[12px] text-[#4B5563] mt-0.5 block font-medium">
+                At Admission & CGPA Honors
               </span>
             </div>
 
             {/* Box 2: PGC Alumni */}
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-[20px] transition-all hover:border-[#0F2C52]/20 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <span className="text-[10px] uppercase font-[600] text-[#6B7280] tracking-[0.6px] block">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] p-5 transition-all hover:border-[#CBD5E1] hover:shadow-xs">
+              <span className="text-[10px] uppercase font-semibold text-[#6B7280] tracking-[0.6px] block">
                 PGC Alumni
               </span>
-              <span className="text-[22px] font-bold text-[#0F2C52] mt-1 block">
-                Up to 50%
-              </span>
-              <span className="text-[12px] text-[#6B7280] mt-0.5 block font-normal">
+              <div className="text-[26px] font-bold text-[#0F2C52] mt-1.5 flex items-baseline gap-1">
+                <span>Up to</span>
+                <JumpingWord text="50%" className="text-[#a30f16]" />
+              </div>
+              <span className="text-[12px] text-[#4B5563] mt-0.5 block font-medium">
                 Old Student Privilege
               </span>
             </div>
 
             {/* Box 3: Kinship / Govt */}
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-[20px] transition-all hover:border-[#0F2C52]/20 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <span className="text-[10px] uppercase font-[600] text-[#6B7280] tracking-[0.6px] block">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] p-5 transition-all hover:border-[#CBD5E1] hover:shadow-xs">
+              <span className="text-[10px] uppercase font-semibold text-[#6B7280] tracking-[0.6px] block">
                 Kinship / Govt
               </span>
-              <span className="text-[22px] font-bold text-[#0F2C52] mt-1 block">
-                25%
-              </span>
-              <span className="text-[12px] text-[#6B7280] mt-0.5 block font-normal">
+              <div className="text-[26px] font-bold text-[#0F2C52] mt-1.5 flex items-baseline gap-1">
+                <JumpingPhrase phrase="25% Tuition" wordClassName="text-[#0F2C52]" />
+              </div>
+              <span className="text-[12px] text-[#4B5563] mt-0.5 block font-medium">
                 Sibling & Armed Forces
               </span>
             </div>
 
             {/* Box 4: Annual Fund */}
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-[20px] transition-all hover:border-[#0F2C52]/20 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
-              <span className="text-[10px] uppercase font-[600] text-[#6B7280] tracking-[0.6px] block">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] p-5 transition-all hover:border-[#CBD5E1] hover:shadow-xs">
+              <span className="text-[10px] uppercase font-semibold text-[#6B7280] tracking-[0.6px] block">
                 Annual Fund
               </span>
-              <span className="text-[22px] font-bold text-[#0F2C52] mt-1 block">
-                1.3B+ PKR
-              </span>
-              <span className="text-[12px] text-[#6B7280] mt-0.5 block font-normal">
-                Total Concessions
+              <div className="text-[26px] font-bold text-[#0F2C52] mt-1.5 flex items-baseline gap-1">
+                <JumpingPhrase phrase="1.3B+ PKR" wordClassName="text-[#0F2C52]" />
+              </div>
+              <span className="text-[12px] text-[#4B5563] mt-0.5 block font-medium">
+                Total Annual Concessions
               </span>
             </div>
 
           </div>
 
-          {/* 3 Buttons: Primary bg #0F2C52 text white 14px 500 padding 10px 20px radius 8px, 
-              Secondary bg white border 1px #D1D5DB text #374151. No red, no yellow. */}
+          {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 mt-8">
             <button
               onClick={onOpenApply}
-              className="bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-[500] px-[20px] py-[10px] rounded-[8px] transition-colors cursor-pointer flex items-center gap-2"
+              className="bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-medium px-[22px] py-[10px] rounded-[6px] transition-colors cursor-pointer flex items-center gap-2"
             >
-              <span>Apply for Admission</span>
+              <span>Apply for Admission Fall 2026</span>
               <ArrowRight size={14} />
             </button>
 
@@ -278,17 +324,17 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
                 const el = document.getElementById('scholarship-calculator');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-white border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[#374151] text-[14px] font-[500] px-[20px] py-[10px] rounded-[8px] transition-colors cursor-pointer flex items-center gap-2"
+              className="bg-white border border-[#D1D5DB] text-[#374151] hover:bg-[#F9FAFB] text-[14px] font-medium px-[20px] py-[10px] rounded-[6px] transition-colors cursor-pointer flex items-center gap-2"
             >
-              <Calculator size={15} className="text-[#4B5563]" />
-              <span>Check Your Eligibility</span>
+              <Calculator size={16} className="text-[#4B5563]" />
+              <span>Interactive Eligibility Calculator</span>
             </button>
 
             <button
               onClick={onOpenFee}
-              className="bg-white border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[#374151] text-[14px] font-[500] px-[20px] py-[10px] rounded-[8px] transition-colors cursor-pointer flex items-center gap-2"
+              className="bg-white border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[#374151] text-[14px] font-medium px-[20px] py-[10px] rounded-[6px] transition-colors cursor-pointer flex items-center gap-2"
             >
-              <span>View Fee Structure</span>
+              <span>View Verified Fee Structure</span>
               <ExternalLink size={14} className="text-[#6B7280]" />
             </button>
           </div>
@@ -297,81 +343,93 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
       </section>
 
       {/* =========================================================================
-          2. ESTIMATOR BAR BELOW — WORDPRESS CLEAN CARD
-          bg #F3F4F6 border 1px #E5E7EB radius 12px padding 18px, title 14px bold #111827
+          2. INTERACTIVE ELIGIBILITY ESTIMATOR (NO RED BORDERS, NO RED BOXES)
           ========================================================================= */}
-      <section id="scholarship-calculator" className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[12px] shadow-xs overflow-hidden">
+      <section 
+        id="scholarship-calculator" 
+        className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
+      >
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs">
           
-          {/* Estimator top bar: bg #F3F4F6 border 1px #E5E7EB radius 12px padding 18px, title 14px bold #111827 */}
-          <div className="bg-[#F3F4F6] border-b border-[#E5E7EB] p-[18px] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 className="text-[14px] font-bold text-[#111827]">
-                Interactive Scholarship Eligibility Estimator
-              </h3>
-              <p className="text-[12px] text-[#6B7280] mt-0.5">
-                Preview your applicable concession tier by selecting program level and score.
-              </p>
+          {/* Top Bar (Clean Navy Header) */}
+          <div className="bg-[#0F2C52] border-b border-[#0A1E38] p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/10 rounded-[4px] text-white">
+                <FileSpreadsheet size={20} />
+              </div>
+              <div>
+                <h3 className="text-[15px] sm:text-[16px] font-bold text-white">
+                  Official Scholarship & Concession Calculator
+                </h3>
+                <p className="text-[12px] text-slate-300 mt-0.5">
+                  Real-Time Institutional Eligibility Rule Engine • Fall 2026
+                </p>
+              </div>
             </div>
 
-            <div className="inline-flex rounded-[8px] bg-white p-1 border border-[#D1D5DB]">
+            {/* Semester Switcher */}
+            <div className="inline-flex bg-white/10 p-1 rounded-[6px] border border-white/20">
               <button
                 onClick={() => setCalcSemesterType('admission')}
-                className={`px-3 py-1.5 rounded-[6px] text-xs font-[500] transition-colors cursor-pointer ${
-                  calcSemesterType === 'admission' ? 'bg-[#0F2C52] text-white' : 'text-[#4B5563] hover:text-[#111827]'
+                className={`px-3 py-1.5 text-xs font-semibold rounded-[4px] transition-colors cursor-pointer ${
+                  calcSemesterType === 'admission' 
+                    ? 'bg-white text-[#0F2C52]' 
+                    : 'text-slate-200 hover:text-white'
                 }`}
               >
-                At Admission (Intermediate Marks)
+                1st Semester (Intermediate Marks)
               </button>
               <button
                 onClick={() => setCalcSemesterType('subsequent')}
-                className={`px-3 py-1.5 rounded-[6px] text-xs font-[500] transition-colors cursor-pointer ${
-                  calcSemesterType === 'subsequent' ? 'bg-[#0F2C52] text-white' : 'text-[#4B5563] hover:text-[#111827]'
+                className={`px-3 py-1.5 text-xs font-semibold rounded-[4px] transition-colors cursor-pointer ${
+                  calcSemesterType === 'subsequent' 
+                    ? 'bg-white text-[#0F2C52]' 
+                    : 'text-slate-200 hover:text-white'
                 }`}
               >
-                Subsequent Semester (CGPA)
+                Subsequent Semesters (CGPA)
               </button>
             </div>
           </div>
 
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Input Controls */}
             <div className="lg:col-span-7 space-y-4">
               
-              {/* Program Selector */}
+              {/* Degree Program Level */}
               <div>
-                <label className="text-[11px] font-[600] text-[#374151] uppercase tracking-[0.5px] block mb-2">
+                <label className="text-[11px] font-bold text-[#374151] uppercase tracking-[0.6px] block mb-2">
                   1. Degree Program Level
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setCalcDegreeType('bs')}
-                    className={`p-3 rounded-[8px] border text-left flex items-center gap-3 transition-colors cursor-pointer ${
+                    className={`p-3 rounded-[6px] border text-left flex items-center gap-3 transition-colors cursor-pointer ${
                       calcDegreeType === 'bs' 
                         ? 'border-[#0F2C52] bg-[#0F2C52]/5 text-[#0F2C52] font-semibold' 
                         : 'border-[#E5E7EB] hover:bg-[#F9FAFB] text-[#4B5563]'
                     }`}
                   >
-                    <GraduationCap className={calcDegreeType === 'bs' ? 'text-[#0F2C52]' : 'text-[#9CA3AF]'} size={18} />
+                    <GraduationCap className={calcDegreeType === 'bs' ? 'text-[#0F2C52]' : 'text-[#9CA3AF]'} size={20} />
                     <div>
-                      <span className="text-sm block">BS Programs (4 Years)</span>
-                      <span className="text-[11px] text-[#6B7280] font-normal">CS, BBA, Sciences, Arts</span>
+                      <span className="text-sm block font-bold">BS Programs (4 Years)</span>
+                      <span className="text-[11px] text-[#6B7280]">CS, BBA, Sciences, Arts</span>
                     </div>
                   </button>
 
                   <button
                     onClick={() => setCalcDegreeType('adp')}
-                    className={`p-3 rounded-[8px] border text-left flex items-center gap-3 transition-colors cursor-pointer ${
+                    className={`p-3 rounded-[6px] border text-left flex items-center gap-3 transition-colors cursor-pointer ${
                       calcDegreeType === 'adp' 
                         ? 'border-[#0F2C52] bg-[#0F2C52]/5 text-[#0F2C52] font-semibold' 
                         : 'border-[#E5E7EB] hover:bg-[#F9FAFB] text-[#4B5563]'
                     }`}
                   >
-                    <BookOpen className={calcDegreeType === 'adp' ? 'text-[#0F2C52]' : 'text-[#9CA3AF]'} size={18} />
+                    <BookOpen className={calcDegreeType === 'adp' ? 'text-[#0F2C52]' : 'text-[#9CA3AF]'} size={20} />
                     <div>
-                      <span className="text-sm block">ADP Programs (2 Years)</span>
-                      <span className="text-[11px] text-[#6B7280] font-normal">Associate Degrees</span>
+                      <span className="text-sm block font-bold">ADP Programs (2 Years)</span>
+                      <span className="text-[11px] text-[#6B7280]">Associate Degrees (13 Fields)</span>
                     </div>
                   </button>
                 </div>
@@ -380,32 +438,32 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
               {/* Sub-discipline group for BS */}
               {calcDegreeType === 'bs' && calcSemesterType === 'admission' && (
                 <div>
-                  <label className="text-[11px] font-[600] text-[#374151] uppercase tracking-[0.5px] block mb-2">
+                  <label className="text-[11px] font-bold text-[#374151] uppercase tracking-[0.6px] block mb-2">
                     2. Academic Discipline Group
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <button
                       onClick={() => setCalcGroup('groupA')}
-                      className={`p-2.5 rounded-[8px] border text-left transition-colors cursor-pointer ${
+                      className={`p-2.5 rounded-[6px] border text-left transition-colors cursor-pointer ${
                         calcGroup === 'groupA'
                           ? 'border-[#0F2C52] bg-[#0F2C52]/5 text-[#0F2C52] font-semibold'
                           : 'border-[#E5E7EB] text-[#4B5563] hover:bg-[#F9FAFB]'
                       }`}
                     >
-                      <span className="block font-medium">Group A: BSCS, BBA, Natural Sciences</span>
-                      <span className="text-[11px] text-[#6B7280]">Phy, Chem, Math, Zoology (≥80% for 50%)</span>
+                      <span className="block font-bold">Group A: BSCS, BBA, Natural Sciences</span>
+                      <span className="text-[11px] text-[#6B7280]">Phy, Chem, Math, Zoology (≥ 80% for 50%)</span>
                     </button>
 
                     <button
                       onClick={() => setCalcGroup('groupB')}
-                      className={`p-2.5 rounded-[8px] border text-left transition-colors cursor-pointer ${
+                      className={`p-2.5 rounded-[6px] border text-left transition-colors cursor-pointer ${
                         calcGroup === 'groupB'
                           ? 'border-[#0F2C52] bg-[#0F2C52]/5 text-[#0F2C52] font-semibold'
                           : 'border-[#E5E7EB] text-[#4B5563] hover:bg-[#F9FAFB]'
                       }`}
                     >
-                      <span className="block font-medium">Group B: BS Accounting, PSY, ENG, ECO</span>
-                      <span className="text-[11px] text-[#6B7280]">Psychology, English, Econ (≥75% for 50%)</span>
+                      <span className="block font-bold">Group B: BS ACC, PSY, ENG, ECO</span>
+                      <span className="text-[11px] text-[#6B7280]">Psychology, English, Econ (≥ 75% for 50%)</span>
                     </button>
                   </div>
                 </div>
@@ -413,12 +471,12 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
 
               {/* Score Slider */}
               {calcSemesterType === 'admission' ? (
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-[11px] font-[600] text-[#374151] uppercase tracking-[0.5px]">
-                      Intermediate / HSSC Marks Percentage:
+                <div className="bg-[#F9FAFB] p-4 border border-[#E5E7EB] rounded-[6px]">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-[11px] font-bold text-[#374151] uppercase tracking-[0.6px]">
+                      Intermediate / HSSC Score Percentage:
                     </label>
-                    <span className="text-base font-bold text-[#0F2C52]">{calcMarks}%</span>
+                    <span className="text-xl font-bold text-[#0F2C52] font-mono">{calcMarks}%</span>
                   </div>
                   <input
                     type="range"
@@ -427,23 +485,23 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
                     step={1}
                     value={calcMarks}
                     onChange={(e) => setCalcMarks(Number(e.target.value))}
-                    className="w-full h-2 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-[#0F2C52]"
+                    className="w-full h-2 bg-[#E5E7EB] appearance-none cursor-pointer accent-[#0F2C52]"
                   />
-                  <div className="flex justify-between text-[11px] text-[#9CA3AF] mt-1 font-mono">
+                  <div className="flex justify-between text-[11px] text-[#6B7280] mt-1.5 font-mono">
                     <span>50%</span>
-                    <span>60% (ADP Old Student)</span>
-                    <span>75% (Group B / ADP)</span>
-                    <span>80% (Group A)</span>
+                    <span>60% (ADP Alumni)</span>
+                    <span className="text-[#0F2C52] font-semibold">75% (Group B / ADP)</span>
+                    <span className="text-[#0F2C52] font-semibold">80% (Group A)</span>
                     <span>100%</span>
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-[11px] font-[600] text-[#374151] uppercase tracking-[0.5px]">
-                      University CGPA in Semester:
+                <div className="bg-[#F9FAFB] p-4 border border-[#E5E7EB] rounded-[6px]">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-[11px] font-bold text-[#374151] uppercase tracking-[0.6px]">
+                      University Semester CGPA:
                     </label>
-                    <span className="text-base font-bold text-[#0F2C52]">{calcCgpa.toFixed(2)}</span>
+                    <span className="text-xl font-bold text-[#0F2C52] font-mono">{calcCgpa.toFixed(2)}</span>
                   </div>
                   <input
                     type="range"
@@ -452,29 +510,31 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
                     step={0.05}
                     value={calcCgpa}
                     onChange={(e) => setCalcCgpa(Number(e.target.value))}
-                    className="w-full h-2 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-[#0F2C52]"
+                    className="w-full h-2 bg-[#E5E7EB] appearance-none cursor-pointer accent-[#0F2C52]"
                   />
-                  <div className="flex justify-between text-[11px] text-[#9CA3AF] mt-1 font-mono">
+                  <div className="flex justify-between text-[11px] text-[#6B7280] mt-1.5 font-mono">
                     <span>2.00</span>
                     <span>2.50 (Concession)</span>
                     <span>2.75 (Concession)</span>
-                    <span>3.25 (25% Merit)</span>
-                    <span>3.50 (50% Merit)</span>
+                    <span className="text-[#0F2C52] font-semibold">3.25 (25% Merit)</span>
+                    <span className="text-[#a30f16] font-semibold">3.50 (50% Merit)</span>
                     <span>4.00</span>
                   </div>
                 </div>
               )}
 
               {/* Special Privilege Checkboxes */}
-              <div className="pt-2 border-t border-[#F3F4F6] flex flex-wrap gap-4 text-xs">
+              <div className="pt-3 border-t border-[#E5E7EB] flex flex-wrap gap-4 text-xs">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={isOldStudent}
                     onChange={(e) => setIsOldStudent(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#0F2C52] focus:ring-[#0F2C52]"
+                    className="w-4 h-4 rounded text-[#0F2C52] focus:ring-[#0F2C52] accent-[#0F2C52]"
                   />
-                  <span className="font-medium text-[#374151]">Punjab Group of Colleges / UCP Old Student</span>
+                  <span className="font-medium text-[#374151]">
+                    Punjab Group of Colleges (PGC) / UCP Old Student
+                  </span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -482,54 +542,71 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
                     type="checkbox"
                     checked={isKinshipOrArmed}
                     onChange={(e) => setIsKinshipOrArmed(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#0F2C52] focus:ring-[#0F2C52]"
+                    className="w-4 h-4 rounded text-[#0F2C52] focus:ring-[#0F2C52] accent-[#0F2C52]"
                   />
-                  <span className="font-medium text-[#374151]">Kinship / Armed Forces / Govt Employee / Teacher Child</span>
+                  <span className="font-medium text-[#374151]">
+                    Kinship / Armed Forces / Govt Employee / Teacher Child
+                  </span>
                 </label>
               </div>
 
             </div>
 
-            {/* Calculated Result Card */}
-            <div className="lg:col-span-5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-6 flex flex-col justify-between h-full min-h-[280px]">
+            {/* Calculated Result Card (Clean styling, no red border) */}
+            <div className="lg:col-span-5 border border-[#E5E7EB] bg-[#F9FAFB] rounded-[8px] p-6 flex flex-col justify-between h-full min-h-[290px]">
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-[600] uppercase tracking-[0.5px] text-[#6B7280]">
-                    Estimated Scholarship
+                  <span className="text-[11px] font-bold uppercase tracking-[0.8px] text-[#6B7280]">
+                    Calculated Concession
                   </span>
-                  <span className="text-[11px] bg-[#E5E7EB] px-2.5 py-0.5 rounded-[4px] text-[#374151] font-medium">
-                    {calcSemesterType === 'admission' ? 'Admission Tier' : 'Subsequent Semester'}
+                  <span className="text-[11px] bg-[#E5E7EB] text-[#374151] px-2.5 py-0.5 rounded-[4px] font-medium">
+                    {calcSemesterType === 'admission' ? 'At Admission' : 'Subsequent Semester'}
                   </span>
                 </div>
 
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-4xl sm:text-5xl font-black text-[#0F2C52] tracking-tight">
-                    {calculatedResult.percent}%
-                  </span>
-                  <span className="text-sm text-[#4B5563] font-semibold">Tuition Fee Off</span>
+                {/* Big Percentage Display with Jumping Word Animation */}
+                <div className="mt-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-5xl sm:text-6xl font-black text-[#a30f16] tracking-tight">
+                      <JumpingWord text={`${calculatedResult.percent}%`} className="text-[#a30f16]" />
+                    </span>
+                    <div className="text-left">
+                      <span className="text-sm font-bold text-[#111827] block">
+                        Tuition Fee Waiver
+                      </span>
+                      <span className="text-xs text-[#a30f16] font-semibold">
+                        {calculatedResult.percent > 0 ? (
+                          <JumpingPhrase phrase="Official Eligible Category" baseDelay={200} />
+                        ) : (
+                          'Standard Evaluation'
+                        )}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mt-3 py-2 px-3 rounded-[8px] bg-white border border-[#E5E7EB]">
+                {/* Rationale & Tier Info */}
+                <div className="mt-4 p-3.5 bg-white border border-[#E5E7EB] rounded-[6px]">
                   <h4 className="text-xs font-bold text-[#111827] flex items-center gap-1.5">
-                    <CheckCircle2 size={14} className="text-[#0F2C52] shrink-0" />
+                    <CheckCircle2 size={15} className="text-[#0F2C52] shrink-0" />
                     <span>{calculatedResult.tierTitle}</span>
                   </h4>
-                  <p className="text-[11px] text-[#4B5563] mt-0.5 leading-snug font-normal">
+                  <p className="text-[12px] text-[#4B5563] mt-1 leading-snug font-normal">
                     {calculatedResult.rationale}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-[#E5E7EB] space-y-2">
+              <div className="mt-6 pt-3 border-t border-[#E5E7EB] space-y-2">
                 <button
                   onClick={onOpenApply}
-                  className="w-full py-[10px] px-[20px] bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-[500] rounded-[8px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-[10px] px-[20px] bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-medium rounded-[6px] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <span>Apply Now & Claim Scholarship</span>
                   <ArrowRight size={14} />
                 </button>
-                <p className="text-[10px] text-center text-[#9CA3AF]">
-                  * Subject to official verification by UCP Admissions Office. Single concession policy applies.
+                <p className="text-[11px] text-center text-[#6B7280]">
+                  * Policy Clause: Single highest concession applies. Official verification via transcript submission.
                 </p>
               </div>
 
@@ -542,11 +619,12 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
       {/* =========================================================================
           3. CATEGORY FILTER TABS
           ========================================================================= */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+      <section className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#E5E7EB]">
           <div>
-            <h2 className="text-[20px] font-bold text-[#111827]">
-              Official Concession Schedules & Policies
+            <h2 className="text-[20px] font-bold text-[#111827] flex items-center gap-2">
+              <Table size={18} className="text-[#0F2C52]" />
+              <span>Official Institutional Concession Schedules</span>
             </h2>
             <p className="text-xs text-[#6B7280] mt-0.5">
               Verified criteria for Undergraduate BS Degrees, Associate Degrees, Kinship, and Alumni.
@@ -555,18 +633,18 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
 
           <div className="flex flex-wrap gap-2">
             {[
-              { id: 'all', label: 'All Schemes' },
-              { id: 'bs', label: 'BS Merit' },
+              { id: 'all', label: 'All Official Schedules' },
+              { id: 'bs', label: 'BS Degree Merit' },
               { id: 'kinship', label: 'Old Student & Kinship' },
-              { id: 'adp', label: 'ADP Programs' },
-              { id: 'cgpa', label: 'CGPA Performance' },
+              { id: 'cgpa', label: 'CGPA Academic Honors' },
+              { id: 'adp', label: 'ADP 2-Year Programs' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`px-3.5 py-1.5 rounded-[8px] text-xs font-[500] transition-colors cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-[6px] text-xs font-medium transition-all cursor-pointer ${
                   activeTab === tab.id
-                    ? 'bg-[#0F2C52] text-white'
+                    ? 'bg-[#0F2C52] text-white shadow-xs'
                     : 'bg-white text-[#4B5563] hover:bg-[#F9FAFB] border border-[#E5E7EB]'
                 }`}
               >
@@ -578,244 +656,333 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
       </section>
 
       {/* =========================================================================
-          4. DETAILED TABLES — WORDPRESS ELEMENTOR CLEAN STYLE
+          4. RECTANGULAR EXCEL STYLE TABLES (NO RED BORDERS, NO RED BOXES)
           ========================================================================= */}
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-8">
+      <main className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-9">
 
         {/* -----------------------------------------------------------------------
-            SECTION 1: MERIT SCHOLARSHIPS — BS PROGRAMS
+            SECTION 1: MERIT SCHOLARSHIPS — BS DEGREE PROGRAMS
             ----------------------------------------------------------------------- */}
         {(activeTab === 'all' || activeTab === 'bs') && (
-          <div className="bg-[#FFFFFF] rounded-[12px] border border-[#E5E7EB] shadow-xs overflow-hidden">
+          <div className="space-y-7">
             
-            {/* Header: Clean UCP Navy */}
-            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <span className="text-[10px] font-[600] uppercase tracking-[0.5px] text-slate-300 block">
-                  Category 01 • Undergraduate Degrees
+            {/* Table 1.1: Group A (CSS selector 5 target) */}
+            <div 
+              id="sec-bs-groupa"
+              className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs"
+            >
+              {/* Clean Sheet Header — NO red box with text */}
+              <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0A1E38]">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h3 className="text-[16px] font-bold text-white">
+                      Merit Scholarships: BSCS, BBA & Natural Sciences (Group A)
+                    </h3>
+                    <span className="text-[11px] text-slate-300 block">
+                      Discipline: Computer Science, Business Administration, Physics, Chemistry, Mathematics, Zoology
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
+                  Standard 4-Year BS
                 </span>
-                <h3 className="text-[18px] font-bold text-white">
-                  Merit Scholarships for BS Programs
-                </h3>
               </div>
-              <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
-                4-Year Degree Programs
-              </span>
+
+              <div className="p-5 space-y-6">
+                
+                {/* 1.1 At Admission Excel Table */}
+                <div>
+                  <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#1E293B]">
+                      Table 1.1-A: Merit Based Scholarship at the Time of Admission (1st Semester)
+                    </span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Range: HSSC Intermediate Marks</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="excel-table-grid text-sm">
+                      <thead>
+                        <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                          <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                          <th className="py-2.5 px-4 text-left">Intermediate / HSSC Percentage Score</th>
+                          <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
+                          <th className="py-2.5 px-4 text-left">Applicability & Conditions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">A1</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            80% and above in Intermediate
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                              <JumpingWord text="50%" className="text-[#a30f16]" />
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Applicable in 1st Semester on Tuition Fee upon verified transcript submission
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* 1.1 Subsequent Semesters Excel Table */}
+                <div>
+                  <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#1E293B]">
+                      Table 1.1-B: Merit Based Scholarship for Subsequent Semester(s) (Semester 2 to 8)
+                    </span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Range: Semester CGPA</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="excel-table-grid text-sm">
+                      <thead>
+                        <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                          <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                          <th className="py-2.5 px-4 text-left">Semester CGPA Requirement</th>
+                          <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
+                          <th className="py-2.5 px-4 text-left">Academic Honors Category</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">B1</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            Greater than or equal to 3.50 (CGPA ≥ 3.50)
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                              <JumpingWord text="50%" className="text-[#a30f16]" />
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Dean’s Honor Roll — Awarded per semester upon result declaration
+                          </td>
+                        </tr>
+                        <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">B2</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            3.25 to less than 3.50 (3.25 ≤ CGPA &lt; 3.50)
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
+                              25%
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Merit Honor Roll — Maintained on full academic course load
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
-            <div className="p-6 space-y-6">
-              
-              {/* Group 1: BS(Phy/Chem/Math/Zoology), BSCS & BBA */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#0F2C52]" />
-                  <h4 className="text-[14px] font-bold text-[#111827]">
-                    BS(Phy/Chem/Math/Zoology), BSCS & BBA
-                  </h4>
+            {/* Table 1.2: Group B (CSS selector 4 target) */}
+            <div 
+              id="sec-bs-groupb"
+              className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs"
+            >
+              {/* Clean Sheet Header — NO red box with text */}
+              <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0A1E38]">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h3 className="text-[16px] font-bold text-white">
+                      Merit Scholarships: BS Accounting, Psychology, English & Economics (Group B)
+                    </h3>
+                    <span className="text-[11px] text-slate-300 block">
+                      Discipline: BS Accounting & Finance, BS Psychology, BS English, BS Economics
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
+                  Faculty of Management & Humanities
+                </span>
+              </div>
+
+              <div className="p-5 space-y-6">
+                
+                {/* At Admission */}
+                <div>
+                  <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#1E293B]">
+                      Table 1.2-A: Merit Based Scholarship at the Time of Admission (1st Semester)
+                    </span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Eligibility: ≥ 75% Score</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="excel-table-grid text-sm">
+                      <thead>
+                        <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                          <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                          <th className="py-2.5 px-4 text-left">Intermediate / HSSC Percentage Score</th>
+                          <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
+                          <th className="py-2.5 px-4 text-left">Applicability</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">C1</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            75% and above in Intermediate
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                              <JumpingWord text="50%" className="text-[#a30f16]" />
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Direct 50% Concession on 1st Semester Tuition Fee
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
 
-                {/* At Admission Table */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB] flex items-center justify-between">
-                    <span className="text-xs font-[600] text-[#374151]">
-                      • Merit Based Scholarship at the time of admission
+                {/* Subsequent */}
+                <div>
+                  <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#1E293B]">
+                      Table 1.2-B: Subsequent Semester CGPA Criteria
                     </span>
-                    <span className="text-[11px] text-[#6B7280]">First Semester</span>
+                    <span className="text-[10px] text-[#64748B] font-mono">Range: CGPA ≥ 3.25</span>
                   </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having CGPA / Percentage</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">80% and above</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">At Admission</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
 
-                {/* Subsequent Semester Table */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB] flex items-center justify-between">
-                    <span className="text-xs font-[600] text-[#374151]">
-                      • Merit Based Scholarship for Subsequent Semester(s)
-                    </span>
-                    <span className="text-[11px] text-[#6B7280]">Semester 2 Onwards</span>
+                  <div className="overflow-x-auto">
+                    <table className="excel-table-grid text-sm">
+                      <thead>
+                        <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                          <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                          <th className="py-2.5 px-4 text-left">Semester CGPA Requirement</th>
+                          <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
+                          <th className="py-2.5 px-4 text-left">Requirement</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">D1</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            Greater than or equal to 3.50 (CGPA ≥ 3.50)
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                              <JumpingWord text="50%" className="text-[#a30f16]" />
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Semester Performance Award
+                          </td>
+                        </tr>
+                        <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                          <td className="py-3 px-4 text-xs font-mono text-[#64748B]">D2</td>
+                          <td className="py-3 px-4 font-bold text-[#111827]">
+                            3.25 to less than 3.50 (3.25 ≤ CGPA &lt; 3.50)
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
+                              25%
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-xs text-[#4B5563]">
+                            Merit Honor Award
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having CGPA</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Requirement</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">Greater than or equal to 3.5</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 3.50</td>
-                      </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">3.25 to less than 3.5</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
-                            25%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 3.25 - 3.49</td>
-                      </tr>
-                    </tbody>
-                  </table>
                 </div>
 
               </div>
-
-              {/* Group 2: BS-ACC & Fin, BS PSY, BS ENG, BS ECO */}
-              <div className="space-y-4 pt-5 border-t border-[#E5E7EB]">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#0F2C52]" />
-                  <h4 className="text-[14px] font-bold text-[#111827]">
-                    BS-ACC & Fin, BS PSY, BS ENG, BS ECO
-                  </h4>
-                  <span className="text-xs text-[#6B7280]">
-                    (Accounting & Finance, Psychology, English, Economics)
-                  </span>
-                </div>
-
-                {/* At Admission Table */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB] flex items-center justify-between">
-                    <span className="text-xs font-[600] text-[#374151]">
-                      • Merit Based Scholarship at the time of admission
-                    </span>
-                    <span className="text-[11px] text-[#6B7280]">First Semester</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having Percentage Score</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">75% and above</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">At Admission</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Subsequent Semester Table */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB] flex items-center justify-between">
-                    <span className="text-xs font-[600] text-[#374151]">
-                      • Merit Based Scholarship for Subsequent Semester(s)
-                    </span>
-                    <span className="text-[11px] text-[#6B7280]">Semester 2 Onwards</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having CGPA</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Requirement</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">Greater than or equal to 3.5</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 3.50</td>
-                      </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">3.25 to less than 3.5</td>
-                        <td className="py-3.5 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
-                            25%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 3.25 - 3.49</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-
             </div>
+
           </div>
         )}
 
         {/* -----------------------------------------------------------------------
-            SECTION 2: OLD STUDENT & KINSHIP CONCESSIONS — ALL BS PROGRAMS
+            SECTION 2: OLD STUDENT & KINSHIP CONCESSIONS (ALL BS PROGRAMS)
+            (CSS selector 3 target)
             ----------------------------------------------------------------------- */}
         {(activeTab === 'all' || activeTab === 'kinship') && (
-          <div className="bg-[#FFFFFF] rounded-[12px] border border-[#E5E7EB] shadow-xs overflow-hidden">
-            
-            {/* Header */}
-            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <span className="text-[10px] font-[600] uppercase tracking-[0.5px] text-slate-300 block">
-                  Category 02 • Institutional Affiliation & Kinship
-                </span>
-                <h3 className="text-[18px] font-bold text-white">
-                  Scholarship & Concession Detail for all BS Programs
-                </h3>
+          <div 
+            id="sec-kinship"
+            className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs"
+          >
+            {/* Clean Sheet Header — NO red box with text */}
+            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0A1E38]">
+              <div className="flex items-center gap-3">
+                <div>
+                  <h3 className="text-[16px] font-bold text-white">
+                    Scholarship & Concession Detail for All BS Programs (Old Students & Kinship)
+                  </h3>
+                  <span className="text-[11px] text-slate-300 block">
+                    Institutional Privilege: Punjab Group of Colleges (PGC) Alumni, Siblings, and Armed Forces Children
+                  </span>
+                </div>
               </div>
               <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
-                Alumni & Family Concessions
+                Alumni & Family Privilege
               </span>
             </div>
 
-            <div className="p-6 space-y-6">
-
+            <div className="p-5 space-y-6">
+              
               {/* At Admission */}
-              <div className="space-y-3">
-                <h4 className="text-[14px] font-bold text-[#111827] flex items-center gap-2">
-                  <Users size={16} className="text-[#0F2C52]" />
-                  <span>At the time of admissions</span>
-                </h4>
+              <div>
+                <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1E293B] flex items-center gap-2">
+                    <Users size={14} className="text-[#0F2C52]" />
+                    Table 2.1: At the Time of Admissions (1st Semester)
+                  </span>
+                  <span className="text-[10px] text-[#64748B] font-mono">Category: Admission Concession</span>
+                </div>
 
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="overflow-x-auto">
+                  <table className="excel-table-grid text-sm">
                     <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Old Student (PGC / UCP Alumni)</th>
-                        <th className="py-2.5 px-4 text-center">Kinship (Sibling / Family)</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
+                      <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                        <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                        <th className="py-2.5 px-4 text-left">Beneficiary Category</th>
+                        <th className="py-2.5 px-4 text-center">Concession Percentage Offered</th>
+                        <th className="py-2.5 px-4 text-left">Applicable Terms</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-bold text-[#0F2C52] text-base">25%</td>
-                        <td className="py-3 px-4 text-center font-bold text-[#0F2C52] text-base">25%</td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">First Semester</td>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">E1</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Old Student (PGC / UCP Alumni)
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#0F2C52] font-bold text-base border border-slate-300 rounded-[4px]">
+                            25%
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Applicable on intermediate graduates from any PGC institution
+                        </td>
+                      </tr>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">E2</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Kinship (Sibling enrolled in UCP / PGC)
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#0F2C52] font-bold text-base border border-slate-300 rounded-[4px]">
+                            25%
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Awarded to concurrent sibling studying across campus network
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -823,39 +990,53 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
               </div>
 
               {/* Subsequent Semesters */}
-              <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
-                <h4 className="text-[14px] font-bold text-[#111827] flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-[#0F2C52]" />
-                  <span>Discount for subsequent semester(s)</span>
-                </h4>
+              <div>
+                <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1E293B] flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-[#0F2C52]" />
+                    Table 2.2: Discount for Subsequent Semester(s) (Semester 2 Onwards)
+                  </span>
+                  <span className="text-[10px] text-[#64748B] font-mono">Retention: CGPA Retention Rules</span>
+                </div>
 
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="overflow-x-auto">
+                  <table className="excel-table-grid text-sm">
                     <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Old Students & Kinship (CGPA Criteria)</th>
+                      <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                        <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                        <th className="py-2.5 px-4 text-left">Old Students & Kinship (CGPA Performance)</th>
                         <th className="py-2.5 px-4 text-center">Discount Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Retention Rule</th>
+                        <th className="py-2.5 px-4 text-left">Continuation Threshold</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA greater than or equal to 2.75</td>
+                    <tbody>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">F1</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          CGPA greater than or equal to 2.75 (CGPA ≥ 2.75)
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#0F2C52] font-bold text-base border border-slate-300 rounded-[4px]">
                             25%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 2.75</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Maintains 100% of the original 25% concession
+                        </td>
                       </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA 2.5 to less than 2.75</td>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">F2</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          CGPA 2.50 to less than 2.75 (2.50 ≤ CGPA &lt; 2.75)
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
                             12.5%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 2.50 - 2.74</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Reduced 50% concession tier for moderate standing
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -868,57 +1049,73 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
 
         {/* -----------------------------------------------------------------------
             SECTION 3: CGPA BASED PERFORMANCE SCHOLARSHIP (ALL PROGRAMS)
+            (CSS selector 2 target)
             ----------------------------------------------------------------------- */}
         {(activeTab === 'all' || activeTab === 'cgpa') && (
-          <div className="bg-[#FFFFFF] rounded-[12px] border border-[#E5E7EB] shadow-xs overflow-hidden">
-            
-            {/* Header */}
-            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <span className="text-[10px] font-[600] uppercase tracking-[0.5px] text-slate-300 block">
-                  Category 03 • University Academic Honors
-                </span>
-                <h3 className="text-[18px] font-bold text-white">
-                  CGPA Based Performance Scholarship
-                </h3>
+          <div 
+            id="sec-cgpa"
+            className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs"
+          >
+            {/* Clean Sheet Header — NO red box with text */}
+            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0A1E38]">
+              <div className="flex items-center gap-3">
+                <div>
+                  <h3 className="text-[16px] font-bold text-white">
+                    CGPA Based Performance Scholarship (Open to All Academic Programs)
+                  </h3>
+                  <span className="text-[11px] text-slate-300 block">
+                    Available to all students across Undergraduate and Associate Degrees after 1st Semester
+                  </span>
+                </div>
               </div>
               <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
-                Available to All Programs
+                University Merit Honors
               </span>
             </div>
 
-            <div className="p-6 space-y-4">
-              <p className="text-[14px] text-[#4B5563]">
+            <div className="p-5 space-y-4">
+              <p className="text-sm text-[#4B5563]">
                 Students of <strong>all programs</strong> can avail the following CGPA based Performance Scholarship after completing their <strong>1<sup>st</sup> semester</strong>:
               </p>
 
-              <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                <table className="w-full text-left border-collapse text-sm">
+              <div className="overflow-x-auto">
+                <table className="excel-table-grid text-sm">
                   <thead>
-                    <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                      <th className="py-2.5 px-4">Students having CGPA</th>
-                      <th className="py-2.5 px-4 text-center">Discount Percentage Offered</th>
-                      <th className="py-2.5 px-4 text-right">Academic Level</th>
+                    <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                      <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                      <th className="py-2.5 px-4 text-left">Students Having Semester CGPA</th>
+                      <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
+                      <th className="py-2.5 px-4 text-left">Academic Distinction Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E7EB]">
-                    <tr className="hover:bg-[#F9FAFB] transition-colors">
-                      <td className="py-3 px-4 font-medium text-[#111827]">Greater than or equal to 3.5</td>
+                  <tbody>
+                    <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                      <td className="py-3 px-4 text-xs font-mono text-[#64748B]">G1</td>
+                      <td className="py-3 px-4 font-bold text-[#111827]">
+                        Greater than or equal to 3.50 (CGPA ≥ 3.50)
+                      </td>
                       <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                          50%
+                        <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                          <JumpingWord text="50%" className="text-[#a30f16]" />
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right text-xs text-[#6B7280]">Deans Honor List</td>
+                      <td className="py-3 px-4 text-xs text-[#4B5563]">
+                        <strong>Dean’s Honor List:</strong> 50% tuition reduction in following semester
+                      </td>
                     </tr>
-                    <tr className="hover:bg-[#F9FAFB] transition-colors">
-                      <td className="py-3 px-4 font-medium text-[#111827]">3.25 to less than 3.5</td>
+                    <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                      <td className="py-3 px-4 text-xs font-mono text-[#64748B]">G2</td>
+                      <td className="py-3 px-4 font-bold text-[#111827]">
+                        3.25 to less than 3.50 (3.25 ≤ CGPA &lt; 3.50)
+                      </td>
                       <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                        <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
                           25%
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-right text-xs text-[#6B7280]">Merit Honor List</td>
+                      <td className="py-3 px-4 text-xs text-[#4B5563]">
+                        <strong>Merit Honor List:</strong> 25% tuition reduction in following semester
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -928,243 +1125,242 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
         )}
 
         {/* -----------------------------------------------------------------------
-            SECTION 4: ASSOCIATE DEGREE PROGRAMS (ADP)
+            SECTION 4: ASSOCIATE DEGREE PROGRAMS (ADP - 2 YEARS)
+            (CSS selector 1 target)
             ----------------------------------------------------------------------- */}
         {(activeTab === 'all' || activeTab === 'adp') && (
-          <div className="bg-[#FFFFFF] rounded-[12px] border border-[#E5E7EB] shadow-xs overflow-hidden">
-            
-            {/* Header */}
-            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <span className="text-[10px] font-[600] uppercase tracking-[0.5px] text-slate-300 block">
-                  Category 04 • 2-Year Associate Degree Programs
-                </span>
-                <h3 className="text-[18px] font-bold text-white">
-                  Associate Degree Program (ADP-BA, ADP-AF, ADP-CS, ADP-BZC & ADP-MP)
-                </h3>
+          <div 
+            id="sec-adp"
+            className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs"
+          >
+            {/* Clean Sheet Header — NO red box with text */}
+            <div className="bg-[#0F2C52] text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0A1E38]">
+              <div className="flex items-center gap-3">
+                <div>
+                  <h3 className="text-[16px] font-bold text-white">
+                    Associate Degree Programs: ADP-BA, ADP-AF, ADP-CS, ADP-BZC & ADP-MP
+                  </h3>
+                  <span className="text-[11px] text-slate-300 block">
+                    All 13 Accredited 2-Year Associate Degree Programs (Computing, Business, Analytics, Sciences)
+                  </span>
+                </div>
               </div>
               <span className="text-[11px] bg-white/10 text-slate-200 px-3 py-1 rounded-[4px] self-start sm:self-auto font-medium">
-                13 Accredited ADP Degrees
+                2-Year Degree Matrix
               </span>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-5 space-y-6">
               
-              {/* ADP Merit Section */}
-              <div className="space-y-4">
-                <h4 className="text-[14px] font-bold text-[#111827]">
-                  1. Merit Based Scholarship for ADP
-                </h4>
+              {/* 4.1 ADP Merit Based */}
+              <div>
+                <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1E293B]">
+                    Table 4.1: Merit Based Scholarship for ADP (At Admission & Subsequent)
+                  </span>
+                  <span className="text-[10px] text-[#64748B] font-mono">Type: Pure Merit</span>
+                </div>
 
-                {/* At Admission */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">At the time of admissions</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="overflow-x-auto">
+                  <table className="excel-table-grid text-sm">
                     <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having Percentage score</th>
+                      <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                        <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                        <th className="py-2.5 px-4 text-left">Academic Assessment Criteria</th>
                         <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
+                        <th className="py-2.5 px-4 text-left">Term Applicable</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">75% and above</td>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">H1</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          75% and above marks in Intermediate (HSSC)
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
+                          <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                            <JumpingWord text="50%" className="text-[#a30f16]" />
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">1st Semester</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          At Admission (1st Semester)
+                        </td>
                       </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Subsequent Semester */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">Merit Based Scholarship for Subsequent Semester(s)</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Students having CGPA</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Criteria</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">Greater than or equal to 3.5</td>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">H2</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA ≥ 3.50
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
+                          <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                            <JumpingWord text="50%" className="text-[#a30f16]" />
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 3.50</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Subsequent Semester(s) Performance
+                        </td>
                       </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">3.25 to less than 3.5</td>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">H3</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA 3.25 to less than 3.50
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
                             25%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 3.25 - 3.49</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Subsequent Semester(s) Performance
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              {/* ADP Old Student Discounts */}
-              <div className="space-y-4 pt-5 border-t border-[#E5E7EB]">
-                <h4 className="text-[14px] font-bold text-[#111827]">
-                  2. Old Student Discounts for All ADP Programs
-                </h4>
-
-                {/* At Admission */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">Old Student — At the time of admissions</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Old Student Marks Tier</th>
-                        <th className="py-2.5 px-4 text-center">Scholarship Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">60% and above marks</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">1st Semester</td>
-                      </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">Less than 60% marks</td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
-                            25%
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">1st Semester</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              {/* 4.2 ADP Old Student Discounts */}
+              <div>
+                <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1E293B]">
+                    Table 4.2: Old Student Discounts for All ADP Programs (PGC Alumni)
+                  </span>
+                  <span className="text-[10px] text-[#64748B] font-mono">Alumni Tier</span>
                 </div>
 
-                {/* Subsequent Semester */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">Old Student — Discount for subsequent semester(s)</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="overflow-x-auto">
+                  <table className="excel-table-grid text-sm">
                     <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Old Student Performance (CGPA)</th>
-                        <th className="py-2.5 px-4 text-center">Discount Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Criteria</th>
+                      <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                        <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                        <th className="py-2.5 px-4 text-left">Old Student Status & Score Criteria</th>
+                        <th className="py-2.5 px-4 text-center">Concession Percentage Offered</th>
+                        <th className="py-2.5 px-4 text-left">Conditions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA greater than or equal to 2.75</td>
+                    <tbody>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">I1</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          60% and above marks in Intermediate (At Admission)
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
-                            50%
+                          <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                            <JumpingWord text="50%" className="text-[#a30f16]" />
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 2.75</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          PGC Alumni special privilege in 1st Semester
+                        </td>
                       </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA 2.5 to less than 2.75</td>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">I2</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Less than 60% marks in Intermediate (At Admission)
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
                             25%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 2.50 - 2.74</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          PGC Alumni standard concession in 1st Semester
+                        </td>
+                      </tr>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">I3</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA greater than or equal to 2.75 (CGPA ≥ 2.75)
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="inline-block px-3 py-1 bg-[#FFF1F2] text-[#a30f16] font-black text-base border border-[#FECDD3] rounded-[4px]">
+                            <JumpingWord text="50%" className="text-[#a30f16]" />
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Full continuation of 50% waiver in ADP subsequent terms
+                        </td>
+                      </tr>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">I4</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA 2.50 to less than 2.75
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
+                            25%
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Adjusted concession tier
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              {/* ADP Kinship, Govt, Armed Forces & Teachers Child */}
-              <div className="space-y-4 pt-5 border-t border-[#E5E7EB]">
-                <h4 className="text-[14px] font-bold text-[#111827]">
-                  3. Kinship / Government / Civil / Armed Forces Employees / Teachers Child (ADP)
-                </h4>
+              {/* 4.3 ADP Kinship & Govt Service */}
+              <div>
+                <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-b-0 px-3.5 py-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1E293B]">
+                    Table 4.3: Kinship / Government / Civil / Armed Forces / Teachers Child in ADP
+                  </span>
+                  <span className="text-[10px] text-[#64748B] font-mono">Service & Family</span>
+                </div>
 
-                {/* At Admission */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">At the time of admissions</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
+                <div className="overflow-x-auto">
+                  <table className="excel-table-grid text-sm">
                     <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Beneficiary Category</th>
-                        <th className="py-2.5 px-4 text-center">Discount Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Applicability</th>
+                      <tr className="bg-[#F1F5F9] text-[#334155] text-xs font-bold uppercase">
+                        <th className="py-2.5 px-4 text-left w-12 text-[#64748B]">Col</th>
+                        <th className="py-2.5 px-4 text-left">Beneficiary Group</th>
+                        <th className="py-2.5 px-4 text-center">Discount Percentage</th>
+                        <th className="py-2.5 px-4 text-left">Retention Criteria</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">
-                          Kinship / Government / Civil / Armed Forces Employees / Teachers Child
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">J1</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          At Admission (1st Semester)
                         </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#0F2C52] font-bold border border-slate-300 rounded-[4px]">
                             25%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">1st Semester</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Proof of sibling enrollment / defense service book / teacher certificate
+                        </td>
                       </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Subsequent Semester */}
-                <div className="rounded-[8px] border border-[#E5E7EB] overflow-hidden">
-                  <div className="bg-[#F9FAFB] px-4 py-2 border-b border-[#E5E7EB]">
-                    <span className="text-xs font-[600] text-[#374151]">Discount for Subsequent Semester(s)</span>
-                  </div>
-                  <table className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="bg-[#F3F4F6] text-[#374151] text-xs font-semibold uppercase border-b border-[#E5E7EB]">
-                        <th className="py-2.5 px-4">Kinship / Govt / Civil / Armed Forces / Teachers Child (CGPA)</th>
-                        <th className="py-2.5 px-4 text-center">Discount Percentage Offered</th>
-                        <th className="py-2.5 px-4 text-right">Requirement</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E5E7EB]">
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA greater than or equal to 2.75</td>
+                      <tr className="bg-[#F9FAFB] hover:bg-[#F1F5F9] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">J2</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA ≥ 2.75
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#EFF6FF] text-[#0F2C52] font-bold border border-[#BFDBFE]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#0F2C52] font-bold border border-slate-300 rounded-[4px]">
                             25%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA ≥ 2.75</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Maintained across semesters 2 to 4
+                        </td>
                       </tr>
-                      <tr className="hover:bg-[#F9FAFB] transition-colors">
-                        <td className="py-3 px-4 font-medium text-[#111827]">CGPA 2.5 to less than 2.75</td>
+                      <tr className="bg-white hover:bg-[#F9FAFB] transition-colors">
+                        <td className="py-3 px-4 text-xs font-mono text-[#64748B]">J3</td>
+                        <td className="py-3 px-4 font-bold text-[#111827]">
+                          Subsequent Semester CGPA 2.50 to less than 2.75
+                        </td>
                         <td className="py-3 px-4 text-center">
-                          <span className="inline-block px-3 py-1 rounded-[6px] bg-[#F3F4F6] text-[#374151] font-bold border border-[#D1D5DB]">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-[#1E293B] font-bold border border-slate-300 rounded-[4px]">
                             12.5%
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-xs text-[#6B7280]">CGPA 2.50 - 2.74</td>
+                        <td className="py-3 px-4 text-xs text-[#4B5563]">
+                          Reduced retention rate
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1176,45 +1372,54 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
         )}
 
         {/* -----------------------------------------------------------------------
-            5. IMPORTANT OFFICIAL POLICY GUIDELINE BANNER
+            5. IMPORTANT OFFICIAL UNIVERSITY CONCESSION CLAUSE
             ----------------------------------------------------------------------- */}
-        <div className="bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] rounded-[12px] p-5 flex items-start gap-3">
-          <AlertCircle size={20} className="text-[#B45309] shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h4 className="text-[14px] font-bold text-[#92400E]">
-              Official University Concession Clause:
-            </h4>
-            <p className="text-[13px] text-[#92400E] leading-relaxed">
-              <strong>NOTE:</strong> Multiple concessions <strong>cannot</strong> be availed simultaneously. 
-              If a candidate qualifies for more than one concession category (such as Merit alongside Kinship or PGC Alumni), 
-              the candidate will be awarded the highest single applicable percentage concession.
-            </p>
+        <div 
+          id="sec-policy"
+          className="bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] rounded-[10px] p-5 shadow-xs"
+        >
+          <div className="flex items-start gap-3">
+            <AlertCircle size={22} className="text-[#B45309] shrink-0 mt-0.5" />
+            <div className="space-y-1.5">
+              <h4 className="text-[15px] font-bold text-[#92400E]">
+                Official University Concession Non-Stacking Clause
+              </h4>
+              <p className="text-[13px] text-[#92400E] leading-relaxed">
+                <strong>NOTE:</strong> Multiple concessions <strong>cannot</strong> be availed simultaneously. 
+                If a candidate qualifies for more than one concession category (such as Merit alongside Kinship or PGC Alumni privilege), 
+                the candidate will be awarded the <strong>single highest applicable percentage</strong> concession. 
+                Tuition fee waivers apply solely to tuition fees and exclude registration, admission, examination, and laboratory fees.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* -----------------------------------------------------------------------
-            6. ADMISSIONS & FINANCIAL AID CONTACT OFFICE
+            6. ADMISSIONS & FINANCIAL AID CONTACT HELPDESK
             ----------------------------------------------------------------------- */}
-        <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div 
+          id="sec-contact"
+          className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-[10px] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs"
+        >
           <div className="space-y-2 max-w-2xl">
-            <span className="text-[11px] uppercase font-[600] tracking-[0.5px] text-[#6B7280] block">
-              Financial Aid & Concessions Helpdesk
+            <span className="text-[11px] uppercase font-bold tracking-[0.6px] text-[#6B7280] block">
+              Financial Aid Cell • UCP Bahawalpur Campus
             </span>
             <h3 className="text-[20px] font-bold text-[#0F2C52]">
-              Connect with UCP Bahawalpur Financial Aid Cell
+              Need Assistance with Scholarship Verification?
             </h3>
             <p className="text-[13px] text-[#4B5563] leading-relaxed">
-              Visit our Admissions Office at {UCP_CONTACT.address}. 
-              Our counselors will review your academic transcripts and guide you through fee voucher adjustments.
+              Visit our Admissions & Financial Aid Office at {UCP_CONTACT.address}. 
+              Our counselors will evaluate your academic transcripts and apply the appropriate tuition fee waiver voucher immediately.
             </p>
             <div className="flex flex-wrap gap-4 pt-2 text-xs text-[#6B7280]">
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 font-medium">
                 <PhoneCall size={14} className="text-[#0F2C52]" />
-                Helpline: <strong className="text-[#111827]">(+92) 800-00827</strong>
+                Toll Free Helpline: <strong className="text-[#111827]">(+92) 800-00827</strong>
               </span>
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 font-medium">
                 <Building2 size={14} className="text-[#0F2C52]" />
-                Office Hours: <strong className="text-[#111827]">9:00 AM – 5:00 PM (Mon–Sat)</strong>
+                Office Timing: <strong className="text-[#111827]">9:00 AM – 5:00 PM (Monday – Saturday)</strong>
               </span>
             </div>
           </div>
@@ -1222,16 +1427,16 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
           <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
             <button
               onClick={onOpenApply}
-              className="py-[10px] px-[20px] rounded-[8px] bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-[500] flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="py-[10px] px-[22px] bg-[#0F2C52] hover:bg-[#0a1e38] text-white text-[14px] font-medium rounded-[6px] flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
             >
-              <span>Apply for Fall 2026</span>
+              <span>Apply Online for Fall 2026</span>
               <ArrowRight size={14} />
             </button>
             <button
               onClick={() => onOpenProgrammesPage()}
-              className="py-[10px] px-[20px] rounded-[8px] bg-white border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[#374151] text-[14px] font-[500] flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="py-[10px] px-[20px] bg-white border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[#374151] text-[14px] font-semibold rounded-[6px] flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <span>Explore All 25 Programs</span>
+              <span>Explore All 25 Degree Programs</span>
             </button>
           </div>
         </div>

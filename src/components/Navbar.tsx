@@ -25,7 +25,7 @@ interface NavbarProps {
   onOpenCampusLifePage?: () => void;
   onOpenScholarshipsPage?: () => void;
   onBackToHome?: () => void;
-  currentPage?: 'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships';
+  currentPage?: 'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure';
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -254,16 +254,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span className="text-[11px] text-[#666666]">↗</span>
                     </a>
 
-                    <a
-                      href="https://ucpcolleges.pgc.edu/campus-network/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setActiveDropdown(null)}
-                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveDropdown(null);
+                        onOpenFee();
+                      }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333] cursor-pointer"
                     >
                       <span>Fee Structure & Programs</span>
-                      <span className="text-[11px] text-[#666666]">↗</span>
-                    </a>
+                      <span className="text-[11px] text-[#666666]">→</span>
+                    </button>
 
                     <a
                       href="https://ucp.edu.pk/rules-regulations/"
@@ -715,6 +716,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <span>• Scholarships & Concessions (1.3B PKR)</span>
               <span className="text-amber-300">↗</span>
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenFee();
+              }}
+              className="w-full text-left py-1 text-slate-300 hover:text-white text-xs pl-2 flex items-center justify-between cursor-pointer"
+            >
+              <span>• Fee Structure & Tuition Schedules</span>
+              <span className="text-amber-300">→</span>
             </button>
           </div>
 
