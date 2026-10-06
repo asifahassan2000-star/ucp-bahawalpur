@@ -6,15 +6,57 @@ html {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
+}
+
+/* Thin Scrollbar for Header Dropdowns */
+.dropdown-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+.dropdown-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.dropdown-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dropdown-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+.dropdown-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {
-  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 1.05rem; /* ~17px professional reading size */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
   line-height: 1.7;
   color: #1e293b;
   overflow-x: hidden;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 /* Universal Smooth Color Change on Cursor Hover across the website */
@@ -309,6 +351,38 @@ html:not(.reveal-ready) .quote-premium-scroll {
 .quote-premium-scroll.is-active .quote-accent-bar,
 html:not(.reveal-ready) .quote-premium-scroll .quote-accent-bar {
   width: 120px;
+}
+
+/* ==========================================================================
+   11. Premium Infinite Campus Life Marquee (Left-to-Right Continuous Loop)
+   ========================================================================== */
+@keyframes marquee-ltr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  animation: marquee-ltr 48s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-ltr:hover,
+.marquee-container:hover .animate-marquee-ltr {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-ltr {
+    animation: none !important;
+    transform: none !important;
+    overflow-x: auto;
+  }
 }
 
 

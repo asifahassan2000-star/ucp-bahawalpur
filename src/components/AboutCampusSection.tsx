@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight, Compass, ShieldCheck, Sparkles, Building2, Trees, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Building2, Trees, CheckCircle2 } from 'lucide-react';
 
 interface AboutCampusSectionProps {
   onOpenApply?: () => void;
@@ -10,14 +11,18 @@ interface AboutCampusSectionProps {
 export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
   onOpenApply,
   onOpenLegacyPage,
-  onScrollTo,
 }) => {
+  const easeCurve = [0.22, 1, 0.36, 1] as const;
+
   return (
     <section 
       id="our-campus-section"
-      className="relative bg-white py-20 sm:py-24 lg:py-28 border-b border-slate-200/80 overflow-hidden"
+      className="relative bg-white py-[100px] border-b border-slate-200/80"
       aria-labelledby="about-campus-heading"
     >
+      {/* Anchor alias for About navigation */}
+      <div id="about-section" className="absolute -top-24" aria-hidden="true" />
+      
       {/* Subtle architectural dot grid background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
@@ -29,8 +34,14 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header with Mask Reveal */}
-        <div className="max-w-3xl mb-12 sm:mb-14" data-reveal="mask">
+        {/* Header with Framer Motion Reveal */}
+        <motion.div 
+          className="max-w-3xl mb-12 sm:mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: easeCurve }}
+          viewport={{ once: false, amount: 0.3 }}
+        >
           <div className="flex items-center gap-3 mb-3">
             <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#a30f16]">
               OUR CAMPUS · BAHAWALPUR
@@ -38,37 +49,38 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
             <span className="h-px w-8 bg-[#a30f16]/40" aria-hidden="true" />
           </div>
 
-          <div className="mask-reveal-wrap">
-            <h2
-              id="about-campus-heading"
-              className="mask-reveal-child text-3xl sm:text-4xl lg:text-[46px] font-serif font-semibold text-[#092242] tracking-tight leading-[1.18]"
-              style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-            >
-              An Environment Built for Growth
-            </h2>
-          </div>
+          <h2
+            id="about-campus-heading"
+            className="text-3xl sm:text-4xl lg:text-[46px] font-serif font-semibold text-[#092242] tracking-tight leading-[1.18]"
+            style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
+          >
+            An Environment Built for Growth
+          </h2>
 
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-sans max-w-2xl">
             Rooted in the historic scholarly legacy of Bahawalpur and developed with purpose-built modern architecture, UCP Bahawalpur provides world-class educational spaces designed to inspire academic discovery.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Dual-Column Architectural Showcase:
-            - Left Column: Primary Wide Architectural Visual (IMAGE 12) + Academic Infrastructure
-            - Right Column: Compact, full-view Campus Grounds Visual (IMAGE 07) + Highlights
-        */}
+        {/* Dual-Column Architectural Showcase with Framer Motion Alternating Animations */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
-          {/* Left Column (lg:col-span-7): Featured First — Wide Architectural Exterior (IMAGE 12) */}
-          <div className="lg:col-span-7 flex flex-col space-y-6">
+          {/* Left Column: Featured First — Wide Architectural Exterior (IMAGE 12) from Left (-60px) */}
+          <motion.div 
+            className="lg:col-span-7 flex flex-col space-y-6"
+            initial={{ opacity: 0, x: -60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: easeCurve }}
+            viewport={{ once: false, amount: 0.3 }}
+          >
             
-            {/* IMAGE 12: Close Architectural Exterior Photograph (Natural 16:9 Landscape) */}
+            {/* IMAGE 12: Close Architectural Exterior Photograph */}
             <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FAF8F5] shadow-xs w-full aspect-[16/9]">
               <img
                 src="/assets/campus/12_about_architecture_exterior.jpg"
                 alt="UCP Bahawalpur Architectural Exterior and Modern Campus Facade"
                 loading="eager"
-                className="w-full h-full object-cover object-center img-hover-scale"
+                className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
               />
 
               {/* Gentle bottom scrim for caption */}
@@ -84,8 +96,14 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
               </div>
             </div>
 
-            {/* Contemporary Learning Standards Narrative Block */}
-            <div className="bg-[#FDFBF7] border border-slate-200/90 rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs">
+            {/* Contemporary Learning Standards Narrative Block (Staggered y: 40) */}
+            <motion.div 
+              className="bg-[#FDFBF7] border border-slate-200/90 rounded-2xl p-6 sm:p-7 space-y-4 shadow-xs"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2, ease: easeCurve }}
+              viewport={{ once: false, amount: 0.3 }}
+            >
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#a30f16]">
                   <Building2 size={16} />
@@ -127,15 +145,18 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
                   </button>
                 )}
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
-          {/* Right Column (lg:col-span-5):
-              IMAGE 07 (Campus Building with Lawn) placed here (NOT at start),
-              in a small, compact, exact-ratio frame showing 100% of the image with full clarity!
-          */}
-          <div className="lg:col-span-5 flex flex-col space-y-6">
+          {/* Right Column (lg:col-span-5): Campus Grounds Visual from Right (+60px) */}
+          <motion.div 
+            className="lg:col-span-5 flex flex-col space-y-6"
+            initial={{ opacity: 0, x: 60 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.15, ease: easeCurve }}
+            viewport={{ once: false, amount: 0.3 }}
+          >
             
             {/* Campus Grounds & Architecture Showcase Card */}
             <div className="bg-[#FAF8F5] border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
@@ -149,7 +170,7 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
               {/* Side-by-side presentation: Compact Full-View Image + Key Campus Specs */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 
-                {/* IMAGE 07: Small frame, exact 897/1600 ratio, showing full size image with NO cropping */}
+                {/* IMAGE 07: Exact ratio frame */}
                 <div 
                   className="group relative overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-xs shrink-0 transition-transform duration-300 hover:shadow-md"
                   style={{
@@ -161,7 +182,7 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
                     src="/assets/campus/7_about_campus_building_lawn.jpg"
                     alt="University of Central Punjab Bahawalpur Campus Building with Central Lawns"
                     loading="eager"
-                    className="w-full h-full object-contain block img-hover-scale"
+                    className="w-full h-full object-contain block transition-transform duration-700 group-hover:scale-105"
                     style={{
                       aspectRatio: '897 / 1600',
                     }}
@@ -205,7 +226,7 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
 
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 
@@ -213,3 +234,5 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
     </section>
   );
 };
+
+export default AboutCampusSection;

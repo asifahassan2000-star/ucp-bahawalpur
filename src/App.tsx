@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Lenis from 'lenis';
+import { motion } from 'framer-motion';
 import { TopBar } from './components/TopBar';
 import { Navbar } from './components/Navbar';
 import { HeroSlider } from './components/HeroSlider';
-import { ProgramFinder } from './components/ProgramFinder';
 import { OurLeadershipSection } from './components/OurLeadershipSection';
 import { StatisticsSection } from './components/StatisticsSection';
 import { FacultiesGrid } from './components/FacultiesGrid';
@@ -17,6 +18,7 @@ import { AcademicProgrammesPage } from './components/AcademicProgrammesPage';
 import { OurLegacyPage } from './components/OurLegacyPage';
 import { NewsAndEvents } from './components/NewsAndEvents';
 import { CampusLife } from './components/CampusLife';
+import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
 import { CampusLifePage } from './components/CampusLifePage';
 import { AboutCampusSection } from './components/AboutCampusSection';
 import { FacilitiesSection } from './components/FacilitiesSection';
@@ -40,6 +42,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life'>('home');
   const [facultyCategory, setFacultyCategory] = useState<string>('all');
   const [selectedProgrammeId, setSelectedProgrammeId] = useState<string | null>(null);
+  const [selectedProgrammeCategory, setSelectedProgrammeCategory] = useState<string | null>(null);
 
   // Modal states
   const [isApplyOpen, setIsApplyOpen] = useState(false);
@@ -50,10 +53,44 @@ export default function App() {
   const [selectedArticle, setSelectedArticle] = useState<NewsEventItem | null>(null);
   const [preselectedProgramName, setPreselectedProgramName] = useState<string>('');
 
-  const handleOpenProgrammesPage = (progId?: string) => {
+  // 1. Lenis Smooth Scroll Initialization
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    const rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
+  const handleOpenProgrammesPage = (progId?: string, category?: string) => {
     setSelectedProgrammeId(progId || null);
+    setSelectedProgrammeCategory(category || null);
     setCurrentPage('programmes');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenProgrammesFromFaculty = (facultyId?: string) => {
+    let cat: string | undefined;
+    if (facultyId === 'foit') cat = 'Computing & Technology';
+    else if (facultyId === 'fms') cat = 'Business';
+    else if (facultyId === 'fost') cat = 'Science';
+    else if (facultyId === 'fhss') cat = 'Humanities & Social Sciences';
+
+    handleOpenProgrammesPage(undefined, cat);
   };
 
   const handleOpenCampusLifePage = () => {
@@ -235,6 +272,7 @@ export default function App() {
             onOpenApply={handleOpenApply}
             onOpenFee={handleOpenFee}
             initialSelectedId={selectedProgrammeId}
+            initialCategory={selectedProgrammeCategory}
           />
         ) : currentPage === 'faculty' ? (
           /* Separate Dedicated Faculty Page with 20 Slots & Department Views */
@@ -271,68 +309,144 @@ export default function App() {
               onOpenLegacyPage={handleOpenLegacyPage}
             />
 
-            {/* 2. ACADEMICS & PROGRAMMES — Finder & Classrooms & Learning (IMAGE 11) */}
-            <ProgramFinder
-              onSelectProgram={(prog) => setSelectedProgram(prog)}
-              onApplyForProgram={(progName) => handleOpenApply(progName)}
-              onOpenProgrammesPage={handleOpenProgrammesPage}
-            />
+            {/* 2. LEADERSHIP — Director Prof. Dr. Hamid Iqbal & Principal Prof. Dr. Aurangzaib Virk */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <OurLeadershipSection 
+                onOpenApply={() => handleOpenApply()}
+                onScrollTo={handleScrollTo}
+              />
+            </motion.div>
 
-            {/* 3. LEADERSHIP — Director Prof. Dr. Hamid Iqbal & Principal Prof. Dr. Aurangzaib Virk (IMAGE 01 & IMAGE 02) */}
-            <OurLeadershipSection 
-              onOpenApply={() => handleOpenApply()}
-              onScrollTo={handleScrollTo}
-            />
-
-            {/* 4. ACADEMIC FACULTIES GRID */}
-            <FacultiesGrid
-              onSelectFaculty={handleSelectFaculty}
-              onExploreFacultyPrograms={() => handleScrollTo('finder-section')}
-            />
+            {/* 3. ACADEMIC FACULTIES GRID */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <FacultiesGrid
+                onSelectFaculty={handleSelectFaculty}
+                onExploreFacultyPrograms={handleOpenProgrammesFromFaculty}
+              />
+            </motion.div>
 
             {/* 5. FACULTY SHOWCASE */}
-            <FacultySection 
-              onViewAllFaculty={handleOpenFacultyPage}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <FacultySection 
+                onViewAllFaculty={handleOpenFacultyPage}
+              />
+            </motion.div>
 
-            {/* 6. OUR CAMPUS — An Environment Built for Growth (IMAGE 07 & IMAGE 12) */}
-            <AboutCampusSection
-              onOpenApply={() => handleOpenApply()}
-              onOpenLegacyPage={handleOpenLegacyPage}
-              onScrollTo={handleScrollTo}
-            />
+            {/* 6. OUR CAMPUS — An Environment Built for Growth */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <AboutCampusSection
+                onOpenApply={() => handleOpenApply()}
+                onOpenLegacyPage={handleOpenLegacyPage}
+                onScrollTo={handleScrollTo}
+              />
+            </motion.div>
 
-            {/* 7. FACILITIES — Modern Learning Environment (IMAGE 05) & Grand Staircase (IMAGE 09) & Sunlit Hallway (IMAGE 10) */}
-            <FacilitiesSection 
-              onOpenApply={() => handleOpenApply()}
-              onOpenCampusLifePage={handleOpenCampusLifePage}
-            />
+            {/* 7. FACILITIES — Modern Learning Environment & Grand Staircase & Sunlit Hallway */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <FacilitiesSection 
+                onOpenApply={() => handleOpenApply()}
+                onOpenCampusLifePage={handleOpenCampusLifePage}
+              />
+            </motion.div>
 
             {/* 8. INSTITUTIONAL METRICS */}
-            <StatisticsSection />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <StatisticsSection />
+            </motion.div>
 
             {/* 9. NEWS & EVENTS */}
-            <NewsAndEvents
-              onSelectArticle={(article) => setSelectedArticle(article)}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <NewsAndEvents
+                onSelectArticle={(article) => setSelectedArticle(article)}
+              />
+            </motion.div>
 
-            {/* 10. CAMPUS LIFE — Decorated Corridor (IMAGE 06) + Courtyard (IMAGE 08) + Campus After Hours (IMAGE 03) */}
-            <CampusLife 
-              onOpenCampusLifePage={handleOpenCampusLifePage}
-            />
+            {/* 10. CAMPUS LIFE — Decorated Corridor + Courtyard + Campus After Hours */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <CampusLife 
+                onOpenCampusLifePage={handleOpenCampusLifePage}
+              />
+            </motion.div>
 
-            {/* 11. ADMISSIONS — Entrance Red Carpet Welcome (IMAGE 04) */}
-            <AdmissionsExperienceSection
-              onOpenApply={() => handleOpenApply()}
-              onOpenFee={handleOpenFee}
-            />
+            {/* EDITORIAL SECTION: BEYOND THE CLASSROOM — Experiences that shape student life */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <BeyondTheClassroomSection
+                onScrollToCampusLife={() => handleScrollTo('campus-section')}
+                onOpenCampusLifePage={handleOpenCampusLifePage}
+              />
+            </motion.div>
 
-            {/* 12. CLOSING SECTION — Dramatic Architectural View (IMAGE 14) */}
-            <ClosingDramaticSection
-              onOpenApply={() => handleOpenApply()}
-              onOpenProgrammesPage={() => handleOpenProgrammesPage()}
-              onScrollTo={handleScrollTo}
-            />
+            {/* 11. ADMISSIONS — Entrance Red Carpet Welcome */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <AdmissionsExperienceSection
+                onOpenApply={() => handleOpenApply()}
+                onOpenFee={handleOpenFee}
+              />
+            </motion.div>
+
+            {/* 12. CLOSING SECTION — Dramatic Architectural View */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ClosingDramaticSection
+                onOpenApply={() => handleOpenApply()}
+                onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+                onScrollTo={handleScrollTo}
+              />
+            </motion.div>
           </>
         )}
       </main>

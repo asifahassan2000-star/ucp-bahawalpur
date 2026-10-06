@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, GraduationCap, Award, CheckCircle2 } from 'lucide-react';
 import { Faculty } from '../types';
 
@@ -63,110 +64,133 @@ export const FacultiesGrid: React.FC<FacultiesGridProps> = ({
   onExploreFacultyPrograms,
 }) => {
   return (
-    <section id="faculties-section" className="py-20 sm:py-24 bg-white">
+    <section id="faculties-section" className="py-[100px] bg-white text-[#0F2C61] overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        {/* Section Header with Motion Reveal */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
+        >
           <div className="max-w-2xl">
-            <span data-reveal="label" data-reveal-delay="0" className="text-[#a30f16] font-bold text-xs sm:text-sm uppercase tracking-widest bg-rose-50 px-3.5 py-1.5 rounded-full border border-rose-100 inline-block mb-3">
-              Academic Divisions
-            </span>
-            <h2 data-reveal="heading" data-reveal-delay="40" className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#092242] tracking-tight">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-5 h-[2px] bg-[#C5A059]" />
+              <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#C5A059]">
+                Academic Divisions
+              </span>
+            </div>
+            <h2 className="font-['Playfair_Display',serif] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F2C61] tracking-tight leading-tight">
               Faculties & Academic Centers
             </h2>
-            <p data-reveal="text" data-reveal-delay="100" className="mt-3 text-slate-600 text-base sm:text-lg leading-relaxed">
+            <p className="mt-3 text-slate-600 text-base sm:text-lg leading-relaxed font-sans">
               Governing UCP Bahawalpur's official 25 undergraduate and associate degree programmes across Computing, Business, Sciences, and Humanities.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-lg border border-slate-200">
+            <span className="text-xs sm:text-sm font-semibold text-[#0F2C61] bg-slate-100/90 px-4 py-2 rounded-xl border border-slate-200/90 shadow-xs">
               4 Academic Faculties • 25 Programmes
             </span>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Faculties Grid: Cards render immediately */}
+        {/* Faculties Grid: Cards with Framer Motion Stagger and Hover Lift */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BAHAWALPUR_FACULTIES.map((fac) => {
+          {BAHAWALPUR_FACULTIES.map((fac, index) => {
             return (
-              <div
+              <motion.div
                 key={fac.id}
                 id={`faculty-card-${fac.id}`}
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1 hover:border-[#092242]/30"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ y: -8, transition: { duration: 0.25, ease: 'easeOut' } }}
+                onClick={() => onExploreFacultyPrograms(fac.id)}
+                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:border-[#C5A059]/70 cursor-pointer"
               >
-              <div>
-                {/* Faculty Card Image Header */}
-                <div className="relative h-44 w-full overflow-hidden bg-slate-900 aspect-[16/10]">
-                  <img
-                    src={fac.image}
-                    alt={fac.name}
-                    decoding="async"
-                    className="w-full h-full object-cover subtle-hover-scale"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80';
+                <div>
+                  {/* Faculty Card Image Header */}
+                  <div className="relative h-44 w-full overflow-hidden bg-slate-900 aspect-16/10">
+                    <img
+                      src={fac.image}
+                      alt={fac.name}
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                    
+                    {/* Short Name Pill */}
+                    <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md text-[#0F2C61] font-black text-xs px-2.5 py-1 rounded-md shadow-xs border border-white/40">
+                      {fac.shortName}
+                    </div>
+
+                    {/* Title on image */}
+                    <div className="absolute bottom-3 left-3.5 right-3.5">
+                      <h3 className="font-['Playfair_Display',serif] text-base font-bold text-white leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
+                        {fac.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Faculty Card Body */}
+                  <div className="p-4 space-y-3">
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-sans">
+                      {fac.description}
+                    </p>
+
+                    {/* Program counts pills */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      <span className="text-[11px] bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded">
+                        {fac.programsCount.undergraduate} BS
+                      </span>
+                      <span className="text-[11px] bg-[#C5A059]/15 text-[#8C6D23] border border-[#C5A059]/30 font-bold px-2 py-0.5 rounded">
+                        {fac.programsCount.adp} ADP/ADS
+                      </span>
+                      <span className="text-[11px] bg-[#0F2C61]/5 text-[#0F2C61] font-semibold px-2 py-0.5 rounded">
+                        {fac.programsCount.undergraduate + fac.programsCount.adp} Total
+                      </span>
+                    </div>
+
+                    {/* Highlights */}
+                    <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                      {fac.highlights.slice(0, 2).map((h, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-xs text-slate-600">
+                          <CheckCircle2 size={13} className="text-[#C5A059] shrink-0" />
+                          <span className="truncate">{h}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Footer Button */}
+                <div className="p-4 pt-0">
+                  <button
+                    id={`btn-explore-fac-${fac.id}`}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExploreFacultyPrograms(fac.id);
                     }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                  
-                  {/* Short Name Pill */}
-                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md text-[#092242] font-black text-xs px-2.5 py-1 rounded-md shadow-xs">
-                    {fac.shortName}
-                  </div>
-
-                  {/* Title on image */}
-                  <div className="absolute bottom-3 left-3.5 right-3.5">
-                    <h3 className="text-base font-bold text-white leading-snug drop-shadow-sm">
-                      {fac.name}
-                    </h3>
-                  </div>
+                    className="w-full bg-[#0F2C61] hover:bg-[#C5A059] text-white hover:text-[#0F2C61] py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 group/btn cursor-pointer shadow-xs hover:shadow-md"
+                  >
+                    <span>Explore Programmes</span>
+                    <ArrowRight size={13} className="group-hover/btn:translate-x-1.5 transition-transform duration-200" />
+                  </button>
                 </div>
-
-                {/* Faculty Card Body */}
-                <div className="p-4 space-y-3">
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                    {fac.description}
-                  </p>
-
-                  {/* Program counts pills */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    <span className="text-[11px] bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded">
-                      {fac.programsCount.undergraduate} BS
-                    </span>
-                    <span className="text-[11px] bg-amber-50 text-amber-900 border border-amber-200 font-bold px-2 py-0.5 rounded">
-                      {fac.programsCount.adp} ADP/ADS
-                    </span>
-                    <span className="text-[11px] bg-[#092242]/5 text-[#092242] font-semibold px-2 py-0.5 rounded">
-                      {fac.programsCount.undergraduate + fac.programsCount.adp} Total
-                    </span>
-                  </div>
-
-                  {/* Highlights */}
-                  <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                    {fac.highlights.slice(0, 2).map((h, i) => (
-                      <div key={i} className="flex items-center gap-1.5 text-xs text-slate-600">
-                        <CheckCircle2 size={13} className="text-[#a30f16] shrink-0" />
-                        <span className="truncate">{h}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Card Footer Button */}
-              <div className="p-4 pt-0">
-                <button
-                  id={`btn-explore-fac-${fac.id}`}
-                  onClick={() => onExploreFacultyPrograms(fac.id)}
-                  className="w-full bg-slate-100 hover:bg-[#092242] text-slate-800 hover:text-white py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 group/btn cursor-pointer"
-                >
-                  <span>Explore Programmes</span>
-                  <ArrowRight size={13} className="group-hover/btn:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            </div>
+              </motion.div>
             );
           })}
         </div>

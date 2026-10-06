@@ -35,6 +35,8 @@ export const Footer: React.FC<FooterProps> = ({
       id="footer-section" 
       className="relative bg-[#0b2341] text-white pt-16 pb-6 overflow-hidden border-t border-[#13335c] select-none"
     >
+      {/* Anchor alias for Contact navigation */}
+      <div id="contact-section" className="absolute -top-12" aria-hidden="true" />
       {/* High-Contrast White-Line Architectural Blueprint Background System - Properly Visible & Highlighted */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
         {/* Deep blue academic base */}

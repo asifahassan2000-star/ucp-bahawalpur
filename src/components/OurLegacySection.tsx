@@ -303,7 +303,9 @@ export const OurLegacySection: React.FC<OurLegacySectionProps> = ({
                 <article
                   key={milestone.id}
                   id={milestone.id}
-                  ref={(el) => (milestoneRefs.current[milestone.id] = el)}
+                  ref={(el) => {
+                    milestoneRefs.current[milestone.id] = el;
+                  }}
                   className={`scroll-mt-28 transition-all duration-500 ${
                     isActive ? 'opacity-100' : 'opacity-85'
                   }`}

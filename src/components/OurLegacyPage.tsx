@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { OurLegacySection } from './OurLegacySection';
+import { motion } from 'framer-motion';
 import { 
   Building2, Landmark, GraduationCap, Award, ChevronDown, 
   ArrowRight, ArrowLeft, Calendar, ShieldCheck, Compass, 
@@ -439,74 +439,85 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
         {/* Hero Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
           
-          {/* Small Institutional Label */}
+          {/* Clean Label */}
           <div 
             data-reveal="heading" 
             data-reveal-delay="0"
-            className="inline-flex items-center text-white text-xs sm:text-sm font-semibold tracking-[0.26em] uppercase mb-5"
+            className="inline-flex items-center text-white text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mb-6"
           >
             <span>OUR LEGACY</span>
           </div>
 
-          {/* Refined Main Heading: approximately 42–56px desktop, 30–38px mobile, medium/semi-bold */}
+          {/* Large Heading */}
           <h1 
             data-reveal="heading" 
             data-reveal-delay="100"
-            className="text-3xl sm:text-4xl lg:text-[52px] font-serif font-semibold text-white tracking-tight leading-[1.16] max-w-4xl drop-shadow-md"
-            style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.18] max-w-4xl drop-shadow-md"
           >
-            Building a Legacy of Education and Excellence
+            A Legacy of Heritage, Knowledge & Opportunity
           </h1>
 
-          {/* Short Institutional Introduction */}
+          {/* Subtitle */}
           <p 
             data-reveal="paragraph" 
-            data-reveal-delay="200"
-            className="mt-6 text-base sm:text-lg lg:text-[19px] text-slate-200 font-sans leading-relaxed max-w-2xl drop-shadow"
+            data-reveal-delay="220"
+            className="mt-6 text-lg sm:text-xl lg:text-2xl text-slate-200 font-normal leading-relaxed max-w-3xl drop-shadow"
           >
-            “Rooted in a tradition of educational excellence, UCP Bahawalpur continues a journey shaped by knowledge, ambition and opportunity.”
+            From the royal heritage of Bahawalpur to a new generation of educational opportunity.
           </p>
 
-          {/* Factual Subtext */}
-          <p 
-            data-reveal="paragraph" 
-            data-reveal-delay="260"
-            className="mt-2 text-xs sm:text-sm text-slate-300 font-sans leading-relaxed max-w-xl"
-          >
-            From the collegiate foundations of 1985 to our purpose-built campus in Bahawalpur, thirty-nine years of documented academic progress.
-          </p>
-
-          {/* Refined Jump Buttons */}
+          {/* Visual Journey Step Chips */}
           <div 
             data-reveal="card" 
-            data-reveal-delay="400"
-            className="mt-10 flex flex-wrap items-center justify-center gap-3.5"
+            data-reveal-delay="360"
+            className="mt-10 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold text-slate-300 bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 backdrop-blur-sm max-w-4xl"
+          >
+            <span className="text-amber-400 font-bold uppercase tracking-wider">BAHAWALPUR</span>
+            <span className="text-slate-500">→</span>
+            <span className="text-amber-300/90 uppercase tracking-wider">HERITAGE</span>
+            <span className="text-slate-500">→</span>
+            <span className="text-slate-200 uppercase tracking-wider">EDUCATION</span>
+            <span className="text-slate-500">→</span>
+            <span className="text-white uppercase tracking-wider">PGC</span>
+            <span className="text-slate-500">→</span>
+            <span className="text-white uppercase tracking-wider">UCP</span>
+            <span className="text-slate-500">→</span>
+            <span className="bg-[#a30f16] text-white px-2.5 py-0.5 rounded font-bold uppercase tracking-wider">UCP BAHAWALPUR</span>
+            <span className="text-slate-500">→</span>
+            <span className="text-emerald-400 font-bold uppercase tracking-wider">FUTURE</span>
+          </div>
+
+          {/* Quick Jump Buttons */}
+          <div 
+            data-reveal="card" 
+            data-reveal-delay="500"
+            className="mt-10 flex flex-wrap items-center justify-center gap-3"
           >
             <button
-              onClick={() => scrollToSection('legacy-section')}
-              className="bg-white text-[#092242] hover:bg-slate-100 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer"
+              onClick={() => scrollToSection('bahawalpur-heritage')}
+              className="bg-white text-[#092242] hover:bg-slate-100 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer"
             >
-              <span>Historical Timeline (1985–Present)</span>
+              <span>Explore The Story</span>
               <ArrowRight size={14} className="text-[#a30f16]" />
             </button>
 
             <button
-              onClick={() => scrollToSection('bahawalpur-heritage')}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/25 px-6 py-3 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 backdrop-blur-sm cursor-pointer"
+              onClick={() => scrollToSection('pgc-beginning')}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/25 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 backdrop-blur-sm cursor-pointer"
             >
-              Bahawalpur Heritage & Architecture
+              Educational Milestones (1985–Present)
             </button>
           </div>
 
           {/* Subtle Scroll-Down Indicator */}
-          <div className="mt-14">
+          <div className="mt-14 animate-bounce">
             <button 
               onClick={() => scrollToSection('bahawalpur-heritage')}
               aria-label="Scroll down to heritage section"
-              className="text-slate-400 hover:text-white transition-colors flex flex-col items-center gap-1 cursor-pointer"
+              className="text-slate-400 hover:text-amber-400 transition-colors flex flex-col items-center gap-1 cursor-pointer"
             >
-              <span className="text-[11px] uppercase tracking-widest font-semibold">Scroll to Chronicle</span>
-              <ChevronDown size={18} />
+              <span className="text-[11px] uppercase tracking-widest font-semibold">Scroll to Discover</span>
+              <ChevronDown size={20} />
             </button>
           </div>
 
@@ -522,13 +533,17 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* Elegant Text on the Left */}
-            <div className="lg:col-span-6 space-y-6">
+            {/* Elegant Text on the Left with Framer Motion from Left */}
+            <motion.div 
+              className="lg:col-span-6 space-y-6"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               
               {/* Category Kicker */}
               <div 
-                data-reveal="heading" 
-                data-reveal-delay="0"
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#a30f16]"
               >
                 <Landmark size={15} />
@@ -537,8 +552,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Main Section Heading */}
               <h2 
-                data-reveal="heading" 
-                data-reveal-delay="80"
                 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#092242] tracking-tight leading-[1.16]"
               >
                 Bahawalpur — A City of Royal Heritage
@@ -546,8 +559,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Exact Styled Text as Requested */}
               <p 
-                data-reveal="paragraph" 
-                data-reveal-delay="120"
                 className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal"
               >
                 Bahawalpur carries a distinctive heritage shaped by the former Nawab State, historic architecture, cultural traditions and the landscapes of Cholistan. Its palaces, forts and public landmarks preserve a remarkable connection with the past.
@@ -555,8 +566,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Additional Editorial Context */}
               <p 
-                data-reveal="paragraph" 
-                data-reveal-delay="200"
                 className="text-slate-600 leading-relaxed text-sm sm:text-base"
               >
                 Known historically as a princely state of sovereign dignity, Bahawalpur was characterized by an enlightened tradition of statecraft where the Nawabs invested state resources in civic infrastructure, grand palaces, public libraries, and educational endowments.
@@ -564,8 +573,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Landmarks Bullets Mention */}
               <div 
-                data-reveal="card" 
-                data-reveal-delay="280"
                 className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-2.5"
               >
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#092242] flex items-center gap-1.5">
@@ -600,11 +607,13 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                 </div>
               </div>
 
-              {/* Elegant Highlighted Sentence with Nawab Portrait */}
-              <div 
-                data-reveal="paragraph" 
-                data-reveal-delay="360"
+              {/* Elegant Highlighted Sentence with Nawab Portrait (Staggered y: 40) */}
+              <motion.div 
                 className="flex items-center gap-4 sm:gap-5 p-4 border-l-4 border-amber-500 bg-amber-50/70 rounded-r-2xl shadow-xs"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                viewport={{ once: false, amount: 0.25 }}
               >
                 <div 
                   onClick={() => setSelectedGalleryItem({
@@ -641,15 +650,19 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                     A city of royal heritage and growing opportunity.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-            </div>
+            </motion.div>
 
-            {/* Large Historical Image on the Right */}
-            <div className="lg:col-span-6">
+            {/* Large Historical Image on the Right with Framer Motion from Right */}
+            <motion.div 
+              className="lg:col-span-6"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               <div 
-                data-reveal="image" 
-                data-reveal-delay="150"
                 className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200 group"
               >
                 <img 
@@ -682,7 +695,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                 </div>
 
               </div>
-            </div>
+            </motion.div>
 
           </div>
 
@@ -696,37 +709,39 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
       <section id="heritage-gallery" className="py-20 lg:py-24 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="max-w-3xl mb-12">
+          <motion.div 
+            className="max-w-3xl mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: false, amount: 0.25 }}
+          >
             <span 
-              data-reveal="heading" 
-              data-reveal-delay="0"
               className="text-xs font-bold text-[#a30f16] tracking-wider uppercase flex items-center gap-1.5"
             >
               <Landmark size={14} /> Historic Visual Record
             </span>
             <h2 
-              data-reveal="heading" 
-              data-reveal-delay="80"
               className="text-3xl sm:text-4xl font-extrabold text-[#092242] tracking-tight mt-1"
             >
               Bahawalpur Heritage Gallery
             </h2>
             <p 
-              data-reveal="paragraph" 
-              data-reveal-delay="120"
               className="text-slate-600 text-base mt-2"
             >
               Preserving the monumental architectural expressions, royal courts, and historic landscapes of Bahawalpur and the Cholistan Desert.
             </p>
-          </div>
+          </motion.div>
 
-          {/* 6-Card Large Photography Grid */}
+          {/* 6-Card Large Photography Grid with Staggered Framer Motion */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {heritageLandmarks.map((item, index) => (
-              <div
+              <motion.div
                 key={item.id}
-                data-reveal="card"
-                data-reveal-delay={150 + index * 80}
+                initial={{ opacity: 0, y: 40, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: (index % 3) * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                viewport={{ once: false, amount: 0.2 }}
                 onClick={() => setSelectedGalleryItem(item)}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 flex flex-col cursor-pointer"
               >
@@ -775,7 +790,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                   </div>
                 </div>
 
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -813,13 +828,15 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
             </p>
           </div>
 
-          {/* Timeline Process */}
+          {/* Timeline Process with Framer Motion Alternating Slide */}
           <div className="relative border-l-2 border-[#092242]/20 ml-4 sm:ml-8 space-y-12 sm:space-y-16 pl-6 sm:pl-10">
             {bahawalpurPeriods.map((item, idx) => (
-              <div 
+              <motion.div 
                 key={item.period}
-                data-reveal="card"
-                data-reveal-delay={100 + idx * 90}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                viewport={{ once: false, amount: 0.25 }}
                 className="relative group"
               >
                 {/* Timeline Node Point */}
@@ -988,7 +1005,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                   )}
                 </div>
 
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -999,7 +1016,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
           5. FROM ROYAL HERITAGE TO MODERN EDUCATION
           Beautiful transition section with transition photograph from historic to UCP
           ========================================================================= */}
-      <section id="heritage-to-education" className="py-20 lg:py-24 bg-[#092242] text-white relative overflow-hidden">
+      <section id="heritage-to-education" className="py-20 lg:py-24 bg-[#092242] text-white relative">
         {/* Subtle background overlay */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
         
@@ -1007,12 +1024,16 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* Text Narrative */}
-            <div className="lg:col-span-6 space-y-6">
+            {/* Text Narrative from Left */}
+            <motion.div 
+              className="lg:col-span-6 space-y-6"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               
               <div 
-                data-reveal="heading" 
-                data-reveal-delay="0"
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400"
               >
                 <Compass size={15} />
@@ -1020,8 +1041,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
               </div>
 
               <h2 
-                data-reveal="heading" 
-                data-reveal-delay="80"
                 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.16]"
               >
                 From Heritage to Higher Education
@@ -1029,24 +1048,18 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Exact Styled Text as Requested */}
               <blockquote 
-                data-reveal="paragraph" 
-                data-reveal-delay="120"
                 className="text-lg sm:text-xl text-slate-200 leading-relaxed font-light border-l-4 border-amber-400 pl-4 py-1 italic"
               >
                 “Bahawalpur’s story is not only preserved in its historic buildings. It continues through its people, institutions, culture and commitment to learning. Today, the city combines a proud heritage with an increasingly modern educational environment.”
               </blockquote>
 
               <p 
-                data-reveal="paragraph" 
-                data-reveal-delay="200"
                 className="text-slate-300 text-sm sm:text-base leading-relaxed"
               >
                 The same spirit of enlightenment that inspired the construction of grand libraries and colleges in the nineteenth and twentieth centuries now finds its contemporary home at UCP Bahawalpur. Here, royal dignity transforms into academic excellence, scientific inquiry, and purposeful careers.
               </p>
 
               <div 
-                data-reveal="card" 
-                data-reveal-delay="280"
                 className="grid grid-cols-2 gap-4 pt-2"
               >
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -1059,13 +1072,17 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                 </div>
               </div>
 
-            </div>
+            </motion.div>
 
-            {/* Large Visual Transition: Dual-Image Comparison */}
-            <div className="lg:col-span-6">
+            {/* Large Visual Transition: Dual-Image Comparison from Right */}
+            <motion.div 
+              className="lg:col-span-6"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               <div 
-                data-reveal="image" 
-                data-reveal-delay="150"
                 className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-slate-900"
               >
                 {/* Two stacked or split panels representing the transition */}
@@ -1118,7 +1135,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                 </div>
 
               </div>
-            </div>
+            </motion.div>
 
           </div>
 
@@ -1468,11 +1485,15 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* Left 50%: Large REAL photograph of UCP Bahawalpur campus */}
-            <div className="lg:col-span-6">
+            {/* Left 50%: Large REAL photograph of UCP Bahawalpur campus with Framer Motion from Left */}
+            <motion.div 
+              className="lg:col-span-6"
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               <div 
-                data-reveal="image" 
-                data-reveal-delay="0"
                 className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-300 group"
               >
                 <img 
@@ -1545,14 +1566,18 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                   </button>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right 50%: Institutional Verified Narrative */}
-            <div className="lg:col-span-6 space-y-6">
+            {/* Right 50%: Institutional Verified Narrative with Framer Motion from Right */}
+            <motion.div 
+              className="lg:col-span-6 space-y-6"
+              initial={{ opacity: 0, x: 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: false, amount: 0.25 }}
+            >
               
               <div 
-                data-reveal="heading" 
-                data-reveal-delay="60"
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#a30f16]"
               >
                 <Building2 size={15} />
@@ -1560,8 +1585,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
               </div>
 
               <h2 
-                data-reveal="heading" 
-                data-reveal-delay="100"
                 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#092242] tracking-tight leading-[1.15]"
               >
                 UCP Bahawalpur
@@ -1569,16 +1592,12 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Exact Styled Text as Requested */}
               <p 
-                data-reveal="paragraph" 
-                data-reveal-delay="140"
                 className="text-lg sm:text-xl text-slate-800 leading-relaxed font-normal"
               >
                 “UCP Bahawalpur represents the presence of University of Central Punjab within a city known for its rich heritage and growing educational aspirations.”
               </p>
 
               <p 
-                data-reveal="paragraph" 
-                data-reveal-delay="220"
                 className="text-slate-600 text-sm sm:text-base leading-relaxed"
               >
                 Established to extend world-class university curricula and modern campus facilities to students across Southern Punjab, UCP Bahawalpur offers accredited undergraduate and associate degree programmes. Students study under established academic guidelines, qualified faculties, and state-of-the-art technological laboratories.
@@ -1586,8 +1605,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Verified Campus Facts Box */}
               <div 
-                data-reveal="card" 
-                data-reveal-delay="300"
                 className="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-3"
               >
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#092242]">
@@ -1619,8 +1636,6 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
 
               {/* Action Buttons */}
               <div 
-                data-reveal="card" 
-                data-reveal-delay="380"
                 className="pt-2 flex flex-wrap items-center gap-3"
               >
                 {onOpenProgrammesPage && (
@@ -1643,7 +1658,7 @@ export const OurLegacyPage: React.FC<OurLegacyPageProps> = ({
                 )}
               </div>
 
-            </div>
+            </motion.div>
 
           </div>
 

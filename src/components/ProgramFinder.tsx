@@ -1,9 +1,47 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, ArrowRight, BookOpen, RotateCcw, GraduationCap, Sparkles, Layers } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowRight, Search, X, ChevronLeft, ChevronRight, ExternalLink,
+  Cpu, Code2, Brain, ShieldCheck, 
+  BarChart3, Briefcase, TrendingUp,
+  Atom, Microscope, Dna, FlaskConical,
+  BookOpen, Scale, Languages, GraduationCap,
+  Sparkles, CheckCircle2
+} from 'lucide-react';
 import { 
   OFFICIAL_BAHAWALPUR_PROGRAMMES, 
   BahawalpurProgramme 
 } from '../data/bahawalpurProgrammesData';
+
+// Official course fallback images provided by user
+const COURSE_FALLBACK_URLS: Record<string, string> = {
+  'bs-business-analytics': 'https://i.ibb.co/Ld75Vg2t/i-Stock-1311598658.jpg',
+  'bba': 'https://i.ibb.co/TXgwt6f/Chat-GPT-Image-Sep-27-2026-07-07-56-AM.png',
+  'bs-accounting-finance': 'https://i.ibb.co/p6MpMGDn/shutterstock-527098861-1-scaled.avif',
+  'bs-computer-science': 'https://i.ibb.co/V0QdQKgG/images-1.jpg',
+  'bs-cyber-security': 'https://i.ibb.co/DPDbZQ7K/images.jpg',
+  'bs-psychology': 'https://i.ibb.co/zWQVBLTD/shutterstock-158110544-scaled.jpg',
+  'bs-english': 'https://i.ibb.co/cKvTywH6/360-F-409187796-W9bg-IQAKZYs-Wkc9g-Xt-Pbs5h-YAWXd6z1-T.jpg',
+  'bs-physics': 'https://i.ibb.co/MkxJ7Nzy/Chat-GPT-Image-Sep-26-2026-09-44-35-AM.png',
+  'bs-biochemistry': 'https://i.ibb.co/VW7jZHDF/pipette-over-test-tube-dropping-sample-chemical-into-sample-plant-scaled-jpg.webp',
+  'bs-biotechnology': 'https://i.ibb.co/wFZF6w95/Biotechnology-1000x600px.jpg',
+  'bs-chemistry': 'https://i.ibb.co/h1fDTVTm/p0f776fj.png',
+  'bs-mathematics': 'https://i.ibb.co/2Ys8Y5H3/shutterstock-2475273911-scaled.jpg',
+  'bs-zoology': 'https://i.ibb.co/hFKgG2vw/Zoology.png',
+  'adp-psychology': 'https://i.ibb.co/chP4mYWB/What-s-the-Difference-Between-a-Psychiatrist-and-Psychologist.webp',
+  'adp-english': 'https://i.ibb.co/xdLNTjf/360-F-310395027-i-VFf-VOCWFUONEIo-Ri-Tk7-Wq-U7-GLTOf3-QE.jpg',
+  'adp-business-analytics': 'https://i.ibb.co/cKT5qwbp/What-is-business-analytics-Getty-Images-1281224851-e1708028042563.webp',
+  'adp-business-administration': 'https://i.ibb.co/Ps0SNKc7/images-1.jpg',
+  'adp-biotechnology': 'https://i.ibb.co/35mFgXjT/7052877-13ab.webp',
+  'adp-accounting-finance': 'https://i.ibb.co/xS78W5ZT/accounting-and-finance.jpg',
+  'adp-computer-science': 'https://i.ibb.co/nqtHPF6p/Online-Learning-South-Asia-Learning-Indoor-Getty-Images-1071652068.webp',
+  'ads-zoology-botany-chemistry': 'https://i.ibb.co/GfDX6Zg7/pngtree-laboratory-plant-research-image-21361714.webp',
+  'ads-math-physics': 'https://i.ibb.co/wN2rcm0p/creative-concept-hand-holding-light-bulb-with-planets-mathematical-formulas-representing-idea-genera.jpg',
+  'adp-software-engineering': 'https://i.ibb.co/rf2T1y2M/images.jpg',
+  'adp-cyber-security': 'https://i.ibb.co/DPDbZQ7K/images.jpg',
+  'adp-artificial-intelligence': 'https://i.ibb.co/bMFsfmxh/hand-holding-ai-globe.jpg',
+  'adp-data-science': 'https://i.ibb.co/LDnggNLM/FUq-HEVVUs-AAb-ZB0.jpg',
+};
 
 interface ProgramFinderProps {
   onSelectProgram?: (program: any) => void;
@@ -18,508 +56,567 @@ type CategoryTab =
   | 'Science' 
   | 'Humanities & Social Sciences';
 
+// Icon mapping based on academic discipline
+const getProgramIcon = (prog: BahawalpurProgramme) => {
+  const id = prog.id.toLowerCase();
+  const cat = prog.category.toLowerCase();
+
+  if (id.includes('artificial') || id.includes('ai')) return Brain;
+  if (id.includes('cyber')) return ShieldCheck;
+  if (id.includes('software') || id.includes('data-science')) return Code2;
+  if (cat.includes('computing') || id.includes('computer')) return Cpu;
+  if (id.includes('analytics')) return TrendingUp;
+  if (id.includes('accounting') || id.includes('finance')) return BarChart3;
+  if (cat.includes('business') || id.includes('bba') || id.includes('administration')) return Briefcase;
+  if (id.includes('bio') || id.includes('botany')) return Dna;
+  if (id.includes('chemistry')) return FlaskConical;
+  if (cat.includes('science') || id.includes('physics')) return Atom;
+  if (id.includes('law')) return Scale;
+  if (id.includes('english')) return Languages;
+  return GraduationCap;
+};
+
 export const ProgramFinder: React.FC<ProgramFinderProps> = ({
   onSelectProgram,
   onApplyForProgram,
   onOpenProgrammesPage,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryTab>('All');
-  const [selectedDegree, setSelectedDegree] = useState<'All' | 'BS' | 'BBA' | 'ADP' | 'ADS'>('All');
-  const [hoveredProgramId, setHoveredProgramId] = useState<string | null>(null);
-  const [transitioningProgramId, setTransitioningProgramId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSearchQuery, setModalSearchQuery] = useState('');
+  const [modalCategory, setModalCategory] = useState<CategoryTab>('All');
 
-  // Subtle scroll shift reference
-  const sectionRef = useRef<HTMLElement>(null);
-  const [scrollShift, setScrollShift] = useState(0);
+  // Carousel drift state
+  const [isHovered, setIsHovered] = useState(false);
+  const [carouselX, setCarouselX] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (sectionRef.current) {
-            const rect = sectionRef.current.getBoundingClientRect();
-            // Subtle shift calculation (between 0 and 10px)
-            if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-              const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-              setScrollShift(Math.round((progress - 0.5) * 14));
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const categoryTabs: CategoryTab[] = [
-    'All',
-    'Computing & Technology',
-    'Business',
-    'Science',
-    'Humanities & Social Sciences',
+  const categoryTabs: { id: CategoryTab; label: string }[] = [
+    { id: 'All', label: 'All Disciplines' },
+    { id: 'Computing & Technology', label: 'Computing & AI' },
+    { id: 'Business', label: 'Business & Management' },
+    { id: 'Science', label: 'Applied Sciences' },
+    { id: 'Humanities & Social Sciences', label: 'Humanities & Social' },
   ];
 
   const filteredProgrammes = useMemo(() => {
     return OFFICIAL_BAHAWALPUR_PROGRAMMES.filter((prog) => {
-      const matchesSearch = 
-        searchQuery === '' ||
-        prog.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        prog.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        prog.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        prog.whatYouWillLearn.some(w => w.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      let matchesCategory = true;
-      if (selectedCategory !== 'All') {
-        matchesCategory = prog.category === selectedCategory;
-      }
-
-      const matchesDegree = selectedDegree === 'All' || prog.degree === selectedDegree;
-
-      return matchesSearch && matchesCategory && matchesDegree;
+      if (selectedCategory === 'All') return true;
+      return prog.category === selectedCategory;
     });
-  }, [searchQuery, selectedCategory, selectedDegree]);
+  }, [selectedCategory]);
+
+  const modalFilteredProgrammes = useMemo(() => {
+    return OFFICIAL_BAHAWALPUR_PROGRAMMES.filter((prog) => {
+      const matchesSearch = 
+        modalSearchQuery === '' ||
+        prog.name.toLowerCase().includes(modalSearchQuery.toLowerCase()) ||
+        prog.shortDescription.toLowerCase().includes(modalSearchQuery.toLowerCase()) ||
+        prog.category.toLowerCase().includes(modalSearchQuery.toLowerCase());
+
+      const matchesCat = modalCategory === 'All' || prog.category === modalCategory;
+
+      return matchesSearch && matchesCat;
+    });
+  }, [modalSearchQuery, modalCategory]);
+
+  // Auto drift animation: moves -30px every 3s infinitely, pauses on hover
+  useEffect(() => {
+    if (isHovered) return;
+
+    const interval = setInterval(() => {
+      setCarouselX((prev) => {
+        // Card width 320 + gap 32 = 352px per card
+        // Calculate max scroll bounds
+        const maxScroll = -(filteredProgrammes.length * 352 - 1056);
+        const next = prev - 30;
+        if (next < Math.min(maxScroll, -352)) {
+          return 0; // loop back smoothly
+        }
+        return next;
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, filteredProgrammes.length]);
+
+  // Reset carousel drift when category filter changes
+  useEffect(() => {
+    setCarouselX(0);
+  }, [selectedCategory]);
 
   const handleCardClick = (prog: BahawalpurProgramme) => {
-    setTransitioningProgramId(prog.id);
-    setTimeout(() => {
-      setTransitioningProgramId(null);
-      if (onOpenProgrammesPage) {
-        onOpenProgrammesPage(prog.id);
-      } else if (onSelectProgram) {
-        onSelectProgram(prog);
-      }
-    }, 280);
+    if (onOpenProgrammesPage) {
+      onOpenProgrammesPage(prog.id);
+    } else if (onSelectProgram) {
+      onSelectProgram(prog);
+    }
+  };
+
+  const handleManualScroll = (direction: 'left' | 'right') => {
+    const shift = direction === 'left' ? 352 : -352;
+    setCarouselX((prev) => {
+      const maxScroll = -(filteredProgrammes.length * 352 - 1056);
+      const next = prev + shift;
+      if (next > 0) return 0;
+      if (next < Math.min(maxScroll, 0)) return Math.min(maxScroll, 0);
+      return next;
+    });
   };
 
   return (
     <section 
-      ref={sectionRef}
       id="finder-section" 
-      className="relative py-20 sm:py-24 lg:py-28 bg-[#FCFBF9] border-b border-stone-200/90 overflow-hidden"
+      className="relative py-10 sm:py-12 bg-[#FCFBF9] border-b border-[#E5E7EB] text-[#0F2C61] overflow-hidden select-none"
       aria-labelledby="programs-directory-heading"
     >
-      {/* Subtle institutional grid texture */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.025]"
-        style={{
-          backgroundImage: 'radial-gradient(#092242 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-        }}
-      />
+      <div id="programs-section" className="absolute -top-20" aria-hidden="true" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* =========================================================================
-            2. SECTION INTRO — Editorial Academic Directory Header
+            1. TOP ROW: Title Left + 'Explore All 20 Programs ->' Right Gold Link
             ========================================================================= */}
-        <div 
-          className="max-w-3xl mb-12 sm:mb-16 transition-transform duration-300 ease-out"
-          style={{ transform: `translateY(${scrollShift * 0.4}px)` }}
-          data-reveal="mask"
-        >
-          {/* Small Eyebrow: uppercase, letter-spaced, deep UCP red */}
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs font-bold uppercase tracking-[0.24em] text-[#A51C30]">
-              ACADEMIC PROGRAMMES
-            </span>
-            <span className="h-px w-8 bg-[#A51C30]/50" aria-hidden="true" />
-            <span className="text-[11px] font-mono text-stone-500 uppercase tracking-widest hidden sm:inline-block">
-              UCP Bahawalpur Directory
-            </span>
-          </div>
-
-          {/* Main Heading: 44-56px desktop, 32-38px mobile, medium/semi-bold, elegant serif */}
-          <div className="mask-reveal-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-5 h-[2px] bg-[#C5A059]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#C5A059]">
+                Academic Pathways
+              </span>
+            </div>
             <h2 
               id="programs-directory-heading"
-              className="mask-reveal-child text-3xl sm:text-4xl lg:text-[46px] xl:text-[50px] font-serif font-medium sm:font-semibold text-[#092242] tracking-tight leading-[1.18]"
-              style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
+              className="font-['Playfair_Display',serif] text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#0F2C61] tracking-tight leading-tight"
             >
-              Shape Your Future at UCP Bahawalpur
+              Shape Your Future — Programs
             </h2>
           </div>
 
-          {/* Concise 1-2 line description */}
-          <p className="mt-4 text-[15.5px] sm:text-[17px] text-stone-600 leading-relaxed font-sans max-w-2xl">
-            Explore undergraduate and associate degree programmes structured to cultivate intellectual rigor, technical mastery, and professional leadership across diverse academic disciplines.
-          </p>
-
-          {/* Editorial Quick-Nav & Action Strip */}
-          <div className="mt-5 flex flex-wrap items-center gap-3 pt-2">
-            <button
-              onClick={() => {
-                if (onOpenProgrammesPage) onOpenProgrammesPage();
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#092242] hover:bg-[#A51C30] text-white text-xs font-semibold uppercase tracking-[0.14em] rounded-md shadow-xs transition-colors cursor-pointer group/cta"
-            >
-              <span>View Full Academic Directory ({OFFICIAL_BAHAWALPUR_PROGRAMMES.length} Programmes)</span>
-              <ArrowRight size={13} className="transition-transform group-hover/cta:translate-x-1" />
-            </button>
-            <span className="text-xs font-mono text-stone-500 bg-stone-100/80 px-3 py-1.5 rounded-md border border-stone-200">
-              Fall 2026 Admissions Open
-            </span>
-          </div>
+          {/* Top Right Gold Link that opens full grid in modal */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 text-sm sm:text-[15px] font-semibold text-[#C5A059] hover:text-[#9A7B38] transition-colors cursor-pointer group self-start sm:self-end pb-0.5"
+          >
+            <span>Explore All 25 Programs</span>
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
         {/* =========================================================================
-            SEARCH & ACADEMIC CATEGORY NAVIGATION
-            Clean, restrained filter system matching university prospectus standards
+            2. FILTER PILLS BELOW TITLE + CAROUSEL NAVIGATION CONTROLS
             ========================================================================= */}
-        <div className="bg-white rounded-xl border border-stone-200/90 p-5 sm:p-6 shadow-xs mb-10 space-y-4">
-          
-          {/* Clean Search Input */}
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={17} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search programmes by title, discipline, or keyword... (e.g. Computer Science, Accounting, Artificial Intelligence)"
-              className="w-full pl-11 pr-4 py-2.5 bg-[#FAF8F5] border border-stone-200 rounded-lg text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#092242] focus:border-[#092242] transition-colors"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-stone-400 hover:text-stone-700 font-mono cursor-pointer"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          {/* Academic Discipline Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-stone-100 scrollbar-none text-xs font-medium">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {categoryTabs.map((tab) => {
-              const isActive = selectedCategory === tab;
-              const count = tab === 'All' 
-                ? OFFICIAL_BAHAWALPUR_PROGRAMMES.length 
-                : OFFICIAL_BAHAWALPUR_PROGRAMMES.filter(p => p.category === tab).length;
-
+              const isActive = selectedCategory === tab.id;
               return (
                 <button
-                  key={tab}
-                  onClick={() => setSelectedCategory(tab)}
-                  className={`px-3.5 py-2 rounded-lg whitespace-nowrap transition-colors focus:outline-none cursor-pointer flex items-center gap-1.5 ${
-                    isActive
-                      ? 'bg-[#092242] text-white font-semibold shadow-xs'
-                      : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                  key={tab.id}
+                  onClick={() => setSelectedCategory(tab.id)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
+                    isActive 
+                      ? 'bg-[#0F2C61] text-white shadow-xs font-semibold' 
+                      : 'bg-white text-slate-600 hover:text-[#0F2C61] hover:bg-slate-50 border border-slate-200/90'
                   }`}
                 >
-                  <span>{tab}</span>
-                  <span className={`font-mono text-[10.5px] px-1.5 py-0.2 rounded ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-stone-100 text-stone-500'
-                  }`}>
-                    {count}
-                  </span>
+                  {tab.label}
                 </button>
               );
             })}
           </div>
 
-          {/* Level Filter & Result Count Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-1 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="text-stone-500 font-medium">Degree Level:</span>
-              <div className="flex items-center gap-1">
-                {(['All', 'BS', 'BBA', 'ADP', 'ADS'] as const).map((deg) => (
-                  <button
-                    key={deg}
-                    onClick={() => setSelectedDegree(deg)}
-                    className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors cursor-pointer ${
-                      selectedDegree === deg
-                        ? 'bg-[#092242] text-white font-bold'
-                        : 'text-stone-600 hover:bg-stone-100'
-                    }`}
-                  >
-                    {deg}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {(searchQuery || selectedCategory !== 'All' || selectedDegree !== 'All') && (
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCategory('All');
-                    setSelectedDegree('All');
-                  }}
-                  className="text-xs text-[#A51C30] hover:underline flex items-center gap-1 cursor-pointer font-medium"
-                >
-                  <RotateCcw size={12} />
-                  <span>Reset Filters</span>
-                </button>
-              )}
-              <span className="text-stone-500 font-mono text-[11px]">
-                Showing {filteredProgrammes.length} of {OFFICIAL_BAHAWALPUR_PROGRAMMES.length} Programmes
-              </span>
-            </div>
+          {/* Carousel Left/Right arrow controls */}
+          <div className="hidden sm:flex items-center gap-1.5 text-slate-400">
+            <button
+              onClick={() => handleManualScroll('left')}
+              aria-label="Previous programs"
+              className="w-8 h-8 rounded-full border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center transition-colors cursor-pointer hover:border-[#0F2C61]"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => handleManualScroll('right')}
+              aria-label="Next programs"
+              className="w-8 h-8 rounded-full border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center transition-colors cursor-pointer hover:border-[#0F2C61]"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
 
         {/* =========================================================================
-            3. THE ACADEMIC DIRECTORY — REFINED EDITORIAL GRID
-            - 3-column layout with subtle visual rhythm
-            - Images are immediately present and sharp (NO loading delays)
-            - Signature hover interaction: image scale + 3px shift + red accent line expansion
-            - Active programme focus effect: subtle 8% dimming on siblings
-            - Discreet editorial numbering: 01, 02, 03...
+            3. COMPACT HORIZONTAL CAROUSEL — 3 CARDS VISIBLE (320x280px), FLIP 3D
             ========================================================================= */}
-        {filteredProgrammes.length > 0 ? (
-          <div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8 items-stretch"
-            style={{ transform: `translateY(${scrollShift * 0.2}px)` }}
+        <div 
+          ref={containerRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="relative w-full max-w-[1056px] mx-auto overflow-hidden py-2"
+          style={{ height: '304px' }}
+        >
+          {/* Edge Fades for Luxury Finish */}
+          <div className="absolute left-0 inset-y-0 w-8 bg-gradient-to-r from-[#FCFBF9] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 inset-y-0 w-8 bg-gradient-to-l from-[#FCFBF9] to-transparent z-10 pointer-events-none" />
+
+          {/* Draggable & Auto-drifting track */}
+          <motion.div
+            drag="x"
+            dragConstraints={{ 
+              left: -(filteredProgrammes.length * 352 - 1056), 
+              right: 0 
+            }}
+            animate={{ x: carouselX }}
+            transition={{ type: 'spring', damping: 28, stiffness: 120 }}
+            className="flex items-center gap-8 cursor-grab active:cursor-grabbing will-change-transform"
           >
             {filteredProgrammes.map((prog, index) => {
-              const numberStr = String(index + 1).padStart(2, '0');
-              const isHovered = hoveredProgramId === prog.id;
-              const isAnyHovered = hoveredProgramId !== null;
-              const isSibling = isAnyHovered && !isHovered;
-              const isTransitioning = transitioningProgramId === prog.id;
+              const IconComponent = getProgramIcon(prog);
+              const subjects = prog.whatYouWillLearn && prog.whatYouWillLearn.length >= 2 
+                ? prog.whatYouWillLearn.slice(0, 2) 
+                : ['Foundational Discipline Theory', 'Applied Empirical Laboratories'];
 
               return (
-                <article
+                <motion.div
                   key={prog.id}
-                  onClick={() => handleCardClick(prog)}
-                  onMouseEnter={() => setHoveredProgramId(prog.id)}
-                  onMouseLeave={() => setHoveredProgramId(null)}
-                  className={`group relative bg-white border border-stone-200/90 rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer transition-all duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                    isHovered 
-                      ? 'border-[#092242]/35 shadow-[0_12px_32px_rgba(9,34,66,0.08)] -translate-y-1.5' 
-                      : isSibling 
-                        ? 'opacity-[0.92] border-stone-200/70 shadow-xs' 
-                        : 'shadow-xs hover:border-stone-300'
-                  } ${isTransitioning ? 'scale-[1.02] ring-2 ring-[#092242]' : ''}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: Math.min(index * 0.08, 0.4),
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="w-[320px] h-[280px] shrink-0 [perspective:1000px] group select-none"
                 >
-                  {/* Top UCP Red Hairline Accent (Expands from left on hover) */}
+                  {/* 3D Flip Card Container: rotateY 180deg on hover */}
                   <div 
-                    className="absolute top-0 left-0 h-[2.5px] w-0 bg-[#A51C30] transition-all duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-full z-20"
-                    aria-hidden="true"
-                  />
+                    className="relative w-full h-full rounded-[20px] transition-transform duration-[600ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] shadow-lg"
+                  >
+                    
+                    {/* =======================================================
+                        CARD FRONT: White, Icon + BS Title + Category, Minimal UCP Blue & Gold
+                        ======================================================= */}
+                    <div 
+                      className="absolute inset-0 w-full h-full rounded-[20px] bg-white border border-[#E5E7EB] p-6 flex flex-col justify-between [backface-visibility:hidden] z-10"
+                    >
+                      {/* Top Row: Icon + Degree Tag */}
+                      <div className="flex items-start justify-between">
+                        <div className="w-12 h-12 rounded-xl bg-[#0F2C61]/5 border border-[#0F2C61]/15 text-[#0F2C61] flex items-center justify-center group-hover:scale-105 group-hover:bg-[#C5A059]/10 group-hover:text-[#8C6D23] group-hover:border-[#C5A059]/30 transition-all duration-300">
+                          <IconComponent size={24} strokeWidth={1.8} />
+                        </div>
 
-                  {/* Top Area: Program Image & Tags */}
-                  <div>
-                    <div className="relative aspect-[16/10] bg-stone-100 overflow-hidden">
-                      <img
-                        src={prog.image}
-                        alt={prog.name}
-                        loading="eager"
-                        decoding="async"
-                        className={`w-full h-full object-cover transition-transform duration-[520ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                          prog.id === 'adp-business-administration' ? 'object-[center_35%]' : 'object-center'
-                        } ${isHovered ? 'scale-[1.028] -translate-y-0.5' : 'scale-100'}`}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          if (prog.id === 'bs-psychology') {
-                            target.src = 'https://i.ibb.co/zWQVBLTD/shutterstock-158110544-scaled.jpg';
-                          } else if (prog.id === 'bs-physics') {
-                            target.src = 'https://i.ibb.co/MkxJ7Nzy/Chat-GPT-Image-Sep-26-2026-09-44-35-AM.png';
-                          } else if (prog.id === 'bba') {
-                            target.src = 'https://i.ibb.co/TXgwt6f/Chat-GPT-Image-Sep-27-2026-07-07-56-AM.png';
-                          } else if (prog.id === 'adp-artificial-intelligence') {
-                            target.src = 'https://i.ibb.co/bMFsfmxh/hand-holding-ai-globe.jpg';
-                          } else if (prog.id === 'adp-cyber-security' || prog.id === 'bs-cyber-security' || prog.id === 'bs-cyber') {
-                            target.src = 'https://i.ibb.co/DPDbZQ7K/images.jpg';
-                          } else if (prog.id === 'bs-mathematics') {
-                            target.src = 'https://i.ibb.co/2Ys8Y5H3/shutterstock-2475273911-scaled.jpg';
-                          } else if (prog.id === 'bs-chemistry') {
-                            target.src = 'https://i.ibb.co/h1fDTVTm/p0f776fj.png';
-                          } else if (prog.id === 'bs-zoology') {
-                            target.src = 'https://i.ibb.co/hFKgG2vw/Zoology.png';
-                          } else if (prog.id === 'adp-psychology') {
-                            target.src = 'https://i.ibb.co/chP4mYWB/What-s-the-Difference-Between-a-Psychiatrist-and-Psychologist.webp';
-                          } else if (prog.id === 'bs-english') {
-                            target.src = 'https://i.ibb.co/cKvTywH6/360-F-409187796-W9bg-IQAKZYs-Wkc9g-Xt-Pbs5h-YAWXd6z1-T.jpg';
-                          } else if (prog.id === 'bs-business-analytics') {
-                            target.src = 'https://i.ibb.co/Ld75Vg2t/i-Stock-1311598658.jpg';
-                          } else if (prog.id === 'bs-biotechnology') {
-                            target.src = 'https://i.ibb.co/wFZF6w95/Biotechnology-1000x600px.jpg';
-                          } else if (prog.id === 'bs-accounting-finance') {
-                            target.src = 'https://i.ibb.co/p6MpMGDn/shutterstock-527098861-1-scaled.avif';
-                          } else if (prog.id === 'bs-biochemistry') {
-                            target.src = 'https://i.ibb.co/VW7jZHDF/pipette-over-test-tube-dropping-sample-chemical-into-sample-plant-scaled-jpg.webp';
-                          } else if (prog.id === 'bs-computer-science') {
-                            target.src = 'https://i.ibb.co/V0QdQKgG/images-1.jpg';
-                          } else if (prog.id === 'adp-software-engineering') {
-                            target.src = 'https://i.ibb.co/rf2T1y2M/images.jpg';
-                          } else if (prog.id === 'adp-data-science') {
-                            target.src = 'https://i.ibb.co/LDnggNLM/FUq-HEVVUs-AAb-ZB0.jpg';
-                          } else if (prog.id === 'ads-zoology-botany-chemistry') {
-                            target.src = 'https://i.ibb.co/GfDX6Zg7/pngtree-laboratory-plant-research-image-21361714.webp';
-                          } else if (prog.id === 'ads-math-physics') {
-                            target.src = 'https://i.ibb.co/wN2rcm0p/creative-concept-hand-holding-light-bulb-with-planets-mathematical-formulas-representing-idea-genera.jpg';
-                          } else if (prog.id === 'adp-english') {
-                            target.src = 'https://i.ibb.co/xdLNTjf/360-F-310395027-i-VFf-VOCWFUONEIo-Ri-Tk7-Wq-U7-GLTOf3-QE.jpg';
-                          } else if (prog.id === 'adp-business-analytics') {
-                            target.src = 'https://i.ibb.co/cKT5qwbp/What-is-business-analytics-Getty-Images-1281224851-e1708028042563.webp';
-                          } else if (prog.id === 'adp-biotechnology') {
-                            target.src = 'https://i.ibb.co/35mFgXjT/7052877-13ab.webp';
-                          } else if (prog.id === 'adp-accounting-finance') {
-                            target.src = 'https://i.ibb.co/xS78W5ZT/accounting-and-finance.jpg';
-                          } else if (prog.id === 'adp-business-administration') {
-                            target.src = 'https://i.ibb.co/Ps0SNKc7/images-1.jpg';
-                          } else if (prog.id === 'adp-computer-science') {
-                            target.src = 'https://i.ibb.co/nqtHPF6p/Online-Learning-South-Asia-Learning-Indoor-Getty-Images-1071652068.webp';
-                          }
-                        }}
-                      />
-
-                      {/* Subtle, restrained bottom scrim for legibility without darkening architecture */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#092242]/70 via-transparent to-transparent pointer-events-none opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
-
-                      {/* Top Corner: Degree Tag */}
-                      <div className="absolute top-3 left-3 bg-[#092242]/90 text-white text-[11px] font-mono px-2 py-0.5 rounded-xs tracking-wider font-semibold shadow-xs">
-                        {prog.degree}
-                      </div>
-
-                      {/* Top Right: Level Identifier */}
-                      <div className="absolute top-3 right-3 bg-white/95 text-[#092242] text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-xs shadow-xs border border-black/5">
-                        {prog.level === 'Undergraduate' ? '4-Year BS' : '2-Year Associate'}
-                      </div>
-                    </div>
-
-                    {/* Editorial Content Block */}
-                    <div className="p-5 sm:p-6 pb-4">
-                      
-                      {/* Numbering + Academic Discipline Strip */}
-                      <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold tracking-widest text-[#092242]/55">
-                            {numberStr}
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#0F2C61] text-white">
+                            {prog.degree}
                           </span>
-                          <span className="text-[11px] font-sans uppercase font-bold tracking-[0.16em] text-[#A51C30]">
-                            {prog.category}
+                          <span className="text-[10px] font-semibold text-[#8C6D23] bg-[#C5A059]/15 border border-[#C5A059]/30 px-2 py-0.5 rounded">
+                            {prog.level === 'Undergraduate' ? '4-Year BS' : '2-Year Associate'}
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-stone-500 tabular-nums">
-                          {prog.creditHours} Cr. Hrs
-                        </span>
                       </div>
 
-                      {/* Programme Title */}
-                      <div className="space-y-1.5">
-                        <h3 className="text-[20px] sm:text-[22px] font-sans font-bold text-[#092242] tracking-tight leading-snug transition-transform duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
+                      {/* Middle: Category + BS Title */}
+                      <div className="my-auto py-2">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-[#C5A059] block mb-1">
+                          {prog.category}
+                        </span>
+                        <h3 className="font-['Playfair_Display',serif] text-xl font-bold text-[#0F2C61] leading-snug line-clamp-2">
                           {prog.name}
                         </h3>
-
-                        {/* Thin UCP Red Accent Line Under Title */}
-                        <div 
-                          className="h-[2px] w-0 bg-[#A51C30] transition-all duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-12"
-                          aria-hidden="true"
-                        />
                       </div>
 
-                      {/* Concise Description */}
-                      <p className="mt-2.5 text-xs sm:text-[13px] text-stone-600 line-clamp-2 leading-relaxed font-sans">
-                        {prog.shortDescription}
-                      </p>
+                      {/* Bottom: Subtle Flip Cue */}
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-medium text-slate-400">
+                        <span className="group-hover:text-[#C5A059] transition-colors flex items-center gap-1">
+                          Hover to flip & view curriculum ↻
+                        </span>
+                        <span className="text-[#0F2C61] font-bold">UCP</span>
+                      </div>
                     </div>
+
+                    {/* =======================================================
+                        CARD BACK: UCP Deep Blue, 2 Subjects + Curriculum Link
+                        ======================================================= */}
+                    <div 
+                      className="absolute inset-0 w-full h-full rounded-[20px] bg-[#0F2C61] text-white border border-[#0F2C61] p-6 flex flex-col justify-between [backface-visibility:hidden] [transform:rotateY(180deg)] z-20 shadow-xl"
+                    >
+                      {/* Back Header */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A059]">
+                            Curriculum Focus
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-300">
+                            {prog.degree}
+                          </span>
+                        </div>
+                        <h4 className="font-['Playfair_Display',serif] text-base font-semibold text-white/95 truncate">
+                          {prog.name}
+                        </h4>
+                      </div>
+
+                      {/* Back 2 Subjects / Learning Focus */}
+                      <div className="space-y-2 py-1">
+                        <span className="text-[10.5px] uppercase tracking-wider text-slate-300 font-medium block">
+                          Key Academic Focus Areas:
+                        </span>
+                        <ul className="space-y-1.5 font-sans text-xs text-slate-200">
+                          {subjects.map((sub, sIdx) => (
+                            <li key={sIdx} className="flex items-start gap-2 leading-tight">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] shrink-0 mt-1" />
+                              <span className="line-clamp-2">{sub}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Back Bottom: Curriculum Link / Action Button */}
+                      <div className="pt-2 border-t border-white/15">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCardClick(prog);
+                          }}
+                          className="w-full py-2.5 px-3 rounded-xl bg-[#C5A059] hover:bg-[#b58f44] text-[#0F2C61] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                        >
+                          <span>Curriculum & Overview</span>
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+
+                    </div>
+
                   </div>
-
-                  {/* Bottom Action Layer: Fee Summary & Signature "Explore Programme" Button */}
-                  <div className="px-5 sm:px-6 py-3.5 bg-[#FAF8F5]/80 border-t border-stone-100 flex items-center justify-between text-xs">
-                    <span className="font-mono text-[11px] text-stone-500 tabular-nums">
-                      PKR {prog.yearlyAverage.toLocaleString()}/yr avg
-                    </span>
-
-                    {/* Signature Interaction Action */}
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#092242] group-hover:text-[#A51C30] transition-colors duration-300">
-                      <span>Explore Programme</span>
-                      <ArrowRight 
-                        size={13} 
-                        className="transition-transform duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5 text-[#A51C30]" 
-                      />
-                    </span>
-                  </div>
-
-                </article>
+                </motion.div>
               );
             })}
-          </div>
-        ) : (
-          <div className="text-center py-16 bg-white rounded-xl border border-stone-200 p-8 shadow-xs">
-            <h4 className="text-base font-serif font-bold text-stone-800">No matching programmes found</h4>
-            <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
-              Please adjust your search keywords or discipline filters above to view available offerings.
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('All');
-                setSelectedDegree('All');
-              }}
-              className="mt-4 px-4 py-2 bg-[#092242] text-white rounded-lg text-xs font-medium hover:bg-slate-800 transition-colors cursor-pointer"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
-
-        {/* =========================================================================
-            CLASSROOMS & LEARNING SPOTLIGHT (IMAGE 11)
-            Authentic Academic Environment as mapped in Image Hierarchy
-            ========================================================================= */}
-        <div className="mt-16 sm:mt-20 bg-white border border-stone-200/90 rounded-xl overflow-hidden shadow-xs">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
-            
-            {/* Authentic Classroom Photograph */}
-            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[360px] overflow-hidden bg-stone-100">
-              <img
-                src="/assets/campus/11_academics_classroom.jpg"
-                alt="Learning at UCP Bahawalpur - Purpose-Built Multimedia Classroom and Academic Environment"
-                loading="eager"
-                decoding="async"
-                className="w-full h-full object-cover object-center img-hover-scale"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#092242]/75 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-5 left-6 right-6 text-white pointer-events-none">
-                <span className="text-[11px] font-sans uppercase tracking-[0.2em] text-amber-300 font-semibold block mb-0.5">
-                  Academic Environment · UCP Bahawalpur
-                </span>
-                <p className="text-base sm:text-lg font-serif font-semibold">
-                  Multimedia Lecture Theatres & Collaborative Classrooms
-                </p>
-              </div>
-            </div>
-
-            {/* Editorial Narrative */}
-            <div className="lg:col-span-6 p-7 sm:p-10 lg:p-12 flex flex-col justify-center space-y-4 bg-[#FDFBF7]">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A51C30]">
-                <BookOpen size={14} />
-                <span>Academic Experience</span>
-              </div>
-              <h3 
-                className="text-2xl sm:text-3xl font-serif font-semibold text-[#092242] tracking-tight leading-snug"
-                style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-              >
-                Learning at UCP Bahawalpur
-              </h3>
-              <p className="text-sm sm:text-[15px] text-stone-600 leading-relaxed font-sans">
-                Our air-conditioned smart classrooms are equipped with modern multimedia projection, high-definition audio-visual learning aids, and ergonomic seating configured for collaborative inquiry and faculty mentorship.
-              </p>
-              <div className="pt-2 flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    if (onOpenProgrammesPage) onOpenProgrammesPage();
-                  }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#092242] hover:bg-[#A51C30] text-white text-xs font-semibold uppercase tracking-[0.14em] rounded-md transition-colors cursor-pointer group/btn shadow-xs"
-                >
-                  <span>Explore Academic Curricula</span>
-                  <ArrowRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
-                </button>
-              </div>
-            </div>
-
-          </div>
+          </motion.div>
         </div>
 
       </div>
+
+      {/* =========================================================================
+          4. MODAL: FULL DIRECTORY OF ALL 20+ PROGRAMMES (Opened via top right button)
+          ========================================================================= */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+            {/* Modal Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xl cursor-pointer"
+              aria-hidden="true"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ scale: 0.94, y: 20, opacity: 0 }}
+              animate={{ 
+                scale: 1, 
+                y: 0, 
+                opacity: 1,
+                transition: { type: 'spring', damping: 25, stiffness: 280 }
+              }}
+              exit={{ scale: 0.94, y: 20, opacity: 0, transition: { duration: 0.2 } }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-6xl max-h-[88vh] bg-white rounded-[24px] shadow-2xl z-10 overflow-y-auto border border-[#E5E7EB] p-5 sm:p-8 lg:p-10 text-[#0F2C61]"
+              role="dialog"
+              aria-modal="true"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-5 right-5 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer z-20 group"
+                aria-label="Close modal"
+              >
+                <X size={18} className="group-hover:rotate-90 transition-transform duration-200" />
+              </button>
+
+              {/* Modal Header */}
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pr-10">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#C5A059] block mb-1">
+                    Official Academic Registry
+                  </span>
+                  <h3 className="font-['Playfair_Display',serif] text-2xl sm:text-3xl font-bold text-[#0F2C61]">
+                    Explore All Academic Programmes
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 font-sans mt-1">
+                    Official catalog of 25 accredited undergraduate BS, BBA, and Associate degree programs.
+                  </p>
+                </div>
+
+                {onOpenProgrammesPage && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      onOpenProgrammesPage();
+                    }}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F2C61] hover:text-[#C5A059] transition-colors cursor-pointer shrink-0 pb-1"
+                  >
+                    <span>Open Full Page Directory</span>
+                    <ExternalLink size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Filter Tabs & Search in Modal */}
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {categoryTabs.map((tab) => {
+                    const isActive = modalCategory === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setModalCategory(tab.id)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                          isActive 
+                            ? 'bg-[#0F2C61] text-white font-semibold shadow-xs' 
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="relative w-full md:w-64">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={modalSearchQuery}
+                    onChange={(e) => setModalSearchQuery(e.target.value)}
+                    placeholder="Search all degree programs..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-[#C5A059]"
+                  />
+                </div>
+              </div>
+
+              {/* Programs Grid in Modal: Cards with Image of Each Course and Blue Button for Detail */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {modalFilteredProgrammes.map((prog) => {
+                  const fallbackUrl = COURSE_FALLBACK_URLS[prog.id] || prog.image;
+
+                  return (
+                    <article
+                      key={prog.id}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        handleCardClick(prog);
+                      }}
+                      className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col hover:border-[#C5A059]/60"
+                    >
+                      {/* Card Course Image */}
+                      <div className="relative aspect-16/10 bg-slate-100 overflow-hidden">
+                        <img
+                          src={prog.image || fallbackUrl}
+                          alt={prog.name}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (fallbackUrl) {
+                              target.src = fallbackUrl;
+                            }
+                          }}
+                          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                            prog.id === 'adp-business-administration' ? 'object-[center_35%]' : 'object-center'
+                          }`}
+                        />
+                        {/* Degree Tag Top-Left */}
+                        <div className="absolute top-3 left-3 bg-[#0F2C61]/95 text-white text-[11px] font-mono px-2.5 py-0.5 rounded-md tracking-wide font-bold shadow-xs">
+                          {prog.degree}
+                        </div>
+
+                        {/* Duration Tag Top-Right */}
+                        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs text-[#0F2C61] text-[10px] font-bold px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
+                          {prog.level === 'Undergraduate' ? '4-Year BS' : '2-Year ADP'}
+                        </div>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          {/* Category & Credit Hours */}
+                          <div className="text-[11px] text-[#C5A059] font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <span>{prog.category}</span>
+                            <span className="text-slate-300">·</span>
+                            <span className="font-mono text-slate-500 tabular-nums">{prog.creditHours} Cr.</span>
+                          </div>
+
+                          {/* Program Name in Playfair Display serif */}
+                          <h4 className="font-['Playfair_Display',serif] text-lg font-bold text-[#0F2C61] group-hover:text-[#C5A059] transition-colors leading-snug line-clamp-2">
+                            {prog.name}
+                          </h4>
+
+                          {/* Short Description */}
+                          <p className="mt-2 text-xs text-slate-500 font-sans line-clamp-2 leading-relaxed">
+                            {prog.shortDescription}
+                          </p>
+                        </div>
+
+                        {/* Bottom Row: Tuition + Blue Button for Detail */}
+                        <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs gap-2">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-slate-400 font-sans">Estimated Tuition</span>
+                            <span className="font-mono font-semibold text-[#0F2C61] text-xs tabular-nums">
+                              PKR {prog.yearlyAverage.toLocaleString()}/yr avg
+                            </span>
+                          </div>
+
+                          {/* Blue button for detail */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsModalOpen(false);
+                              handleCardClick(prog);
+                            }}
+                            className="bg-[#0F2C61] hover:bg-[#1a428a] text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs hover:shadow-md cursor-pointer shrink-0"
+                          >
+                            <span>View Details</span>
+                            <ArrowRight size={13} />
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <span className="text-xs text-slate-400 font-sans">
+                  Showing {modalFilteredProgrammes.length} of {OFFICIAL_BAHAWALPUR_PROGRAMMES.length} official degree programs • UCP Bahawalpur
+                </span>
+
+                {onOpenProgrammesPage && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      onOpenProgrammesPage();
+                    }}
+                    className="text-xs font-semibold text-[#0F2C61] hover:text-[#C5A059] transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>View Complete Syllabus & Fee Catalog</span>
+                    <ArrowRight size={12} />
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 };

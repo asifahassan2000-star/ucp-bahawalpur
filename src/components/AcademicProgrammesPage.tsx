@@ -24,6 +24,7 @@ interface AcademicProgrammesPageProps {
   onOpenApply?: (programName?: string) => void;
   onOpenFee?: () => void;
   initialSelectedId?: string | null;
+  initialCategory?: string | null;
 }
 
 type CategoryFilter = 
@@ -40,8 +41,17 @@ export const AcademicProgrammesPage: React.FC<AcademicProgrammesPageProps> = ({
   onOpenApply,
   onOpenFee,
   initialSelectedId,
+  initialCategory,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>(() => {
+    if (
+      initialCategory && 
+      ['All', 'Undergraduate', 'Associate Degree', 'Business', 'Computing & Technology', 'Science', 'Humanities & Social Sciences'].includes(initialCategory)
+    ) {
+      return initialCategory as CategoryFilter;
+    }
+    return 'All';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [degreeFilter, setDegreeFilter] = useState<'All' | 'BS' | 'BBA' | 'ADP' | 'ADS'>('All');
   const [creditFilter, setCreditFilter] = useState<'All' | '60-70' | '71-80' | '125-135' | '136+'>('All');
@@ -951,9 +961,17 @@ Helpline: 0800-00-827 / +92-62-111-827-827
                       <span className="font-mono text-stone-500 tabular-nums">
                         PKR {prog.yearlyAverage.toLocaleString()}/yr avg
                       </span>
-                      <span className="font-bold text-[#092242] group-hover:text-[#b8121a] inline-flex items-center gap-1 transition-colors">
-                        Explore Programme <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectProgramme(prog);
+                        }}
+                        className="bg-[#0F2C61] hover:bg-[#1a428a] text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                      >
+                        <span>View Details</span>
+                        <ArrowRight size={13} />
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -1030,9 +1048,17 @@ Helpline: 0800-00-827 / +92-62-111-827-827
                       <span className="font-mono text-stone-500 tabular-nums">
                         PKR {prog.yearlyAverage.toLocaleString()}/yr avg
                       </span>
-                      <span className="font-bold text-[#092242] group-hover:text-[#b8121a] inline-flex items-center gap-1 transition-colors">
-                        Explore Programme <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectProgramme(prog);
+                        }}
+                        className="bg-[#0F2C61] hover:bg-[#1a428a] text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                      >
+                        <span>View Details</span>
+                        <ArrowRight size={13} />
+                      </button>
                     </div>
                   </div>
                 </article>

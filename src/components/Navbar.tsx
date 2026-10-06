@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, X, ChevronDown, Search, GraduationCap, Building2, 
   Award, Globe, Newspaper, PhoneCall, BookOpen, Compass,
@@ -44,16 +45,103 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
+  type NavItemId = 'home' | 'about' | 'programs' | 'campus-life' | 'facilities' | 'admissions' | 'contact';
+  const [activeNav, setActiveNav] = useState<NavItemId>('home');
+
   const bsProgrammes = OFFICIAL_BAHAWALPUR_PROGRAMMES.filter((p) => p.level === 'Undergraduate');
   const adpProgrammes = OFFICIAL_BAHAWALPUR_PROGRAMMES.filter((p) => p.level === 'Associate Degree');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      setIsScrolled(window.scrollY > 20);
+
+      if (currentPage !== 'home') {
+        if (currentPage === 'programmes') setActiveNav('programs');
+        else if (currentPage === 'campus-life') setActiveNav('campus-life');
+        else if (currentPage === 'faculty' || currentPage === 'legacy') setActiveNav('about');
+        return;
+      }
+
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+
+      // Bottom of page -> Contact
+      if (windowHeight + scrollY >= fullHeight - 140) {
+        setActiveNav('contact');
+        return;
+      }
+
+      // Top of page -> Home
+      if (scrollY < 260) {
+        setActiveNav('home');
+        return;
+      }
+
+      const sections: { id: NavItemId; elementId: string }[] = [
+        { id: 'contact', elementId: 'contact-section' },
+        { id: 'contact', elementId: 'footer-section' },
+        { id: 'admissions', elementId: 'admissions-section' },
+        { id: 'facilities', elementId: 'facilities-section' },
+        { id: 'campus-life', elementId: 'beyond-the-classroom-section' },
+        { id: 'campus-life', elementId: 'campus-section' },
+        { id: 'about', elementId: 'our-campus-section' },
+        { id: 'about', elementId: 'about-section' },
+        { id: 'about', elementId: 'leadership-section' },
+        { id: 'programs', elementId: 'programs-section' },
+        { id: 'programs', elementId: 'finder-section' },
+        { id: 'home', elementId: 'top' },
+      ];
+
+      const triggerPosition = scrollY + 200;
+
+      for (const section of sections) {
+        const el = document.getElementById(section.elementId);
+        if (el) {
+          const top = el.offsetTop;
+          if (triggerPosition >= top) {
+            setActiveNav(section.id);
+            return;
+          }
+        }
+      }
+
+      setActiveNav('home');
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentPage]);
+
+  const handleNavigation = (navId: NavItemId, targetSectionId: string) => {
+    setActiveDropdown(null);
+    setMobileMenuOpen(false);
+    setActiveNav(navId);
+
+    if (currentPage !== 'home' && onBackToHome) {
+      onBackToHome();
+      setTimeout(() => {
+        if (targetSectionId === 'top') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const el = document.getElementById(targetSectionId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }, 120);
+    } else {
+      if (targetSectionId === 'top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const el = document.getElementById(targetSectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   const handleNavClick = (sectionId: string) => {
     setActiveDropdown(null);
@@ -127,156 +215,158 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {/* Academics Mega Dropdown */}
-              {activeDropdown === 'academics' && (
-                <div 
-                  className="absolute left-0 mt-1.5 w-[850px] max-w-[95vw] bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 p-5 animate-in fade-in slide-in-from-top-2 duration-150 z-50"
-                  onMouseEnter={() => setActiveDropdown('academics')}
-                >
-                  {/* Top Bar */}
-                  <div className="pb-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#a30f16] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
-                          UCP Bahawalpur
-                        </span>
-                        <h4 className="text-sm font-extrabold text-[#092242] tracking-tight">
-                          Academic Programmes — Fall 2026
-                        </h4>
+              <AnimatePresence>
+                {activeDropdown === 'academics' && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="absolute left-0 mt-1.5 w-[850px] max-w-[95vw] max-h-[380px] bg-[#FFFFFF] text-[#333333] rounded-[6px] shadow-md border border-[#E5E7EB] p-3 overflow-y-auto dropdown-scrollbar z-50 text-[13px]"
+                    onMouseEnter={() => setActiveDropdown('academics')}
+                  >
+                    {/* Top Bar */}
+                    <div className="pb-2.5 mb-2.5 border-b border-[#E5E7EB] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#666666]">
+                            UCP Bahawalpur
+                          </span>
+                          <span className="text-[#CCCCCC]">|</span>
+                          <h4 className="text-[13px] font-bold text-[#222222]">
+                            Academic Programmes — Fall 2026
+                          </h4>
+                        </div>
+                        <p className="text-[12px] text-[#666666] mt-0.5">
+                          Official catalog: 12 Undergraduate Degrees & 13 Associate Degrees
+                        </p>
                       </div>
-                      <p className="text-[12px] text-slate-500 mt-0.5">
-                        Official Campus Offerings: 12 Undergraduate Degrees & 13 Associate Degrees
-                      </p>
+                      <div>
+                        <button 
+                          onClick={() => {
+                            setActiveDropdown(null);
+                            if (onOpenProgrammesPage) onOpenProgrammesPage();
+                            else handleNavClick('finder-section');
+                          }}
+                          className="text-[12px] bg-white hover:bg-[#F5F5F5] text-[#333333] border border-[#E5E7EB] px-3 py-1.5 rounded-[6px] font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Search size={13} className="text-[#666666]" />
+                          <span>View All Programmes (25) →</span>
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <button 
+
+                    {/* Dual Grid: BS Programmes & ADP/ADS Programmes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 py-1">
+                      {/* 01. BS PROGRAMMES (12) */}
+                      <div className="border border-[#E5E7EB] rounded-[6px] p-2 bg-[#FFFFFF]">
+                        <div className="flex items-center justify-between pb-1.5 mb-1 border-b border-[#E5E7EB] px-1">
+                          <h5 className="text-[12px] font-bold text-[#222222] uppercase tracking-wider">
+                            BS Programmes (12)
+                          </h5>
+                          <span className="text-[11px] font-medium text-[#666666]">
+                            4-Year
+                          </span>
+                        </div>
+                        <div className="space-y-0.5 max-h-[220px] overflow-y-auto pr-1 dropdown-scrollbar">
+                          {bsProgrammes.map((prog) => (
+                            <div
+                              key={prog.id}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                if (onOpenProgrammesPage) onOpenProgrammesPage(prog.id);
+                              }}
+                              className="group flex items-center justify-between py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-[11px] font-mono font-semibold text-[#666666] shrink-0">
+                                  {prog.degree}
+                                </span>
+                                <span className="text-[13px] text-[#333333] truncate">
+                                  {prog.name}
+                                </span>
+                              </div>
+                              <span className="text-[11px] font-mono text-[#888888] shrink-0 ml-2">
+                                {prog.creditHours} Cr
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 02. ADP / ADS PROGRAMMES (13) */}
+                      <div className="border border-[#E5E7EB] rounded-[6px] p-2 bg-[#FFFFFF]">
+                        <div className="flex items-center justify-between pb-1.5 mb-1 border-b border-[#E5E7EB] px-1">
+                          <h5 className="text-[12px] font-bold text-[#222222] uppercase tracking-wider">
+                            ADP / ADS Programmes (13)
+                          </h5>
+                          <span className="text-[11px] font-medium text-[#666666]">
+                            2-Year
+                          </span>
+                        </div>
+                        <div className="space-y-0.5 max-h-[220px] overflow-y-auto pr-1 dropdown-scrollbar">
+                          {adpProgrammes.map((prog) => (
+                            <div
+                              key={prog.id}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                if (onOpenProgrammesPage) onOpenProgrammesPage(prog.id);
+                              }}
+                              className="group flex items-center justify-between py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-[11px] font-mono font-semibold text-[#666666] shrink-0">
+                                  {prog.degree}
+                                </span>
+                                <span className="text-[13px] text-[#333333] truncate">
+                                  {prog.name}
+                                </span>
+                              </div>
+                              <span className="text-[11px] font-mono text-[#888888] shrink-0 ml-2">
+                                {prog.creditHours} Cr
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Dropdown Footer */}
+                    <div className="pt-2 mt-2 border-t border-[#E5E7EB] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[12px] text-[#555555]">
+                      <button
                         onClick={() => {
                           setActiveDropdown(null);
                           if (onOpenProgrammesPage) onOpenProgrammesPage();
                           else handleNavClick('finder-section');
                         }}
-                        className="text-xs bg-[#092242] hover:bg-[#a30f16] text-white px-3 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="text-[#333333] hover:underline flex items-center gap-1.5 cursor-pointer text-left font-medium"
                       >
-                        <Search size={13} /> View All Programmes (25) →
+                        <BookOpen size={13} className="text-[#666666]" />
+                        <span>Fee Structure — Fall 2026 (Credit Hours & Fees) ↗</span>
                       </button>
-                    </div>
-                  </div>
-
-                  {/* Dual Grid: BS Programmes & ADP/ADS Programmes */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3.5">
-                    {/* 01. BS PROGRAMMES (12) */}
-                    <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/80">
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-[#092242]" />
-                          <h5 className="text-[12px] font-extrabold text-[#092242] uppercase tracking-wider">
-                            BS Programmes (12)
-                          </h5>
-                        </div>
-                        <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                          4-Year Degrees
-                        </span>
-                      </div>
-                      <div className="space-y-1 max-h-[460px] overflow-y-auto pr-1 text-[12.5px]">
-                        {bsProgrammes.map((prog) => (
-                          <div
-                            key={prog.id}
-                            onClick={() => {
-                              setActiveDropdown(null);
-                              if (onOpenProgrammesPage) onOpenProgrammesPage(prog.id);
-                            }}
-                            className="group flex items-center justify-between p-1.5 rounded-lg hover:bg-white hover:shadow-xs border border-transparent hover:border-slate-200 transition-all cursor-pointer"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-[10px] font-extrabold text-[#092242] bg-slate-200/80 group-hover:bg-[#a30f16] group-hover:text-white transition-colors px-1.5 py-0.5 rounded shrink-0">
-                                {prog.degree}
-                              </span>
-                              <span className="font-semibold text-slate-800 group-hover:text-[#a30f16] transition-colors truncate">
-                                {prog.name}
-                              </span>
-                            </div>
-                            <span className="text-[11px] font-mono text-slate-400 group-hover:text-slate-600 shrink-0 ml-2">
-                              {prog.creditHours} Cr
-                            </span>
-                          </div>
-                        ))}
+                      <div className="flex items-center gap-3 shrink-0">
+                        <a
+                          href="https://ucpcolleges.pgc.edu/scholarship/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#555555] hover:text-[#222222] hover:underline flex items-center gap-1"
+                        >
+                          Scholarships & Aid ↗
+                        </a>
+                        <a
+                          href="https://ucp.edu.pk/academic-calendar/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#555555] hover:text-[#222222] hover:underline flex items-center gap-1"
+                        >
+                          <Calendar size={13} className="text-[#666666]" />
+                          Academic Calendar ↗
+                        </a>
                       </div>
                     </div>
-
-                    {/* 02. ADP / ADS PROGRAMMES (13) */}
-                    <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/80">
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-[#a30f16]" />
-                          <h5 className="text-[12px] font-extrabold text-[#a30f16] uppercase tracking-wider">
-                            ADP / ADS Programmes (13)
-                          </h5>
-                        </div>
-                        <span className="text-[10px] font-bold text-[#a30f16] bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
-                          2-Year Degrees
-                        </span>
-                      </div>
-                      <div className="space-y-1 max-h-[460px] overflow-y-auto pr-1 text-[12.5px]">
-                        {adpProgrammes.map((prog) => (
-                          <div
-                            key={prog.id}
-                            onClick={() => {
-                              setActiveDropdown(null);
-                              if (onOpenProgrammesPage) onOpenProgrammesPage(prog.id);
-                            }}
-                            className="group flex items-center justify-between p-1.5 rounded-lg hover:bg-white hover:shadow-xs border border-transparent hover:border-slate-200 transition-all cursor-pointer"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded shrink-0 bg-rose-50 border border-rose-100 text-[#a30f16] group-hover:bg-[#a30f16] group-hover:text-white transition-colors">
-                                {prog.degree}
-                              </span>
-                              <span className="font-semibold text-slate-800 group-hover:text-[#a30f16] transition-colors truncate">
-                                {prog.name}
-                              </span>
-                            </div>
-                            <span className="text-[11px] font-mono text-slate-400 group-hover:text-slate-600 shrink-0 ml-2">
-                              {prog.creditHours} Cr
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Dropdown Footer */}
-                  <div className="pt-2.5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 p-2.5 rounded-xl gap-2 text-xs">
-                    <button
-                      onClick={() => {
-                        setActiveDropdown(null);
-                        if (onOpenProgrammesPage) onOpenProgrammesPage();
-                        else handleNavClick('finder-section');
-                      }}
-                      className="font-bold text-[#a30f16] hover:underline flex items-center gap-1.5 cursor-pointer text-left"
-                    >
-                      <BookOpen size={14} />
-                      Fee Structure — Fall 2026 (Detailed Credit Hours & Fees) ↗
-                    </button>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <a
-                        href="https://ucpcolleges.pgc.edu/scholarship/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-slate-600 hover:text-[#a30f16] flex items-center gap-1"
-                      >
-                        Scholarships & Aid ↗
-                      </a>
-                      <a
-                        href="https://ucp.edu.pk/academic-calendar/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-[#092242] hover:text-[#a30f16] flex items-center gap-1"
-                      >
-                        <Calendar size={13} className="text-[#a30f16]" />
-                        Academic Calendar ↗
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* 2. Admissions Dropdown */}
@@ -287,107 +377,115 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <button
                 id="nav-admissions-btn"
-                className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 hover:text-amber-300 hover:bg-white/5 focus:outline-none ${
-                  activeDropdown === 'admissions' ? 'text-amber-300 bg-white/10' : 'text-white'
+                onClick={() => {
+                  setActiveDropdown(activeDropdown === 'admissions' ? null : 'admissions');
+                }}
+                className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:text-white hover:bg-white/10 focus:outline-none cursor-pointer ${
+                  activeDropdown === 'admissions' ? 'text-white bg-white/15 font-bold shadow-xs' : 'text-white font-medium'
                 }`}
               >
                 <span>Admissions</span>
-                <ChevronDown size={14} className={`transition-transform duration-200 opacity-80 ${activeDropdown === 'admissions' ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`transition-transform duration-200 text-white/80 ${activeDropdown === 'admissions' ? 'rotate-180' : ''}`} />
               </button>
 
-              {activeDropdown === 'admissions' && (
-                <div className="absolute left-0 mt-1.5 w-64 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 p-2.5 space-y-1 animate-in fade-in duration-150 z-50 text-[13px]">
-                  <div className="px-3 py-2 bg-rose-50 rounded-xl text-rose-900 mb-1 border border-rose-100">
-                    <span className="font-bold text-xs flex items-center gap-1">
-                      <Sparkles size={13} className="text-[#a30f16]" /> Fall 2026 Admissions Open
-                    </span>
-                    <p className="text-[11px] text-rose-700">Online tests & admissions desk active</p>
-                  </div>
-
-                  <a
-                    href="https://admissions.ucpcolleges.pgc.edu/login?returnUrl=%2Flogin%3FreturnUrl%3D%252F"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between font-bold text-[#a30f16]"
+              <AnimatePresence>
+                {activeDropdown === 'admissions' && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="absolute left-0 mt-1.5 w-[260px] max-h-[380px] bg-[#FFFFFF] text-[#333333] rounded-[6px] shadow-md border border-[#E5E7EB] p-1.5 overflow-y-auto dropdown-scrollbar z-50 text-[13px]"
+                    onMouseEnter={() => setActiveDropdown('admissions')}
                   >
-                    <span>Apply Online</span>
-                    <span className="bg-[#a30f16] text-white text-[10px] px-1.5 py-0.5 rounded font-bold">New ↗</span>
-                  </a>
+                    <a
+                      href="https://admissions.ucpcolleges.pgc.edu/login?returnUrl=%2Flogin%3FreturnUrl%3D%252F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333] font-medium"
+                    >
+                      <span>Apply Online</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
 
-                  <a
-                    href="https://ucpcolleges.pgc.edu/campus-network/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between text-slate-700"
-                  >
-                    <span>Fee Structure & Programs</span>
-                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">Official ↗</span>
-                  </a>
+                    <a
+                      href="https://ucpcolleges.pgc.edu/campus-network/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    >
+                      <span>Fee Structure & Programs</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
 
-                  <a
-                    href="https://ucp.edu.pk/rules-regulations/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between text-slate-700"
-                  >
-                    <span>Rules & Regulations</span>
-                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">Official ↗</span>
-                  </a>
+                    <a
+                      href="https://ucp.edu.pk/rules-regulations/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    >
+                      <span>Rules & Regulations</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
 
-                  <a
-                    href="https://ucpcolleges.pgc.edu/scholarship/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between text-slate-700"
-                  >
-                    <span>Scholarships & Concessions</span>
-                    <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded font-bold">1.3B PKR ↗</span>
-                  </a>
+                    <a
+                      href="https://ucpcolleges.pgc.edu/scholarship/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    >
+                      <span>Scholarships & Concessions</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
 
-                  <button
-                    onClick={() => { setActiveDropdown(null); onOpenInfo('merit-list'); }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-2 text-slate-700"
-                  >
-                    Merit Lists & Test Schedule
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => { setActiveDropdown(null); onOpenInfo('merit-list'); }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333] cursor-pointer"
+                    >
+                      <span>Merit Lists & Test Schedule</span>
+                    </button>
 
-                  <a
-                    href="https://ucp.edu.pk/academic-calendar/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between text-slate-700"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Calendar size={14} className="text-[#a30f16]" />
-                      Academic Calendar
-                    </span>
-                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">2025-26</span>
-                  </a>
+                    <a
+                      href="https://ucp.edu.pk/academic-calendar/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    >
+                      <span>Academic Calendar</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
 
-                  <button
-                    onClick={() => { setActiveDropdown(null); handleNavClick('finder-section'); }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center gap-2 text-slate-700"
-                  >
-                    Eligibility & Criteria
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => { 
+                        setActiveDropdown(null); 
+                        if (onOpenProgrammesPage) onOpenProgrammesPage();
+                        else handleNavClick('finder-section'); 
+                      }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333] cursor-pointer"
+                    >
+                      <span>Eligibility & Criteria</span>
+                    </button>
 
-                  <a
-                    href="https://ucp.edu.pk/faqs/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setActiveDropdown(null)}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 flex items-center justify-between text-slate-700"
-                  >
-                    <span>Admissions & Campus FAQs</span>
-                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">Help ↗</span>
-                  </a>
-                </div>
-              )}
+                    <a
+                      href="https://ucp.edu.pk/faqs/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setActiveDropdown(null)}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] flex items-center justify-between text-[#333333]"
+                    >
+                      <span>Admissions & Campus FAQs</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
+                    </a>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* 3. Our Faculty (UCP Bahawalpur) - Dedicated Page */}
@@ -430,39 +528,49 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <button
                 id="nav-about-btn"
-                className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 hover:text-white hover:bg-white/10 focus:outline-none ${
-                  activeDropdown === 'about' ? 'text-white bg-white/15 font-bold' : 'text-white'
+                onClick={() => {
+                  setActiveDropdown(activeDropdown === 'about' ? null : 'about');
+                }}
+                className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:text-white hover:bg-white/10 focus:outline-none cursor-pointer ${
+                  activeDropdown === 'about' ? 'text-white bg-white/15 font-bold shadow-xs' : 'text-white font-medium'
                 }`}
               >
                 <span>About</span>
                 <ChevronDown size={14} className={`transition-transform duration-200 text-white/80 ${activeDropdown === 'about' ? 'rotate-180' : ''}`} />
               </button>
 
-              {activeDropdown === 'about' && (
-                <div 
-                  className="absolute left-0 xl:left-auto xl:-right-10 mt-1.5 w-[560px] bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 p-5 grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-150 z-50 text-[13px]"
-                  onMouseEnter={() => setActiveDropdown('about')}
-                >
-                  {/* Category 1: About UCP & Leadership */}
-                  <div className="space-y-1.5">
-                    <h5 className="text-[11px] font-bold text-[#092242] uppercase tracking-wider border-b border-slate-100 pb-1 flex items-center gap-1.5">
-                      <Building2 size={13} className="text-[#a30f16]" /> About UCP
-                    </h5>
+              <AnimatePresence>
+                {activeDropdown === 'about' && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="absolute left-0 xl:left-auto xl:right-0 mt-1.5 w-[260px] max-h-[380px] bg-[#FFFFFF] text-[#333333] rounded-[6px] shadow-md border border-[#E5E7EB] p-1.5 overflow-y-auto dropdown-scrollbar z-50 text-[13px]"
+                    onMouseEnter={() => setActiveDropdown('about')}
+                  >
+                    <div className="px-[14px] py-1 text-[11px] font-bold text-[#888888] uppercase tracking-wider">
+                      About UCP
+                    </div>
+
                     <button
+                      type="button"
                       onClick={() => { setActiveDropdown(null); handleNavClick('leadership-section'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
                       <span>Our Leadership</span>
-                      <ArrowRight size={11} className="text-slate-400" />
                     </button>
+
                     <button
+                      type="button"
                       onClick={() => { setActiveDropdown(null); handleNavClick('stats-section'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
-                      <span>Vision & Rankings (QS #362)</span>
-                      <ArrowRight size={11} className="text-slate-400" />
+                      <span>Vision & Rankings</span>
                     </button>
+
                     <button
+                      type="button"
                       onClick={() => { 
                         setActiveDropdown(null); 
                         if (onOpenCampusLifePage) {
@@ -471,90 +579,84 @@ export const Navbar: React.FC<NavbarProps> = ({
                           handleNavClick('campus-section'); 
                         }
                       }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
-                      <span>Campus Life & 65+ Societies</span>
-                      <ArrowRight size={11} className="text-slate-400" />
+                      <span>Campus Life & Societies</span>
                     </button>
-                    <button
-                      onClick={() => { setActiveDropdown(null); onOpenInfo('sustainability'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between"
-                    >
-                      <span>Sustainability Initiatives</span>
-                      <ArrowRight size={11} className="text-slate-400" />
-                    </button>
-                    <button
-                      onClick={() => { setActiveDropdown(null); onOpenInfo('harassment-policy'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between"
-                    >
-                      <span>Harassment Protection Policy</span>
-                      <ArrowRight size={11} className="text-slate-400" />
-                    </button>
-                  </div>
 
-                  {/* Category 2: Special Programs, Research & Media (Moved from top header) */}
-                  <div className="space-y-1.5">
-                    <h5 className="text-[11px] font-bold text-[#092242] uppercase tracking-wider border-b border-slate-100 pb-1 flex items-center gap-1.5">
-                      <Globe size={13} className="text-[#a30f16]" /> Programs & Innovation
-                    </h5>
-                    
-                    {/* Our Legacy (Replaces International Programs) */}
                     <button
                       id="nav-dropdown-our-legacy-btn"
+                      type="button"
                       onClick={() => { 
                         setActiveDropdown(null); 
                         if (onOpenLegacyPage) onOpenLegacyPage(); 
                       }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between group cursor-pointer"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
-                      <span className="font-semibold text-slate-800 group-hover:text-[#a30f16]">Our Legacy</span>
-                      <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-1.5 py-0.5 rounded">Heritage</span>
+                      <span>Our Legacy</span>
                     </button>
 
-                    {/* CNN Academy */}
                     <button
+                      type="button"
+                      onClick={() => { setActiveDropdown(null); onOpenInfo('sustainability'); }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
+                    >
+                      <span>Sustainability Initiatives</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => { setActiveDropdown(null); onOpenInfo('harassment-policy'); }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
+                    >
+                      <span>Harassment Protection Policy</span>
+                    </button>
+
+                    <div className="my-1 border-t border-[#E5E7EB]" />
+                    <div className="px-[14px] py-1 text-[11px] font-bold text-[#888888] uppercase tracking-wider">
+                      Programs & Centers
+                    </div>
+
+                    <button
+                      type="button"
                       onClick={() => { setActiveDropdown(null); onSelectFaculty('fmmc'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between group"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
-                      <span className="font-semibold text-slate-800 group-hover:text-[#a30f16]">CNN Academy at UCP</span>
-                      <span className="text-[10px] bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded">Media</span>
+                      <span>CNN Academy at UCP</span>
                     </button>
 
-                    {/* UCP Online */}
                     <button
+                      type="button"
                       onClick={() => { setActiveDropdown(null); onOpenInfo('ucp-online'); }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between group"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
-                      <span className="font-semibold text-slate-800 group-hover:text-[#a30f16]">UCP Online (LMS & Digital)</span>
-                      <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">E-Learn</span>
+                      <span>UCP Online (LMS)</span>
                     </button>
 
-                    {/* ORIC */}
                     <a
                       href="https://oric.ucp.edu.pk/?_gl=1%2A1038nq8%2A_gcl_au%2AMTgzMjA3ODQ4MC4xNzkwMDEyMzQ5Li0uLS4xNzkwMTgwNDM0LjY0MTA5MDAyNi4xNzkwMTgwNDM0LjE3OTAxODA0MzQ.%2A_ga%2AMTk1MTM4Njg4MS4xNzkwMDEyMzQ5%2A_ga_9BBZL6TFYQ%2AczE3OTAxNzk2OTYkbzYkZzEkdDE3OTAxODA1MTUkajQyJGwwJGg0NzM0NDM5MzA."
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setActiveDropdown(null)}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between group"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between"
                     >
-                      <span className="font-semibold text-slate-800 group-hover:text-[#a30f16]">ORIC (Research & Tech)</span>
-                      <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">Official ↗</span>
+                      <span>ORIC (Research & Tech)</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
                     </a>
 
-                    {/* Blog */}
                     <a
                       href="https://ucp.edu.pk/blog/?_gl=1*g7icau*_gcl_au*mtgzmja3odq4mc4xnzkwmdeymzq5li0uls4xnzkwmtgwndm0ljy0mta5mdayni4xnzkwmtgwndm0lje3otaxoda0mzq.*_ga*mtk1mtm4njg4ms4xnzkwmdeymzq5*_ga_9bbzl6tfyq*cze3otaxnzk2otykbzykzzekdde3otaxoda0otckajywjgwwjgg0nzm0ndm5mza."
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setActiveDropdown(null)}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#a30f16] flex items-center justify-between group"
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between"
                     >
-                      <span className="font-semibold text-slate-800 group-hover:text-[#a30f16]">UCP Official Blog</span>
-                      <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">Stories ↗</span>
+                      <span>UCP Official Blog</span>
+                      <span className="text-[11px] text-[#666666]">↗</span>
                     </a>
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* 4. Student Login Portal (mcom.pgc.edu.pk) */}
@@ -583,14 +685,34 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Search size={18} />
             </button>
 
-            {/* Mobile menu toggle hamburger */}
+            {/* Mobile Header Quick Apply Button */}
+            <button
+              id="header-mobile-apply-btn"
+              onClick={onOpenApply}
+              className="lg:hidden bg-[#a30f16] hover:bg-[#860c12] active:scale-95 text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-[6px] shadow-xs flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>Apply</span>
+            </button>
+
+            {/* Mobile menu toggle button — Premium official neat university style */}
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-white hover:text-amber-300 rounded-lg focus:outline-none"
+              className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-[6px] bg-white/10 hover:bg-white/15 active:bg-white/20 text-white border border-white/20 transition-all duration-200 focus:outline-none cursor-pointer shadow-xs"
               aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+              {mobileMenuOpen ? (
+                <>
+                  <X size={16} className="text-amber-300" />
+                  <span className="text-[11px] font-semibold tracking-wider uppercase font-sans">Close</span>
+                </>
+              ) : (
+                <>
+                  <Menu size={16} className="text-white" />
+                  <span className="text-[11px] font-semibold tracking-wider uppercase font-sans">Menu</span>
+                </>
+              )}
             </button>
           </div>
 

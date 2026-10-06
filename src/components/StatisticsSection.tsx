@@ -66,7 +66,7 @@ export const StatisticsSection: React.FC = () => {
   return (
     <section 
       id="stats-section" 
-      className="py-24 sm:py-28 bg-[#FAF8F5] text-[#0A1931] relative border-t border-b border-[#0A1931]/10 selection:bg-[#A51C30] selection:text-white"
+      className="py-[100px] bg-[#FAF8F5] text-[#0A1931] relative border-t border-b border-[#0A1931]/10 selection:bg-[#A51C30] selection:text-white"
       aria-labelledby="stats-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

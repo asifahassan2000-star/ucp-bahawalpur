@@ -165,8 +165,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               }`}
               aria-hidden={!isActive}
             >
-              {/* Background Image Container with Cinematic Ken Burns Zoom & High Clarity */}
-              <div className="absolute inset-0 overflow-hidden bg-[#07192f]">
+              {/* Background Image Container with Cinematic Ken Burns Zoom (1 to 1.08 over 10s) & High Clarity */}
+              <div className="absolute inset-0 overflow-hidden bg-slate-900">
                 <img
                   src={imageSrc}
                   alt={slide.title}
@@ -174,11 +174,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                   decoding="async"
                   fetchPriority={index === 0 ? "high" : "auto"}
                   referrerPolicy="no-referrer"
-                  className={`w-full h-full object-cover object-center transform transition-transform ease-out will-change-transform ${
-                    isActive 
-                      ? 'scale-105 translate-x-0.5 duration-[7500ms]' 
-                      : 'scale-100 duration-700'
-                  }`}
+                  style={{
+                    transform: isActive ? 'scale(1.08)' : 'scale(1)',
+                    transition: isActive ? 'transform 10000ms cubic-bezier(0.25, 1, 0.5, 1)' : 'transform 700ms ease-out',
+                  }}
+                  className="w-full h-full object-cover object-center will-change-transform"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     if (slide.id === 'bahawalpur-excellence') {
@@ -189,12 +189,9 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                   }}
                 />
 
-                {/* Premium Scrim Overlays: Clear presentation where photo detail shines, protected left side for typography */}
-                {/* 1. Primary Left-to-Right Horizontal Vignette (fades to transparent so sunset architecture is vividly visible) */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#07192f]/90 via-[#07192f]/60 md:via-[#07192f]/25 to-transparent" />
-                
-                {/* 2. Vertical Depth Scrim (Bottom Anchor & Header Shadow) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#07192f]/85 via-transparent to-black/20" />
+                {/* Subtle, Luminous Non-Dark Scrim (Preserving Full Image Brilliance) */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
               </div>
 
               {/* Slide Content: Elegant International University Typography & Layout */}
@@ -203,7 +200,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                   
                   {/* Clean Editorial Pre-Header */}
                   <div 
-                    className={`inline-flex items-center text-white/90 text-xs sm:text-sm font-semibold tracking-[0.22em] uppercase drop-shadow-sm transition-all duration-700 ${
+                    className={`inline-flex items-center text-[#FEF08A] text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase drop-shadow-sm transition-all duration-700 ${
                       isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}
                     style={{ transitionDelay: isActive ? '100ms' : '0ms' }}
@@ -211,24 +208,29 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     <span>{slide.preheader || 'UNIVERSITY OF CENTRAL PUNJAB'}</span>
                   </div>
 
-                  {/* World-Class Editorial Serif Heading with Mask Reveal */}
-                  <div className="overflow-hidden">
+                  {/* World-Class Editorial Serif Heading with Clip-Path Reveal */}
+                  <div className="overflow-hidden py-1">
                     <h1 
-                      className={`font-serif text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.14] drop-shadow-md text-balance max-w-2xl transition-transform duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                        isActive ? 'translate-y-0' : 'translate-y-full'
-                      }`}
-                      style={{ transitionDelay: isActive ? '200ms' : '0ms' }}
+                      style={{
+                        clipPath: isActive 
+                          ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' 
+                          : 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)',
+                        transform: isActive ? 'translateY(0)' : 'translateY(36px)',
+                        transition: 'clip-path 1100ms cubic-bezier(0.16, 1, 0.3, 1), transform 1100ms cubic-bezier(0.16, 1, 0.3, 1)',
+                        transitionDelay: isActive ? '200ms' : '0ms',
+                      }}
+                      className="font-['Playfair_Display',serif] text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.14] drop-shadow-lg text-balance max-w-2xl"
                     >
                       {slide.title}
                     </h1>
                   </div>
 
-                  {/* Clean, Modern Sans-Serif Body: Staggered supporting text */}
+                  {/* Clean, Modern Sans-Serif Body (Inter): Staggered supporting text */}
                   <p 
-                    className={`text-base sm:text-lg text-slate-100/95 font-sans font-normal leading-relaxed max-w-xl drop-shadow transition-all duration-700 ease-out ${
+                    className={`text-base sm:text-lg text-slate-100 font-sans font-normal leading-relaxed max-w-xl drop-shadow transition-all duration-700 ease-out ${
                       isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}
-                    style={{ transitionDelay: isActive ? '360ms' : '0ms' }}
+                    style={{ transitionDelay: isActive ? '380ms' : '0ms' }}
                   >
                     {slide.subtitle}
                   </p>

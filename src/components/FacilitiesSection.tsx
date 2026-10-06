@@ -13,7 +13,7 @@ export const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({
   return (
     <section 
       id="facilities-section"
-      className="py-24 sm:py-28 lg:py-32 bg-[#FBF9F5] border-b border-slate-200/80 overflow-hidden"
+      className="py-[100px] bg-[#FBF9F5] border-b border-slate-200/80 overflow-hidden"
       aria-labelledby="facilities-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

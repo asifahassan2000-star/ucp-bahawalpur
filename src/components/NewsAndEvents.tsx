@@ -16,21 +16,20 @@ export const NewsAndEvents: React.FC<NewsAndEventsProps> = ({ onSelectArticle })
   });
 
   return (
-    <section id="news-section" className="py-20 sm:py-24 bg-slate-50 border-t border-b border-slate-200">
+    <section id="news-section" className="py-[100px] bg-slate-50 border-t border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <span data-reveal="label" data-reveal-delay="0" className="text-[#a30f16] font-bold text-xs sm:text-sm uppercase tracking-widest bg-rose-50 px-3.5 py-1.5 rounded-full border border-rose-100 inline-block mb-3">
+            <span data-reveal="label" data-reveal-delay="0" className="text-[#0F2C61] font-semibold text-xs sm:text-sm uppercase tracking-widest bg-slate-200/60 px-3.5 py-1.5 rounded-full border border-slate-300/60 inline-block mb-3">
               Happening at UCP
             </span>
             <div className="heading-mask">
               <h2 
                 data-reveal="heading"
                 data-reveal-delay="100"
-                className="heading-reveal text-4xl sm:text-5xl lg:text-6xl font-normal text-[#092242] tracking-wide leading-tight drop-shadow-sm"
-                style={{ fontFamily: "'UnifrakturMaguntia', 'Old English Text MT', 'Engravers Old English BT', 'Cloister Black', 'Chaucer', 'Blackletter', serif" }}
+                className="heading-reveal text-3xl sm:text-4xl lg:text-5xl font-['Playfair_Display',serif] font-bold text-[#0F2C61] tracking-tight leading-tight drop-shadow-xs"
               >
                 In The Moment
               </h2>

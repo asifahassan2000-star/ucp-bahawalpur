@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { 
-  GraduationCap, Briefcase, Mail, ArrowLeft, 
+  GraduationCap, Briefcase, ArrowLeft, ArrowRight, 
   Search, BookOpen, Building2, User, Filter, CheckCircle2 
 } from 'lucide-react';
+import { FacultyProfileModal } from './FacultyProfileModal';
 
 export interface FacultySlot {
   id: number;
@@ -289,6 +291,7 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedFaculty, setSelectedFaculty] = useState<FacultySlot | null>(null);
 
   const currentCategoryObj = FACULTY_CATEGORIES.find(c => c.id === selectedCategory) || FACULTY_CATEGORIES[0];
 
@@ -434,89 +437,101 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
             </button>
           </div>
         ) : (
-          <div className="space-y-5">
+          <div className="border-t border-[#E5E7EB] bg-white rounded-2xl overflow-hidden shadow-xs border border-slate-200/80">
             {filteredFaculty.map((faculty, index) => {
-              const cardDelay = (index % 5) * 80 + 100;
+              const expBadge = faculty.experience.match(/\d+\+?\s*Years?/i)?.[0] || '10+ Years';
+              const cleanSpecialization = faculty.intro.replace(/^(Specializes in|Focuses on|Conducts advanced investigations into|Supervises|Researches|Expert in)\s+/i, '');
+
               return (
-                <div
+                <motion.div
                   key={faculty.id}
-                  data-reveal="card"
-                  data-reveal-delay={String(cardDelay)}
-                  style={{ transitionDelay: `${cardDelay}ms` }}
-                  className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-xs hover:shadow-sm transition-shadow duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 1,
+                    delay: (index % 5) * 0.15,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="group relative border-b border-[#E5E7EB] p-8 transition-colors duration-300 hover:bg-[#F8FAFC] flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8 cursor-pointer overflow-hidden"
+                  onClick={() => setSelectedFaculty(faculty)}
                 >
-                {/* Circular Professional Photo on the LEFT */}
-                <div className="shrink-0 self-center sm:self-start">
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-slate-200 bg-slate-100">
-                    <img
-                      src={faculty.photoUrl}
-                      alt={faculty.name}
-                      className="w-full h-full object-cover object-top"
-                      loading="eager"
-                      decoding="async"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+                  {/* Left gold line grows on hover */}
+                  <div 
+                    className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#C5A059] h-0 group-hover:h-full transition-[height] duration-400 ease-out pointer-events-none"
+                    aria-hidden="true"
+                  />
+
+                  {/* Left side: Image + Center Information */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8 flex-1 min-w-0">
+                    
+                    {/* Image: 140x140 square, radius 20px, grayscale default, color & scale 1.05 on hover */}
+                    <div className="w-[140px] h-[140px] shrink-0 rounded-[20px] overflow-hidden bg-slate-100 border border-slate-200/80 shadow-xs relative">
+                      <img
+                        src={faculty.photoUrl}
+                        alt={faculty.name}
+                        className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
+                        loading="eager"
+                        decoding="async"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+                        }}
+                      />
+                    </div>
+
+                    {/* Center: Name + Title in gold small tag + PhD details + Specialization line (1 line only) */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                        <h3 className="font-['Playfair_Display',serif] text-[22px] font-semibold text-[#0F2C61] tracking-tight leading-snug">
+                          {faculty.name}
+                        </h3>
+                        {/* Title in gold small tag */}
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-medium tracking-wide uppercase bg-[#C5A059]/15 text-[#8C6D23] border border-[#C5A059]/30 whitespace-nowrap">
+                          {faculty.designation}
+                        </span>
+                      </div>
+
+                      {/* PhD details */}
+                      <div className="text-[13px] sm:text-[14px] text-slate-600 font-sans mt-1.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <span className="font-medium text-slate-700">{faculty.highestDegree}</span>
+                        <span className="text-slate-300 hidden sm:inline">•</span>
+                        <span className="text-slate-500 text-[13px]">{faculty.categoryName}</span>
+                      </div>
+
+                      {/* Specialization line (1 line only) */}
+                      <p className="text-[13px] sm:text-[14px] text-slate-500 font-sans mt-1 truncate max-w-2xl">
+                        <span className="text-slate-400 font-normal">Specialization: </span>
+                        <span className="text-slate-600 font-normal">{cleanSpecialization}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right side: Experience badge (18+ Years) and arrow icon + 'View Profile ->' on hover. NO EMAIL! */}
+                  <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 pt-2 sm:pt-0 border-t border-slate-100 sm:border-0">
+                    <span className="px-3.5 py-1.5 rounded-full text-xs sm:text-[13px] font-medium bg-[#F1F5F9] text-slate-700 border border-slate-200/80 whitespace-nowrap">
+                      {expBadge}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFaculty(faculty);
                       }}
-                    />
-                    <div className="absolute bottom-0 right-0 bg-[#092242] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-white">
-                      #{faculty.id}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Information on the RIGHT */}
-                <div className="flex-1 min-w-0">
-                  
-                  {/* Faculty Name + Small Red Accent Line */}
-                  <div>
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#092242] leading-tight">
-                        {faculty.name}
-                      </h3>
-                      <span className="text-[11px] font-medium text-slate-500">
-                        (Slot #{faculty.id})
+                      className="flex items-center gap-2 text-[13px] font-semibold text-[#0F2C61] group-hover:text-[#C5A059] transition-colors cursor-pointer"
+                    >
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
+                        View Profile
                       </span>
-                    </div>
-                    {/* Small red accent line beside or under faculty name */}
-                    <div className="w-8 h-0.5 bg-[#a30f16] mt-1.5 mb-2" />
+                      <ArrowRight 
+                        size={16} 
+                        className="text-slate-400 group-hover:text-[#C5A059] group-hover:translate-x-1.5 transition-all duration-300 shrink-0" 
+                      />
+                    </button>
                   </div>
 
-                  {/* Designation & Department */}
-                  <div className="text-sm font-semibold text-slate-800 mb-2">
-                    <span>{faculty.designation}</span>
-                    <span className="text-slate-400 mx-2 font-normal">•</span>
-                    <span className="text-slate-600 font-normal">{faculty.categoryName}</span>
-                  </div>
-
-                  {/* Highest Degree, Experience & Email */}
-                  <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs sm:text-[13px] text-slate-600 mb-3">
-                    <div className="flex items-center gap-1.5">
-                      <GraduationCap size={15} className="text-[#092242] shrink-0" />
-                      <span className="font-medium text-slate-700">{faculty.highestDegree}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Briefcase size={14} className="text-slate-500 shrink-0" />
-                      <span className="text-slate-600">{faculty.experience}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Mail size={14} className="text-slate-400 shrink-0" />
-                      <a 
-                        href={`mailto:${faculty.email}`}
-                        className="text-slate-600 hover:text-[#a30f16] transition-colors"
-                      >
-                        {faculty.email}
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Short 1-2 line Professional Introduction */}
-                  <p className="text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-2">
-                    {faculty.intro}
-                  </p>
-
-                </div>
-              </div>
+                </motion.div>
               );
             })}
           </div>
@@ -538,6 +553,22 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
         </div>
 
       </main>
+
+      {/* Premium Faculty Profile Modal */}
+      <FacultyProfileModal
+        faculty={selectedFaculty ? {
+          id: selectedFaculty.id,
+          name: selectedFaculty.name,
+          designation: selectedFaculty.designation,
+          department: selectedFaculty.categoryName,
+          highestDegree: selectedFaculty.highestDegree,
+          experience: selectedFaculty.experience,
+          intro: selectedFaculty.intro,
+          photoUrl: selectedFaculty.photoUrl,
+        } : null}
+        isOpen={!!selectedFaculty}
+        onClose={() => setSelectedFaculty(null)}
+      />
 
     </div>
   );

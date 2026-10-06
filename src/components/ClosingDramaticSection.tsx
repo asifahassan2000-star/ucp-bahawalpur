@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight, Compass, GraduationCap, MapPin, Sparkles } from 'lucide-react';
 import { UCP_CONTACT } from '../data/ucpData';
 
@@ -16,46 +17,47 @@ export const ClosingDramaticSection: React.FC<ClosingDramaticSectionProps> = ({
   return (
     <section 
       id="closing-campus-section"
-      className="relative w-full bg-[#07192f] text-white overflow-hidden py-24 sm:py-32"
+      className="relative w-full bg-[#07192f] text-white overflow-hidden py-[100px]"
       aria-labelledby="closing-heading"
     >
-      {/* IMAGE 14: Dramatic Architectural Image */}
-      {/* "IMAGE 14: CLOSING SECTION - dramatic architectural image." */}
+      {/* IMAGE 14: Dramatic Architectural Image without dark mud overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <img
           src="/assets/campus/14_closing_dramatic_campus.jpg"
           alt="Dramatic Architectural Perspective of University of Central Punjab Bahawalpur"
           loading="eager"
           decoding="async"
-          className="w-full h-full object-cover object-center img-hover-scale"
+          className="w-full h-full object-cover object-center scale-100 hover:scale-105 transition-transform duration-1000 ease-out"
         />
 
-        {/* Elegant Dark Scrim for Perfect Typography Contrast */}
-        <div className="absolute inset-0 bg-[#07192f]/85 md:bg-[#07192f]/80 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07192f] via-transparent to-[#07192f]/60 pointer-events-none" />
+        {/* Luminous, light-balanced transparent gradient scrim (no heavy dark mud) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/30 pointer-events-none" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-reveal="mask">
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        viewport={{ once: true, amount: 0.25 }}
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+      >
         
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-xs uppercase tracking-[0.24em] font-semibold text-rose-300 mb-6 backdrop-blur-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-xs uppercase tracking-[0.24em] font-semibold text-[#FEF08A] mb-6 backdrop-blur-sm">
           <Sparkles size={13} />
           <span>YOUR ACADEMIC HOME IN SOUTHERN PUNJAB</span>
         </div>
 
-        {/* Main Heading with Mask Reveal */}
-        <div className="mask-reveal-wrap mb-6">
-          <h2
-            id="closing-heading"
-            className="mask-reveal-child text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white leading-[1.15] drop-shadow-md"
-            style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-          >
-            Experience UCP Bahawalpur
-          </h2>
-        </div>
+        {/* Main Heading with Playfair Display */}
+        <h2
+          id="closing-heading"
+          className="text-3xl sm:text-5xl lg:text-6xl font-['Playfair_Display',serif] font-bold tracking-tight text-white leading-[1.15] drop-shadow-md mb-6"
+        >
+          Experience UCP Bahawalpur
+        </h2>
 
-        {/* Staggered Supporting Text */}
-        <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-200/95 font-sans leading-relaxed mb-10 drop-shadow-xs">
+        {/* Staggered Supporting Text (Inter) */}
+        <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-100 font-sans leading-relaxed mb-10 drop-shadow-sm">
           A tradition of excellence, a purpose-built architectural campus, and distinguished faculty committed to shaping leaders of character and distinction.
         </p>
 
@@ -71,22 +73,21 @@ export const ClosingDramaticSection: React.FC<ClosingDramaticSectionProps> = ({
 
           <button
             onClick={onOpenProgrammesPage}
-            className="px-6 py-3.5 bg-white/15 hover:bg-white/25 text-white border border-white/40 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all cursor-pointer shadow-lg"
+            className="px-6 py-3.5 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs sm:text-sm font-semibold tracking-wide border border-white/30 backdrop-blur-md transition-all cursor-pointer transform hover:-translate-y-0.5"
           >
-            Explore Academic Catalog
+            Explore Academic Programmes
           </button>
         </div>
 
         {/* Location & Accreditation Marker */}
-        <div className="mt-14 pt-8 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-300 font-sans tracking-wide">
+        <div className="mt-14 pt-8 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-200 font-sans tracking-wide">
           <span>Chartered by the Government of the Punjab</span>
           <span>·</span>
           <span>HEC Recognized (Highest Category)</span>
           <span>·</span>
           <span>Bahawalpur, Punjab, Pakistan</span>
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 };

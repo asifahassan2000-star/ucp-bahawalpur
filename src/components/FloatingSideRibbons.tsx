@@ -30,7 +30,7 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
       {/* Right Edge Vertical Sticky Tabs */}
       <aside 
         aria-label="Quick Navigation Ribbons" 
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end shadow-2xl select-none"
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end shadow-xl select-none"
       >
         {/* Tab 1: Campus Life (Replaces Our Newsletter as requested) */}
         <button
@@ -42,11 +42,11 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
               onOpenInfo('newsletter');
             }
           }}
-          className="group relative bg-[#0b2341] hover:bg-[#a30f16] text-white border-l border-t border-b border-slate-700/60 transition-all duration-200 hover:pr-1 focus:outline-none"
+          className="group relative bg-[#0b2341] hover:bg-[#a30f16] active:bg-[#a30f16] text-white border-l border-t border-b border-slate-700/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 focus:outline-none cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           title="Campus Life - Life Beyond the Classroom"
         >
-          <span className="inline-block py-3 px-1.5 text-xs font-semibold tracking-wider whitespace-nowrap">
+          <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-semibold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
             Campus Life
           </span>
         </button>
@@ -57,11 +57,11 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
           href="https://admissions.ucpcolleges.pgc.edu/login?returnUrl=%2Flogin%3FreturnUrl%3D%252F"
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative bg-[#a30f16] hover:bg-[#860c12] text-white border-l border-t border-b border-rose-900/60 transition-all duration-200 hover:pr-1 shadow-md focus:outline-none block"
+          className="group relative bg-[#a30f16] hover:bg-[#860c12] active:bg-[#860c12] text-white border-l border-t border-b border-rose-900/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 shadow-md focus:outline-none block cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           title="Apply Online for Fall 2026 Admissions"
         >
-          <span className="inline-block py-3 px-1.5 text-xs font-bold tracking-wider whitespace-nowrap">
+          <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-bold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
             Apply Online
           </span>
         </a>
@@ -70,11 +70,11 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
         <button
           id="ribbon-merit"
           onClick={() => onOpenInfo('merit-list')}
-          className="group relative bg-[#0b2341] hover:bg-[#07172b] text-white border-l border-t border-b border-slate-700/60 transition-all duration-200 hover:pr-1 focus:outline-none"
+          className="group relative bg-[#0b2341] hover:bg-[#07172b] active:bg-[#07172b] text-white border-l border-t border-b border-slate-700/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 focus:outline-none cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           title="Check Fall 2026 Merit Lists"
         >
-          <span className="inline-block py-3 px-1.5 text-xs font-semibold tracking-wider whitespace-nowrap">
+          <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-semibold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
             Merit List
           </span>
         </button>
@@ -87,11 +87,11 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
               onOpenLegacyPage();
             }
           }}
-          className="group relative bg-[#a30f16] hover:bg-[#860c12] text-white border-l border-t border-b border-rose-900/60 transition-all duration-200 hover:pr-1 shadow-md focus:outline-none cursor-pointer"
+          className="group relative bg-[#a30f16] hover:bg-[#860c12] active:bg-[#860c12] text-white border-l border-t border-b border-rose-900/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 shadow-md focus:outline-none cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           title="Our Legacy — Bahawalpur Heritage to UCP"
         >
-          <span className="inline-block py-3 px-1.5 text-xs font-bold tracking-wider whitespace-nowrap">
+          <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-bold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
             Our Legacy
           </span>
         </button>
