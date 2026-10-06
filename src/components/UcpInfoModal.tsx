@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   X, Calendar, Award, FileText, Shield, Briefcase, 
   HelpCircle, Compass, GraduationCap, CheckCircle2, 
-  Mail, ExternalLink, Globe, Search, BookOpen, Clock, AlertCircle
+  Mail, ExternalLink, Globe, Search, BookOpen, Clock, AlertCircle, ArrowRight
 } from 'lucide-react';
 
 export type InfoModalType = 
@@ -30,6 +30,7 @@ interface UcpInfoModalProps {
   onClose: () => void;
   onOpenApply: () => void;
   onOpenPortal: () => void;
+  onOpenProgrammesPage?: () => void;
 }
 
 export const UcpInfoModal: React.FC<UcpInfoModalProps> = ({
@@ -37,6 +38,7 @@ export const UcpInfoModal: React.FC<UcpInfoModalProps> = ({
   onClose,
   onOpenApply,
   onOpenPortal,
+  onOpenProgrammesPage,
 }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
@@ -725,6 +727,21 @@ export const UcpInfoModal: React.FC<UcpInfoModalProps> = ({
                   <button onClick={onOpenPortal} className="bg-[#0b2341] text-white px-2.5 py-1 rounded text-xs font-semibold">View List</button>
                 </div>
               </div>
+
+              {onOpenProgrammesPage && (
+                <div className="pt-2">
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenProgrammesPage();
+                    }}
+                    className="w-full py-2.5 px-4 bg-[#a30f16] hover:bg-[#860c12] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
+                  >
+                    <span>Explore All Degree Programs</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

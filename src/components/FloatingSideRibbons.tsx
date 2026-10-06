@@ -7,6 +7,8 @@ interface FloatingSideRibbonsProps {
   onOpenInfo: (type: InfoModalType) => void;
   onOpenLegacyPage?: () => void;
   onOpenCampusLifePage?: () => void;
+  onOpenProgrammesPage?: () => void;
+  onOpenScholarshipsPage?: () => void;
 }
 
 export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
@@ -14,6 +16,8 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
   onOpenInfo,
   onOpenLegacyPage,
   onOpenCampusLifePage,
+  onOpenProgrammesPage,
+  onOpenScholarshipsPage,
 }) => {
   const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
 
@@ -66,33 +70,41 @@ export const FloatingSideRibbons: React.FC<FloatingSideRibbonsProps> = ({
           </span>
         </a>
 
-        {/* Tab 3: Merit List (Dark Navy) */}
+        {/* Tab 3: Programs (Dark Navy) */}
         <button
-          id="ribbon-merit"
-          onClick={() => onOpenInfo('merit-list')}
+          id="ribbon-programs"
+          onClick={() => {
+            if (onOpenProgrammesPage) {
+              onOpenProgrammesPage();
+            } else {
+              onOpenInfo('merit-list');
+            }
+          }}
           className="group relative bg-[#0b2341] hover:bg-[#07172b] active:bg-[#07172b] text-white border-l border-t border-b border-slate-700/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 focus:outline-none cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-          title="Check Fall 2026 Merit Lists"
+          title="Explore All Academic Programs"
         >
           <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-semibold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
-            Merit List
+            Programs
           </span>
         </button>
 
-        {/* Tab 4: Our Legacy (Crimson Red) */}
+        {/* Tab 4: Scholarships & Concessions (Crimson Red) */}
         <button
-          id="ribbon-our-legacy"
+          id="ribbon-scholarships"
           onClick={() => {
-            if (onOpenLegacyPage) {
+            if (onOpenScholarshipsPage) {
+              onOpenScholarshipsPage();
+            } else if (onOpenLegacyPage) {
               onOpenLegacyPage();
             }
           }}
           className="group relative bg-[#a30f16] hover:bg-[#860c12] active:bg-[#860c12] text-white border-l border-t border-b border-rose-900/60 rounded-l-[4px] transition-all duration-200 hover:pr-1 shadow-md focus:outline-none cursor-pointer"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-          title="Our Legacy — Bahawalpur Heritage to UCP"
+          title="Scholarships & Concessions — Up to 50% Tuition Fee Concessions"
         >
           <span className="inline-block py-2 sm:py-2.5 md:py-3 px-1 sm:px-1.2 md:px-1.5 text-[9.5px] sm:text-[11px] md:text-xs font-bold tracking-tight sm:tracking-normal md:tracking-wider whitespace-nowrap leading-none">
-            Our Legacy
+            Scholarships
           </span>
         </button>
       </aside>

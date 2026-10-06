@@ -385,4 +385,65 @@ html:not(.reveal-ready) .quote-premium-scroll .quote-accent-bar {
   }
 }
 
+/* ==========================================================================
+   12. Official Trust Bar Movements & Animations
+   ========================================================================== */
+@keyframes floatBar {
+  0%, 100% {
+    transform: translateY(-48px);
+  }
+  50% {
+    transform: translateY(-52px);
+  }
+}
+
+@keyframes sweep {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.92;
+  }
+}
+
+@keyframes trustBarGlow {
+  0% {
+    box-shadow: 0 16px 40px rgba(10, 30, 70, 0.28);
+  }
+  100% {
+    box-shadow: 0 20px 48px rgba(16, 48, 112, 0.35);
+  }
+}
+
+.animate-float-bar {
+  animation: floatBar 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-sweep-shine {
+  animation: sweep 5s infinite linear;
+  will-change: left;
+}
+
+.animate-trust-bar-glow {
+  animation: trustBarGlow 3s infinite alternate ease-in-out;
+}
+
+.animate-trust-bar-active {
+  animation: floatBar 4s ease-in-out infinite, trustBarGlow 3s infinite alternate ease-in-out;
+  will-change: transform;
+}
+
+
 

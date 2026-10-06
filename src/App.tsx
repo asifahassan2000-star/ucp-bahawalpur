@@ -16,6 +16,7 @@ import { FacultySection } from './components/FacultySection';
 import { FacultyPage } from './components/FacultyPage';
 import { AcademicProgrammesPage } from './components/AcademicProgrammesPage';
 import { OurLegacyPage } from './components/OurLegacyPage';
+import { ScholarshipsPage } from './components/ScholarshipsPage';
 import { NewsAndEvents } from './components/NewsAndEvents';
 import { CampusLife } from './components/CampusLife';
 import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
@@ -40,7 +41,7 @@ import { FACULTIES, UCP_CONTACT } from './data/ucpData';
 
 export default function App() {
   // Navigation / Page state
-  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships'>('home');
   const [facultyCategory, setFacultyCategory] = useState<string>('all');
   const [selectedProgrammeId, setSelectedProgrammeId] = useState<string | null>(null);
   const [selectedProgrammeCategory, setSelectedProgrammeCategory] = useState<string | null>(null);
@@ -100,6 +101,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenScholarshipsPage = () => {
+    setCurrentPage('scholarships');
+    setSelectedProgrammeId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleOpenApply = (progName?: string) => {
     if (progName) {
       setPreselectedProgramName(progName);
@@ -137,7 +144,7 @@ export default function App() {
       return;
     }
     if (type === 'scholarships') {
-      window.open('https://ucpcolleges.pgc.edu/scholarship/', '_blank', 'noopener,noreferrer');
+      handleOpenScholarshipsPage();
       return;
     }
     if (type === 'jobs') {
@@ -261,6 +268,7 @@ export default function App() {
         onOpenProgrammesPage={handleOpenProgrammesPage}
         onOpenLegacyPage={handleOpenLegacyPage}
         onOpenCampusLifePage={handleOpenCampusLifePage}
+        onOpenScholarshipsPage={handleOpenScholarshipsPage}
         onBackToHome={handleBackToHome}
         currentPage={currentPage}
       />
@@ -292,6 +300,14 @@ export default function App() {
         ) : currentPage === 'campus-life' ? (
           /* Dedicated Official Premium Campus Life Page — “Life Beyond the Classroom” */
           <CampusLifePage
+            onBackToHome={handleBackToHome}
+            onOpenApply={() => handleOpenApply()}
+            onOpenProgrammesPage={handleOpenProgrammesPage}
+            onOpenFee={handleOpenFee}
+          />
+        ) : currentPage === 'scholarships' ? (
+          /* Dedicated Official Scholarships & Concessions Page */
+          <ScholarshipsPage
             onBackToHome={handleBackToHome}
             onOpenApply={() => handleOpenApply()}
             onOpenProgrammesPage={handleOpenProgrammesPage}
@@ -484,6 +500,8 @@ export default function App() {
         onOpenInfo={handleOpenInfo}
         onOpenLegacyPage={handleOpenLegacyPage}
         onOpenCampusLifePage={handleOpenCampusLifePage}
+        onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+        onOpenScholarshipsPage={handleOpenScholarshipsPage}
       />
 
       {/* Modal Dialogs */}
@@ -509,6 +527,7 @@ export default function App() {
         onClose={() => setSelectedInfoModal(null)}
         onOpenApply={() => handleOpenApply()}
         onOpenPortal={() => setIsPortalOpen(true)}
+        onOpenProgrammesPage={() => handleOpenProgrammesPage()}
       />
 
       <ProgramDetailModal
