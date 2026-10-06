@@ -19,6 +19,7 @@ import { OurLegacyPage } from './components/OurLegacyPage';
 import { NewsAndEvents } from './components/NewsAndEvents';
 import { CampusLife } from './components/CampusLife';
 import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
+import { WhatWeOfferAccordion } from './components/WhatWeOfferAccordion';
 import { CampusLifePage } from './components/CampusLifePage';
 import { AboutCampusSection } from './components/AboutCampusSection';
 import { FacilitiesSection } from './components/FacilitiesSection';
@@ -318,6 +319,21 @@ export default function App() {
             >
               <OurLeadershipSection 
                 onOpenApply={() => handleOpenApply()}
+                onScrollTo={handleScrollTo}
+              />
+            </motion.div>
+
+            {/* WHAT WE OFFER FOR YOU — Expanding Accordion Gallery */}
+            <motion.div
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <WhatWeOfferAccordion
+                onOpenApply={() => handleOpenApply()}
+                onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+                onOpenCampusLifePage={handleOpenCampusLifePage}
                 onScrollTo={handleScrollTo}
               />
             </motion.div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ChevronLeft, ChevronRight, ArrowRight,
-  GraduationCap, Building2, Award, Sparkles 
+  GraduationCap, Building2, Award, Briefcase, Sparkles 
 } from 'lucide-react';
 import { HERO_SLIDES } from '../data/ucpData';
 import computingLabImg from '../assets/images/academic_computing_lab_1790317681008.jpg';
@@ -314,83 +314,76 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       </div>
 
       {/* =========================================================================
-          4. QUICK-ACTION INSTITUTIONAL BAR (Directly below Hero)
+          4. "WHY CHOOSE UCP BAHAWALPUR" OFFICIAL TRUST BAR
           ========================================================================= */}
-      <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-slate-800">
+      <section 
+        aria-label="Why Choose UCP Bahawalpur - Institutional Trust"
+        className="w-full bg-[#0F2C52] border-t border-white/[0.08] relative z-30 px-4 sm:px-8 lg:px-[40px] md:h-[110px] flex items-center select-none"
+      >
+        <div className="w-full grid grid-cols-2 lg:grid-cols-4 items-center">
           
-          {/* Card 1: Academic Programmes */}
-          <button 
-            onClick={() => {
-              if (onOpenProgrammesPage) {
-                onOpenProgrammesPage();
-              } else {
-                window.open('https://ucpcolleges.pgc.edu/campus-network/', '_blank', 'noopener,noreferrer');
-              }
-            }}
-            className="flex items-center text-left gap-3.5 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group border border-transparent hover:border-slate-200"
-          >
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-[#092242] flex items-center justify-center shrink-0 group-hover:bg-[#092242] group-hover:text-white transition-all shadow-sm">
-              <GraduationCap size={22} />
+          {/* Column 1: Award */}
+          <div className="flex flex-row items-center gap-[16px] py-4 px-3 sm:py-[20px] sm:px-[24px] border-r border-white/[0.08] border-b lg:border-b-0">
+            <div className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1]">
+              <Award className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-[#a30f16] transition-colors leading-snug">
-                Academic Programmes
-              </h4>
-              <p className="text-xs text-slate-500 font-medium">25 Accredited Degrees →</p>
+            <div className="flex flex-col text-left font-['Inter',sans-serif]">
+              <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
+                Punjab Group Legacy
+              </span>
+              <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
+                40 Years of Educational Excellence
+              </span>
             </div>
-          </button>
+          </div>
 
-          {/* Card 2: Fee Structure */}
-          <button 
-            onClick={onOpenFee}
-            className="flex items-center text-left gap-3.5 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group border border-transparent hover:border-slate-200"
-          >
-            <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center shrink-0 group-hover:bg-amber-700 group-hover:text-white transition-all shadow-sm">
-              <Award size={22} />
+          {/* Column 2: GraduationCap */}
+          <div className="flex flex-row items-center gap-[16px] py-4 px-3 sm:py-[20px] sm:px-[24px] border-b lg:border-b-0 border-white/[0.08] lg:border-r">
+            <div className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1]">
+              <GraduationCap className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-[#a30f16] transition-colors leading-snug">
-                Fee Structure
-              </h4>
-              <p className="text-xs text-slate-500 font-medium">Official Fee Schedule ↗</p>
+            <div className="flex flex-col text-left font-['Inter',sans-serif]">
+              <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
+                HEC Recognized Degrees
+              </span>
+              <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
+                25 Accredited Programs
+              </span>
             </div>
-          </button>
+          </div>
 
-          {/* Card 3: Apply for Fall 2026 */}
-          <button 
-            onClick={onOpenApply}
-            className="flex items-center text-left gap-3.5 p-3 rounded-xl hover:bg-rose-50/60 transition-colors cursor-pointer group border border-transparent hover:border-rose-100"
-          >
-            <div className="w-11 h-11 rounded-xl bg-rose-50 text-[#a30f16] flex items-center justify-center shrink-0 group-hover:bg-[#a30f16] group-hover:text-white transition-all shadow-sm">
-              <Sparkles size={22} />
+          {/* Column 3: Building2 */}
+          <div className="flex flex-row items-center gap-[16px] py-4 px-3 sm:py-[20px] sm:px-[24px] border-r border-white/[0.08]">
+            <div className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1]">
+              <Building2 className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h4 className="text-sm sm:text-base font-bold text-[#a30f16] transition-colors leading-snug">
-                Apply for Fall 2026
-              </h4>
-              <p className="text-xs text-rose-700 font-medium">Admissions Open Online</p>
+            <div className="flex flex-col text-left font-['Inter',sans-serif]">
+              <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
+                Purpose-Built Campus
+              </span>
+              <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
+                Modern Labs & Smart Facilities
+              </span>
             </div>
-          </button>
+          </div>
 
-          {/* Card 4: Campus Facilities & Heritage */}
-          <button 
-            onClick={() => onScrollTo('campus-section')}
-            className="flex items-center text-left gap-3.5 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group border border-transparent hover:border-slate-200"
-          >
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0 group-hover:bg-emerald-700 group-hover:text-white transition-all shadow-sm">
-              <Building2 size={22} />
+          {/* Column 4: Briefcase */}
+          <div className="flex flex-row items-center gap-[16px] py-4 px-3 sm:py-[20px] sm:px-[24px]">
+            <div className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1]">
+              <Briefcase className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-[#a30f16] transition-colors leading-snug">
-                Campus Life & Labs
-              </h4>
-              <p className="text-xs text-slate-500 font-medium">Modern Smart Campus</p>
+            <div className="flex flex-col text-left font-['Inter',sans-serif]">
+              <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
+                Career-Focused Education
+              </span>
+              <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
+                Industry Linkages & Scholarships
+              </span>
             </div>
-          </button>
+          </div>
 
         </div>
-      </div>
+      </section>
 
     </div>
   );

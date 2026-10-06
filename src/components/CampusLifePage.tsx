@@ -6,6 +6,7 @@ import {
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { FadingStackLightbox } from './FadingStackLightbox';
 
 // Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -54,6 +55,25 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('ALL');
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
+  const [fadingStackOpen, setFadingStackOpen] = useState<boolean>(false);
+  const [fadingStackImages, setFadingStackImages] = useState<string[]>([]);
+  const [fadingStackCategory, setFadingStackCategory] = useState<string>('Campus Life');
+  const [autoCycleIndex, setAutoCycleIndex] = useState<number>(0);
+
+  // Auto-cycle visible card image every 4 seconds without opening
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAutoCycleIndex((prev) => prev + 1);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const openLightbox = (categoryImages: string[], categoryTitle: string = 'Campus Life') => {
+    setFadingStackImages(categoryImages);
+    setFadingStackCategory(categoryTitle);
+    setFadingStackOpen(true);
+  };
+
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
@@ -777,40 +797,71 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
           className="flex gap-6 sm:gap-8 px-6 sm:px-10 lg:px-16 overflow-x-auto md:overflow-visible no-scrollbar will-change-transform items-center"
         >
           {[
-            { img: computingLabImg, title: 'High-Tech Computing Facility', caption: 'Continuous Hackathons & Code Synthesis', aspect: 'w-72 sm:w-96 aspect-[16/10]' },
-            { img: libraryImg, title: 'Grand Humanities Hall', caption: 'Quiet Sanctuary for Deep Inquiry', aspect: 'w-64 sm:w-80 aspect-[3/4]' },
-            { img: scienceLabImg, title: 'Faculty of Science Labs', caption: 'Molecular Investigation & Analysis', aspect: 'w-80 sm:w-[28rem] aspect-[16/9]' },
-            { img: campusBuildingImg, title: 'Bahawalpur Quadrangle', caption: 'The Heart of Collegiate Life', aspect: 'w-72 sm:w-96 aspect-[4/3]' },
-            { img: businessMeetingImg, title: 'Civic Outreach Forum', caption: 'Community Literacy & Welfare Clinics', aspect: 'w-64 sm:w-80 aspect-[1/1]' },
-            { img: biotechResearchImg, title: 'Applied Biotechnology', caption: 'Genetic Inquiry & Sustainable Agriculture', aspect: 'w-80 sm:w-[26rem] aspect-[16/10]' },
-          ].map((item, idx) => (
-            <div 
-              key={idx}
-              className={`shrink-0 ${item.aspect} rounded-lg overflow-hidden bg-slate-950 border border-slate-800/80 shadow-2xl relative group cursor-pointer`}
-              onClick={() => {
-                const matchIndex = galleryItems.findIndex(g => g.image === item.img);
-                if (matchIndex !== -1) setActiveLightboxIndex(matchIndex);
-              }}
-            >
-              <img
-                src={item.img}
-                alt={item.title}
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/95 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <span className="font-mono text-[9px] uppercase tracking-widest text-amber-300 block mb-0.5">
-                  SCENE 0{idx + 1}
-                </span>
-                <h4 className="text-sm sm:text-base font-bold tracking-tight text-white">
-                  {item.title}
-                </h4>
-                <p className="text-[11px] text-slate-300 font-light truncate">
-                  {item.caption}
-                </p>
+            { 
+              images: [computingLabImg, techCyberImg, roboticsExpoImg, libraryImg, scienceLabImg],
+              title: 'High-Tech Computing Facility', 
+              caption: 'Continuous Hackathons & Code Synthesis', 
+              aspect: 'w-72 sm:w-96 aspect-[16/10]' 
+            },
+            { 
+              images: [libraryImg, literarySocietyImg, studentPortraitImg, computingLabImg, campusBuildingImg],
+              title: 'Grand Humanities Hall', 
+              caption: 'Quiet Sanctuary for Deep Inquiry', 
+              aspect: 'w-64 sm:w-80 aspect-[3/4]' 
+            },
+            { 
+              images: [scienceLabImg, chemistryExpoImg, biotechResearchImg, computingLabImg, libraryImg],
+              title: 'Faculty of Science Labs', 
+              caption: 'Molecular Investigation & Analysis', 
+              aspect: 'w-80 sm:w-[28rem] aspect-[16/9]' 
+            },
+            { 
+              images: [campusBuildingImg, heroCampusImg, businessSeminarImg, libraryImg, computingLabImg],
+              title: 'Bahawalpur Quadrangle', 
+              caption: 'The Heart of Collegiate Life', 
+              aspect: 'w-72 sm:w-96 aspect-[4/3]' 
+            },
+            { 
+              images: [businessMeetingImg, leadershipForumImg, businessSeminarImg, campusBuildingImg, computingLabImg],
+              title: 'Civic Outreach Forum', 
+              caption: 'Community Literacy & Welfare Clinics', 
+              aspect: 'w-64 sm:w-80 aspect-[1/1]' 
+            },
+            { 
+              images: [biotechResearchImg, scienceLabImg, chemistryExpoImg, computingLabImg, libraryImg],
+              title: 'Applied Biotechnology', 
+              caption: 'Genetic Inquiry & Sustainable Agriculture', 
+              aspect: 'w-80 sm:w-[26rem] aspect-[16/10]' 
+            },
+          ].map((item, idx) => {
+            const currentImg = item.images[(autoCycleIndex + idx) % item.images.length];
+
+            return (
+              <div 
+                key={idx}
+                className={`shrink-0 ${item.aspect} rounded-lg overflow-hidden bg-slate-950 border border-slate-800/80 shadow-2xl relative group cursor-pointer hover:brightness-105`}
+                onClick={() => {
+                  openLightbox(item.images, `Life in Motion - ${item.title}`);
+                }}
+              >
+                <img
+                  key={currentImg}
+                  src={currentImg}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-[1.04] animate-in fade-in"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/95 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-500" />
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <h4 className="text-sm sm:text-base font-bold tracking-tight text-white drop-shadow-sm">
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] text-slate-300 font-light truncate drop-shadow">
+                    {item.caption}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -853,43 +904,66 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
 
         {/* Filtered Grid with Elegant Minimal Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-12">
-          {filteredGallery.map((item, idx) => (
-            <div
-              key={item.id}
-              onClick={() => setActiveLightboxIndex(idx)}
-              className="group cursor-pointer space-y-3"
-            >
-              <div className="overflow-hidden rounded-lg bg-slate-900 border border-slate-200/60 shadow-sm relative">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="eager"
-                  decoding="async"
-                  className="w-full aspect-[4/3] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                />
-                <span className="absolute top-3 right-3 font-mono text-[10px] text-white/90 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded">
-                  {item.number}
-                </span>
-              </div>
+          {filteredGallery.map((item, itemIdx) => {
+            const categoryPool = galleryItems
+              .filter((g) => g.category === item.category && g.id !== item.id)
+              .map((g) => g.image);
+            const allOtherPool = [
+              computingLabImg,
+              libraryImg,
+              scienceLabImg,
+              campusBuildingImg,
+              businessMeetingImg,
+              biotechResearchImg,
+              businessSeminarImg,
+              literarySocietyImg,
+            ];
+            const fiveImages = [
+              item.image,
+              ...categoryPool,
+              ...allOtherPool,
+            ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 5);
 
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#A51C30]" />
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                    {item.categoryLabel}
-                  </span>
+            const currentDisplayImg = fiveImages[(autoCycleIndex + itemIdx) % fiveImages.length];
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  openLightbox(fiveImages, item.categoryLabel || item.title);
+                }}
+                className="group cursor-pointer hover:brightness-105 transition-all duration-300 space-y-3"
+              >
+                <div className="overflow-hidden rounded-lg bg-slate-900 border border-slate-200/60 shadow-sm relative">
+                  <img
+                    key={currentDisplayImg}
+                    src={currentDisplayImg}
+                    alt={item.title}
+                    loading="eager"
+                    decoding="async"
+                    className="w-full aspect-[4/3] object-cover transition-all duration-1000 ease-out group-hover:scale-[1.03] animate-in fade-in"
+                  />
                 </div>
-                <h4 
-                  className="text-base font-bold text-[#0A1931] group-hover:text-[#A51C30] transition-colors leading-snug"
-                >
-                  {item.title}
-                </h4>
-                <p className="text-xs text-slate-500 font-light line-clamp-2 mt-1">
-                  {item.caption}
-                </p>
+
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#A51C30]" />
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
+                      {item.categoryLabel}
+                    </span>
+                  </div>
+                  <h4 
+                    className="text-base font-bold text-[#0A1931] group-hover:text-[#A51C30] transition-colors leading-snug"
+                  >
+                    {item.title}
+                  </h4>
+                  <p className="text-xs text-slate-500 font-light line-clamp-2 mt-1">
+                    {item.caption}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </section>
@@ -1020,6 +1094,14 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
           </div>
         </div>
       )}
+
+      {/* Fading Stack Lightbox Modal */}
+      <FadingStackLightbox
+        isOpen={fadingStackOpen}
+        onClose={() => setFadingStackOpen(false)}
+        images={fadingStackImages}
+        categoryName={fadingStackCategory}
+      />
 
     </div>
   );

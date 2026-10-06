@@ -3,6 +3,7 @@ import {
   ArrowRight, Users, Sparkles, Calendar, MapPin, 
   Compass, Award, BookOpen, Music, Flag
 } from 'lucide-react';
+import { FadingStackLightbox } from './FadingStackLightbox';
 
 // Authentic project assets from src/assets/images
 import businessSeminarImg from '../assets/images/academic_business_seminar_1790317693556.jpg';
@@ -40,6 +41,34 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
   const [spreadVisible, setSpreadVisible] = useState(false);
   const [nightSpreadVisible, setNightSpreadVisible] = useState(false);
   const [marqueeHeaderVisible, setMarqueeHeaderVisible] = useState(false);
+
+  // Fading Stack Lightbox state
+  const [stackLightboxOpen, setStackLightboxOpen] = useState(false);
+  const [stackLightboxImages, setStackLightboxImages] = useState<string[]>([]);
+  const [stackLightboxCategory, setStackLightboxCategory] = useState<string>('Campus Life');
+  const [autoCycleIndex, setAutoCycleIndex] = useState<number>(0);
+
+  // Auto-cycle visible card image every 4 seconds without opening
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAutoCycleIndex((prev) => prev + 1);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const openStackLightbox = (images: string[], categoryTitle: string = 'Campus Life') => {
+    setStackLightboxImages(images);
+    setStackLightboxCategory(categoryTitle);
+    setStackLightboxOpen(true);
+  };
+
+  const corridorList = [corridorImg, courtyardImg, nightCampusImg, hallwayImg, lawnImg];
+  const courtyardList = [courtyardImg, corridorImg, hallwayImg, lawnImg, redCarpetImg];
+  const nightCampusList = [nightCampusImg, corridorImg, courtyardImg, closingDramaticImg, hallwayImg];
+
+  const currentCorridorImg = corridorList[autoCycleIndex % corridorList.length];
+  const currentCourtyardImg = courtyardList[(autoCycleIndex + 1) % courtyardList.length];
+  const currentNightCampusImg = nightCampusList[(autoCycleIndex + 2) % nightCampusList.length];
 
   const headerRef = useRef<HTMLDivElement>(null);
   const spreadRef = useRef<HTMLDivElement>(null);
@@ -230,12 +259,16 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
           <div className="lg:col-span-6">
             <div className="relative group">
               {/* Primary Anchor: Decorated Corridor with sophisticated curved silhouette */}
-              <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-[36px_16px_48px_16px] border border-[#0A1931]/10 bg-slate-100 shadow-[0_16px_40px_rgba(10,25,49,0.07)]">
+              <div 
+                onClick={() => openStackLightbox([corridorImg, courtyardImg, nightCampusImg, hallwayImg, lawnImg], 'Collegiate Atmosphere')}
+                className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-[36px_16px_48px_16px] border border-[#0A1931]/10 bg-slate-100 shadow-[0_16px_40px_rgba(10,25,49,0.07)] cursor-pointer hover:brightness-105 transition-all duration-300"
+              >
                 <img
-                  src={corridorImg}
+                  key={currentCorridorImg}
+                  src={currentCorridorImg}
                   alt="Student Life Beyond the Classroom - Decorated Corridor at UCP Bahawalpur"
                   loading="eager"
-                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.03] animate-in fade-in"
                 />
                 
                 {/* Refined gradient scrim for editorial caption */}
@@ -269,12 +302,16 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
           <div className="lg:col-span-6 flex flex-col space-y-8">
             
             {/* Arched Courtyard Image (Large curved/rounded photograph) */}
-            <div className="relative group overflow-hidden rounded-t-[70px] rounded-b-2xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_14px_35px_rgba(10,25,49,0.06)] aspect-[16/10] w-full">
+            <div 
+              onClick={() => openStackLightbox([courtyardImg, corridorImg, hallwayImg, lawnImg, redCarpetImg], 'Student Gathering Grounds')}
+              className="relative group overflow-hidden rounded-t-[70px] rounded-b-2xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_14px_35px_rgba(10,25,49,0.06)] aspect-[16/10] w-full cursor-pointer hover:brightness-105 transition-all duration-300"
+            >
               <img
-                src={courtyardImg}
+                key={currentCourtyardImg}
+                src={currentCourtyardImg}
                 alt="Central Courtyards and Student Gathering Grounds at UCP Bahawalpur"
                 loading="eager"
-                className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.03] animate-in fade-in"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/80 via-transparent to-transparent pointer-events-none" />
 
@@ -361,13 +398,17 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
             nightSpreadVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <div className="relative group overflow-hidden rounded-[28px] sm:rounded-[40px] border border-[#0A1931]/10 bg-[#07192F] shadow-[0_20px_50px_rgba(10,25,49,0.08)]">
+          <div 
+            onClick={() => openStackLightbox([nightCampusImg, corridorImg, courtyardImg, closingDramaticImg, hallwayImg], 'Campus After Hours')}
+            className="relative group overflow-hidden rounded-[28px] sm:rounded-[40px] border border-[#0A1931]/10 bg-[#07192F] shadow-[0_20px_50px_rgba(10,25,49,0.08)] cursor-pointer hover:brightness-105 transition-all duration-300"
+          >
             <div className="relative aspect-[16/10] sm:aspect-[21/9] w-full overflow-hidden">
               <img
-                src={nightCampusImg}
+                key={currentNightCampusImg}
+                src={currentNightCampusImg}
                 alt="Campus After Hours - Illuminated Architectural View of UCP Bahawalpur"
                 loading="eager"
-                className="w-full h-full object-cover object-center transition-transform duration-800 ease-out group-hover:scale-[1.025]"
+                className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.025] animate-in fade-in"
               />
 
               {/* Scrim for rich evening atmosphere */}
@@ -456,8 +497,14 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
               {marqueeItems.map((item, idx) => (
                 <div 
                   key={`mq-first-${item.id}-${idx}`}
-                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer"
-                  onClick={onOpenCampusLifePage}
+                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer hover:brightness-105 transition-all duration-300"
+                  onClick={() => {
+                    const fiveImages = [
+                      item.image,
+                      ...marqueeItems.map(m => m.image).filter(img => img !== item.image)
+                    ].slice(0, 5);
+                    openStackLightbox(fiveImages, item.tag || item.title);
+                  }}
                 >
                   <img
                     src={item.image}
@@ -491,8 +538,14 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
               {marqueeItems.map((item, idx) => (
                 <div 
                   key={`mq-second-${item.id}-${idx}`}
-                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer"
-                  onClick={onOpenCampusLifePage}
+                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer hover:brightness-105 transition-all duration-300"
+                  onClick={() => {
+                    const fiveImages = [
+                      item.image,
+                      ...marqueeItems.map(m => m.image).filter(img => img !== item.image)
+                    ].slice(0, 5);
+                    openStackLightbox(fiveImages, item.tag || item.title);
+                  }}
                   aria-hidden="true"
                 >
                   <img
@@ -528,6 +581,14 @@ export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) 
         </div>
 
       </div>
+
+      {/* Fading Stack Lightbox Modal */}
+      <FadingStackLightbox
+        isOpen={stackLightboxOpen}
+        onClose={() => setStackLightboxOpen(false)}
+        images={stackLightboxImages}
+        categoryName={stackLightboxCategory}
+      />
     </section>
   );
 };
