@@ -123,7 +123,7 @@ export const UcpEliteNetworkSection: React.FC = () => {
         }}
       />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-between h-full min-h-[620px]">
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-between h-full min-h-[620px]">
         
         {/* =========================================================================
             TOP TITLE:

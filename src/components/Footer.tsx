@@ -96,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({
             {/* Social & Mobile App Circle Buttons (2 rows as shown in screenshot) */}
             <div className="space-y-3 pt-2">
               {/* Row 1: Facebook, Twitter/X, LinkedIn, YouTube, Instagram */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {/* Facebook */}
                 <a 
                   href="https://facebook.com/UCPofficial" 
@@ -169,7 +169,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Row 2: Apple, Android, Mic/Podcast, Broadcast Tower */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {/* Apple */}
                 <button
                   onClick={onOpenPortal}

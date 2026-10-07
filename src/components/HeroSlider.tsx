@@ -324,10 +324,10 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
           ========================================================================= */}
       <section 
         aria-label="Why Choose UCP Bahawalpur - Institutional Trust"
-        className="w-full relative z-40 select-none px-4 sm:px-6 pointer-events-auto -mb-6 md:-mb-10"
+        className="w-full relative z-40 select-none px-3 sm:px-6 pointer-events-auto -mb-6 md:-mb-10"
       >
         <div 
-          className="w-[90%] max-w-[1240px] mx-auto bg-[#092242] rounded-[10px] border border-white/[0.12] border-t border-white/[0.18] relative overflow-hidden animate-trust-bar-active md:h-[110px] flex items-center px-4 sm:px-8 lg:px-[40px]"
+          className="w-full max-w-[1240px] mx-auto bg-[#092242] rounded-[10px] border border-white/[0.12] border-t border-white/[0.18] relative overflow-hidden animate-trust-bar-active md:h-[110px] flex items-center px-3 sm:px-8 lg:px-[40px]"
         >
           {/* Light Sweep moving shine (Skew -20deg moving 5s loop) */}
           <div 

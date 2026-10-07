@@ -5,278 +5,117 @@ import {
   Search, BookOpen, Building2, User, Filter, CheckCircle2 
 } from 'lucide-react';
 import { FacultyProfileModal } from './FacultyProfileModal';
+import { FacultyStickyGallery } from './FacultyStickyGallery';
 
 export interface FacultySlot {
   id: number;
   name: string;
-  category: string;
-  categoryName: string;
   designation: string;
-  highestDegree: string;
-  experience: string;
-  intro: string;
-  email: string;
   photoUrl: string;
 }
 
-export const FACULTY_CATEGORIES = [
-  { id: 'all', name: 'All Departments', shortName: 'All Faculty', count: 20 },
-  { id: 'cs-it', name: 'Computer Science & Information Technology', shortName: 'CS & IT', count: 4 },
-  { id: 'business', name: 'Management Studies & Business Administration', shortName: 'Business & Management', count: 4 },
-  { id: 'engineering', name: 'Engineering & Applied Technology', shortName: 'Engineering & Tech', count: 4 },
-  { id: 'humanities', name: 'Humanities & Social Sciences', shortName: 'Humanities & Social Sciences', count: 4 },
-  { id: 'law', name: 'Faculty of Law & Policy', shortName: 'Law & Policy', count: 4 },
-];
-
-export const DEMO_FACULTY_SLOTS: FacultySlot[] = [
-  // --- Category 1: Computer Science & IT (Slots 1-4) ---
+export const OFFICIAL_FACULTY_MEMBERS: FacultySlot[] = [
   {
     id: 1,
-    name: 'Prof. Dr. Tariq Mehmood',
-    category: 'cs-it',
-    categoryName: 'Computer Science & Information Technology',
-    designation: 'Professor & Head of Department',
-    highestDegree: 'Ph.D. in Computer Science (FAST-NUCES / Postdoc Univ. of Manchester)',
-    experience: '18+ Years Teaching & Research Experience',
-    intro: 'Specializes in distributed algorithms, machine learning systems, and computer vision architectures with over 40 peer-reviewed journal papers.',
-    email: 'tariq.mehmood@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+    name: 'Prof. Uzma Zulqurnai',
+    designation: 'Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: 2,
-    name: 'Dr. Shahzad Ahmad',
-    category: 'cs-it',
-    categoryName: 'Computer Science & Information Technology',
-    designation: 'Associate Professor & Research Lead',
-    highestDegree: 'Ph.D. in Software Engineering (NUST / Postdoc Germany)',
-    experience: '14+ Years Academic & Industry Experience',
-    intro: 'Focuses on software architecture modeling, cyber security threat defense, and cloud computing optimizations.',
-    email: 'shahzad.ahmad@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 3,
-    name: 'Dr. Zoya Farooq',
-    category: 'cs-it',
-    categoryName: 'Computer Science & Information Technology',
-    designation: 'Assistant Professor',
-    highestDegree: 'Ph.D. in Artificial Intelligence (LUMS)',
-    experience: '9+ Years Teaching & Industry Experience',
-    intro: 'Conducts advanced investigations into natural language processing for low-resource languages and neural network optimizations.',
-    email: 'zoya.farooq@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 4,
-    name: 'Engr. Bilal Hassan',
-    category: 'cs-it',
-    categoryName: 'Computer Science & Information Technology',
-    designation: 'Senior Lecturer & Lab Director',
-    highestDegree: 'M.S. in Computer Science & Data Engineering (PUCIT)',
-    experience: '8+ Years Industry & Lab Instruction Experience',
-    intro: 'Supervises software development incubations, enterprise web systems, and competitive algorithmic programming teams.',
-    email: 'bilal.hassan@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-
-  // --- Category 2: Management & Business Studies (Slots 5-8) ---
-  {
-    id: 5,
-    name: 'Dr. Farhana Yasmin',
-    category: 'business',
-    categoryName: 'Management Studies & Business Administration',
-    designation: 'Associate Professor & Program Director',
-    highestDegree: 'Ph.D. in Finance & Banking (LUMS)',
-    experience: '15+ Years Academic & Consulting Experience',
-    intro: 'Senior consultant in corporate financial restructuring, investment portfolio strategies, and Islamic banking instruments.',
-    email: 'farhana.yasmin@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 6,
-    name: 'Prof. Dr. Kamran Siddiqui',
-    category: 'business',
-    categoryName: 'Management Studies & Business Administration',
-    designation: 'Professor of Strategic Marketing',
-    highestDegree: 'Ph.D. in Marketing & Consumer Behavior (IBA Karachi)',
-    experience: '20+ Years Corporate & University Experience',
-    intro: 'Publishes widely in consumer psychology, brand architecture, and multi-channel international trade distribution.',
-    email: 'kamran.siddiqui@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 7,
-    name: 'Dr. Nida Mansoor',
-    category: 'business',
-    categoryName: 'Management Studies & Business Administration',
-    designation: 'Assistant Professor & MBA Advisor',
-    highestDegree: 'Ph.D. in Human Resource Management (Monash University, Australia)',
-    experience: '10+ Years Higher Education Experience',
-    intro: 'Specializes in organizational agility, executive talent management, and modern corporate leadership dynamics.',
-    email: 'nida.mansoor@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 8,
-    name: 'Mr. Usman Tariq',
-    category: 'business',
-    categoryName: 'Management Studies & Business Administration',
-    designation: 'Assistant Professor of Supply Chain & Operations',
-    highestDegree: 'M.Phil / MS in Supply Chain Management (Warwick, UK)',
-    experience: '11+ Years Industrial Logistics & Academic Practice',
-    intro: 'Brings high-impact FMCG logistical expertise into student case studies and modern enterprise inventory modeling.',
-    email: 'usman.tariq@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
-  },
-
-  // --- Category 3: Engineering & Technology (Slots 9-12) ---
-  {
-    id: 9,
-    name: 'Engr. Dr. Salman Rashid',
-    category: 'engineering',
-    categoryName: 'Engineering & Applied Technology',
-    designation: 'Associate Professor & Program Director',
-    highestDegree: 'Ph.D. in Electrical Engineering (UET Lahore)',
-    experience: '16+ Years Industrial & Academic Experience',
-    intro: 'PEC registered Chartered Engineer specializing in power electronics, renewable micro-grids, and high-voltage distribution networks.',
-    email: 'salman.rashid@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 10,
-    name: 'Dr. Waqas Ali Qureshi',
-    category: 'engineering',
-    categoryName: 'Engineering & Applied Technology',
-    designation: 'Associate Professor, Mechanical & Energy Systems',
-    highestDegree: 'Ph.D. in Thermal Engineering (KAIST, South Korea)',
-    experience: '13+ Years Teaching & Industrial R&D',
-    intro: 'Conducts experimental heat transfer research, HVAC automation, and thermodynamic cycle computational simulations.',
-    email: 'waqas.qureshi@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 11,
-    name: 'Engr. Dr. Saima Malik',
-    category: 'engineering',
-    categoryName: 'Engineering & Applied Technology',
-    designation: 'Assistant Professor, Civil & Structural Engineering',
-    highestDegree: 'Ph.D. in Structural Engineering (UET / Sheffield, UK)',
-    experience: '12+ Years Infrastructure Consultancy & Teaching',
-    intro: 'Consultant in seismic structural resilience, sustainable eco-concrete formulations, and geotechnical foundations.',
-    email: 'saima.malik@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 12,
-    name: 'Engr. Hamza Javed',
-    category: 'engineering',
-    categoryName: 'Engineering & Applied Technology',
-    designation: 'Lecturer & Robotics Lab Coordinator',
-    highestDegree: 'M.S. in Mechatronics & Control Systems (NUST)',
-    experience: '7+ Years Industrial Automation & Instruction',
-    intro: 'Guides undergraduate capstone projects in autonomous mobile robotics, embedded IoT systems, and industrial PLC control.',
-    email: 'hamza.javed@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-  },
-
-  // --- Category 4: Humanities & Social Sciences (Slots 13-16) ---
-  {
-    id: 13,
-    name: 'Dr. Aisha Siddiqua',
-    category: 'humanities',
-    categoryName: 'Humanities & Social Sciences',
-    designation: 'Assistant Professor of Applied Linguistics',
-    highestDegree: 'Ph.D. in Applied Linguistics (University of Birmingham, UK)',
-    experience: '11+ Years Higher Education Teaching Experience',
-    intro: 'Specializes in academic discourse analysis, language acquisition frameworks, and modern bilingual communication curricula.',
-    email: 'aisha.siddiqua@ucp.edu.pk',
+    name: 'Dr. Abdul Kareem',
+    designation: 'Associate Professor',
     photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 14,
-    name: 'Prof. Dr. Zahid Munir',
-    category: 'humanities',
-    categoryName: 'Humanities & Social Sciences',
-    designation: 'Professor & Dean of Social Sciences',
-    highestDegree: 'Ph.D. in Sociology & Public Policy (Punjab University)',
-    experience: '22+ Years Academic Leadership & Research',
-    intro: 'Extensive background in community social stratification research, demographic analysis, and institutional policy design.',
-    email: 'zahid.munir@ucp.edu.pk',
+    id: 3,
+    name: 'Prof. Shahid Gulzar',
+    designation: 'Professor',
     photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 15,
-    name: 'Dr. Maryam Khalid',
-    category: 'humanities',
-    categoryName: 'Humanities & Social Sciences',
-    designation: 'Associate Professor of Psychology',
-    highestDegree: 'Ph.D. in Clinical & Behavioral Psychology (GCU Lahore)',
-    experience: '13+ Years Clinical Supervision & Academic Instruction',
-    intro: 'Researches cognitive behavioral dynamics, student emotional well-being, and psychometric diagnostic assessment tools.',
-    email: 'maryam.khalid@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 16,
-    name: 'Mr. Asadullah Sheikh',
-    category: 'humanities',
-    categoryName: 'Humanities & Social Sciences',
-    designation: 'Assistant Professor of International Relations',
-    highestDegree: 'M.Phil in International Relations & Geopolitics (QAU Islamabad)',
-    experience: '10+ Years Diplomatic History & Policy Teaching',
-    intro: 'Mentors Model United Nations societies while delivering lectures on South Asian diplomatic affairs and international security.',
-    email: 'asadullah.sheikh@ucp.edu.pk',
+    id: 4,
+    name: 'Prof. Sibghat',
+    designation: 'Professor',
     photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
   },
-
-  // --- Category 5: Law & Policy (Slots 17-20) ---
   {
-    id: 17,
-    name: 'Prof. Dr. Muhammad Asif Khan',
-    category: 'law',
-    categoryName: 'Faculty of Law & Policy',
-    designation: 'Professor & Director of Academic Affairs',
-    highestDegree: 'LL.M. & Ph.D. in Constitutional Law (University of London, UK)',
-    experience: '20+ Years Judicial Advisory & University Teaching',
-    intro: 'Renowned legal scholar and advocate of the High Court, contributing extensive advisory oversight on regulatory jurisprudence.',
-    email: 'asif.khan@ucp.edu.pk',
+    id: 5,
+    name: 'Dr. Abbas Haider',
+    designation: 'Assistant Professor',
     photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 18,
-    name: 'Barrister Daniyal Qureshi',
-    category: 'law',
-    categoryName: 'Faculty of Law & Policy',
-    designation: 'Associate Professor of Corporate & Commercial Law',
-    highestDegree: 'Bar-at-Law (Lincoln’s Inn) & LL.M. (King’s College London)',
-    experience: '14+ Years Corporate Litigation & Moot Court Mentorship',
-    intro: 'Leads commercial contract law clinics and coaches the national championship winning UCP Jessup Moot Court delegations.',
-    email: 'daniyal.qureshi@ucp.edu.pk',
+    id: 6,
+    name: 'Dr. Mushtaq',
+    designation: 'Associate Professor',
     photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 19,
-    name: 'Ms. Rabia Noreen',
-    category: 'law',
-    categoryName: 'Faculty of Law & Policy',
-    designation: 'Assistant Professor of Criminal Jurisprudence',
-    highestDegree: 'LL.M. in Human Rights & Criminal Justice (Univ. of Melbourne)',
-    experience: '9+ Years Legal Practice & Academic Instruction',
-    intro: 'Advocate High Court specializing in constitutional fundamental rights, procedural evidence law, and public advocacy.',
-    email: 'rabia.noreen@ucp.edu.pk',
+    id: 7,
+    name: 'Dr. Abdul Raouf',
+    designation: 'Associate Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 8,
+    name: 'Dr. M. Tahir',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 9,
+    name: 'Prof. Khizer Hayat',
+    designation: 'Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 10,
+    name: 'Prof. Ali Shan',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 11,
+    name: 'Prof. Usman Kazmi',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 12,
+    name: 'Prof. Abeer Aslam',
+    designation: 'Assistant Professor',
     photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 20,
-    name: 'Advocate Fahad Mehmood',
-    category: 'law',
-    categoryName: 'Faculty of Law & Policy',
-    designation: 'Senior Lecturer & Moot Court Director',
-    highestDegree: 'LL.M. in Civil Procedure & Arbitration (LUMS)',
-    experience: '8+ Years Legal Instruction & High Court Practice',
-    intro: 'Coordinates clinical legal education, trial advocacy workshops, and alternative dispute resolution training modules.',
-    email: 'fahad.mehmood@ucp.edu.pk',
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
+    id: 13,
+    name: 'Prof. Marriam Gill',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 14,
+    name: 'Prof. Humra Owj',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 15,
+    name: 'Prof. Iqra Shabbir',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 16,
+    name: 'Prof. Aliya Batool',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    id: 17,
+    name: 'Prof. Huzaifa Akmal',
+    designation: 'Assistant Professor',
+    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
   },
 ];
 
@@ -287,22 +126,13 @@ interface FacultyPageProps {
 
 export const FacultyPage: React.FC<FacultyPageProps> = ({ 
   onBackToHome,
-  initialCategory = 'all'
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFaculty, setSelectedFaculty] = useState<FacultySlot | null>(null);
 
-  const currentCategoryObj = FACULTY_CATEGORIES.find(c => c.id === selectedCategory) || FACULTY_CATEGORIES[0];
-
-  const filteredFaculty = DEMO_FACULTY_SLOTS.filter(faculty => {
-    const matchesCategory = selectedCategory === 'all' || faculty.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
-      faculty.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faculty.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faculty.highestDegree.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faculty.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+  const filteredFaculty = OFFICIAL_FACULTY_MEMBERS.filter(faculty => {
+    return searchQuery === '' || 
+      faculty.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -329,216 +159,130 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 mb-2">
-            <span className="h-0.5 w-6 bg-[#a30f16]" />
-            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-              Academic Departments & Chairs
-            </span>
-          </div>
-          
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-            Our Faculty
-          </h1>
-          <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-3xl leading-relaxed">
-            20 Faculty profile slots arranged across academic departments. Select a category below to view specific departmental faculty members.
-          </p>
-
-        </div>
-      </div>
-
-      {/* 2. Category Selector Tabs (Separate Category Pages) */}
-      <div className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 py-3 overflow-x-auto no-scrollbar">
-            
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {FACULTY_CATEGORIES.map((cat) => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    id={`faculty-cat-${cat.id}-btn`}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-[#092242] text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
-                    }`}
-                  >
-                    <span>{cat.shortName}</span>
-                    <span 
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isActive ? 'bg-[#a30f16] text-white' : 'bg-slate-200 text-slate-600'
-                      }`}
-                    >
-                      {cat.count}
-                    </span>
-                  </button>
-                );
-              })}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+                Our Faculty
+              </h1>
+              <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+                Distinguished professors, doctors, and academic mentors at UCP Bahawalpur.
+              </p>
             </div>
 
-            {/* Quick Search */}
-            <div className="relative shrink-0 w-44 sm:w-60">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            {/* Search Input Bar */}
+            <div className="relative shrink-0 w-full sm:w-72">
+              <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search faculty..."
-                className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#092242]"
+                placeholder="Search faculty by name..."
+                className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-white/20 bg-white/10 text-white placeholder-slate-300 focus:bg-white focus:text-slate-900 focus:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-300 hover:text-white"
+                >
+                  Clear
+                </button>
+              )}
             </div>
-
           </div>
+
         </div>
       </div>
 
-      {/* 3. Main Faculty Content */}
+      {/* 2. Main Faculty Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         
-        {/* Category Header */}
+        {/* Directory Count Header */}
         <div className="mb-8 pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="w-1.5 h-4 bg-[#a30f16] rounded-xs inline-block" />
               <span className="text-xs font-bold text-[#a30f16] uppercase tracking-wider">
-                Department View
+                Official Directory
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#092242]">
-              {currentCategoryObj.name}
+              Academic Faculty Members
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Showing {filteredFaculty.length} of {DEMO_FACULTY_SLOTS.length} faculty member slots
+              Showing {filteredFaculty.length} distinguished faculty members
             </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500 font-medium bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-              Template Demo • Ready for Customization
-            </span>
           </div>
         </div>
 
-        {/* 20 Horizontal Faculty Cards */}
+        {/* Official Faculty Members Grid — Responsive Cards Layout (Image, Name & Designation) */}
         {filteredFaculty.length === 0 ? (
           <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
             <User size={36} className="mx-auto text-slate-400 mb-2" />
             <h3 className="text-base font-bold text-slate-700">No faculty members found</h3>
             <p className="text-xs text-slate-500 mt-1">
-              Try adjusting your search criteria or switch to "All Departments".
+              Try adjusting your search criteria.
             </p>
             <button
-              onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
+              onClick={() => setSearchQuery('')}
               className="mt-3 text-xs text-[#a30f16] font-semibold hover:underline"
             >
-              Reset Filters
+              Reset Search
             </button>
           </div>
         ) : (
-          <div className="border-t border-[#E5E7EB] bg-white rounded-2xl overflow-hidden shadow-xs border border-slate-200/80">
-            {filteredFaculty.map((faculty, index) => {
-              const expBadge = faculty.experience.match(/\d+\+?\s*Years?/i)?.[0] || '10+ Years';
-              const cleanSpecialization = faculty.intro.replace(/^(Specializes in|Focuses on|Conducts advanced investigations into|Supervises|Researches|Expert in)\s+/i, '');
-
-              return (
-                <motion.div
-                  key={faculty.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 1,
-                    delay: (index % 5) * 0.15,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  className="group relative border-b border-[#E5E7EB] p-8 transition-colors duration-300 hover:bg-[#F8FAFC] flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8 cursor-pointer overflow-hidden"
-                  onClick={() => setSelectedFaculty(faculty)}
-                >
-                  {/* Left gold line grows on hover */}
-                  <div 
-                    className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#C5A059] h-0 group-hover:h-full transition-[height] duration-400 ease-out pointer-events-none"
-                    aria-hidden="true"
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 pt-2">
+            {filteredFaculty.map((faculty, index) => (
+              <motion.div
+                key={faculty.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: (index % 5) * 0.06,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                viewport={{ once: true, amount: 0.15 }}
+                onClick={() => setSelectedFaculty(faculty)}
+                className="group flex flex-col items-center text-center cursor-pointer p-2 sm:p-2.5 rounded-2xl bg-white hover:bg-slate-50/70 border border-slate-100 hover:border-slate-300 shadow-2xs hover:shadow-md transition-all duration-300"
+              >
+                {/* Official Portrait Frame */}
+                <div className="w-full aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/90 shadow-2xs group-hover:shadow-xs group-hover:border-[#C5A059]/60 transition-all duration-300 relative">
+                  <img
+                    src={faculty.photoUrl}
+                    alt={faculty.name}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+                    }}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                </div>
 
-                  {/* Left side: Image + Center Information */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8 flex-1 min-w-0">
-                    
-                    {/* Image: 140x140 square, radius 20px, grayscale default, color & scale 1.05 on hover */}
-                    <div className="w-[140px] h-[140px] shrink-0 rounded-[20px] overflow-hidden bg-slate-100 border border-slate-200/80 shadow-xs relative">
-                      <img
-                        src={faculty.photoUrl}
-                        alt={faculty.name}
-                        className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
-                        loading="eager"
-                        decoding="async"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
-                        }}
-                      />
-                    </div>
-
-                    {/* Center: Name + Title in gold small tag + PhD details + Specialization line (1 line only) */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                        <h3 className="font-['Playfair_Display',serif] text-[22px] font-semibold text-[#0F2C61] tracking-tight leading-snug">
-                          {faculty.name}
-                        </h3>
-                        {/* Title in gold small tag */}
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-medium tracking-wide uppercase bg-[#C5A059]/15 text-[#8C6D23] border border-[#C5A059]/30 whitespace-nowrap">
-                          {faculty.designation}
-                        </span>
-                      </div>
-
-                      {/* PhD details */}
-                      <div className="text-[13px] sm:text-[14px] text-slate-600 font-sans mt-1.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                        <span className="font-medium text-slate-700">{faculty.highestDegree}</span>
-                        <span className="text-slate-300 hidden sm:inline">•</span>
-                        <span className="text-slate-500 text-[13px]">{faculty.categoryName}</span>
-                      </div>
-
-                      {/* Specialization line (1 line only) */}
-                      <p className="text-[13px] sm:text-[14px] text-slate-500 font-sans mt-1 truncate max-w-2xl">
-                        <span className="text-slate-400 font-normal">Specialization: </span>
-                        <span className="text-slate-600 font-normal">{cleanSpecialization}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right side: Experience badge (18+ Years) and arrow icon + 'View Profile ->' on hover. NO EMAIL! */}
-                  <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 shrink-0 pt-2 sm:pt-0 border-t border-slate-100 sm:border-0">
-                    <span className="px-3.5 py-1.5 rounded-full text-xs sm:text-[13px] font-medium bg-[#F1F5F9] text-slate-700 border border-slate-200/80 whitespace-nowrap">
-                      {expBadge}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFaculty(faculty);
-                      }}
-                      className="flex items-center gap-2 text-[13px] font-semibold text-[#0F2C61] group-hover:text-[#C5A059] transition-colors cursor-pointer"
-                    >
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
-                        View Profile
-                      </span>
-                      <ArrowRight 
-                        size={16} 
-                        className="text-slate-400 group-hover:text-[#C5A059] group-hover:translate-x-1.5 transition-all duration-300 shrink-0" 
-                      />
-                    </button>
-                  </div>
-
-                </motion.div>
-              );
-            })}
+                {/* Name & Designation: Crisp, official university typography */}
+                <div className="mt-3 px-1 w-full text-center">
+                  <h3 className="font-['Playfair_Display',serif] text-sm sm:text-base lg:text-lg font-bold text-[#0F2C61] group-hover:text-[#b8121a] transition-colors leading-snug">
+                    {faculty.name}
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 font-sans mt-0.5 font-medium">
+                    {faculty.designation}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         )}
 
-        {/* Bottom Pagination / Back to Home navigation */}
-        <div className="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+      </main>
+
+      {/* 3. Our Faculty Glimpse — Apple-Style Sticky Scroll (Desktop 300vh, Mobile Clean Vertical Stack) */}
+      <FacultyStickyGallery />
+
+      {/* 4. Bottom Pagination / Back to Home navigation */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <button
             onClick={onBackToHome}
             className="inline-flex items-center gap-2 text-sm font-bold text-[#092242] hover:text-[#a30f16] transition-colors cursor-pointer"
@@ -547,23 +291,22 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
             <span>Return to Main Campus Homepage</span>
           </button>
 
-          <p className="text-xs text-slate-500">
-            Total 20 faculty slots ready for profile details & pictures.
+          <p className="text-xs text-slate-500 font-sans">
+            University of Central Punjab · Bahawalpur Campus
           </p>
         </div>
+      </div>
 
-      </main>
-
-      {/* Premium Faculty Profile Modal */}
+      {/* Official Faculty Profile Modal */}
       <FacultyProfileModal
         faculty={selectedFaculty ? {
           id: selectedFaculty.id,
           name: selectedFaculty.name,
           designation: selectedFaculty.designation,
-          department: selectedFaculty.categoryName,
-          highestDegree: selectedFaculty.highestDegree,
-          experience: selectedFaculty.experience,
-          intro: selectedFaculty.intro,
+          department: 'University of Central Punjab (Bahawalpur Campus)',
+          highestDegree: 'Distinguished Academic Faculty',
+          experience: 'Dedicated Academic Mentorship & Research',
+          intro: `${selectedFaculty.name} is a distinguished faculty member dedicated to teaching, student mentorship, and scholarly excellence at UCP Bahawalpur.`,
           photoUrl: selectedFaculty.photoUrl,
         } : null}
         isOpen={!!selectedFaculty}

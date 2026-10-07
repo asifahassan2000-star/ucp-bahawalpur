@@ -211,7 +211,7 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
           1. HERO HEADER SECTION — CLEAN INSTITUTIONAL STYLE (NO RED BORDERS)
           ========================================================================= */}
       <section className="bg-[#FFFFFF] py-14 sm:py-18 border-b border-[#E5E7EB]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Breadcrumb & Navigation */}
           <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#E5E7EB]">
@@ -347,7 +347,7 @@ export const ScholarshipsPage: React.FC<ScholarshipsPageProps> = ({
           ========================================================================= */}
       <section 
         id="scholarship-calculator" 
-        className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
+        className="w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
       >
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden shadow-xs">
           

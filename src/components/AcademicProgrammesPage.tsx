@@ -37,6 +37,40 @@ type CategoryFilter =
   | 'Science' 
   | 'Humanities & Social Sciences';
 
+// Comprehensive fallback images for academic programmes
+const getProgrammeFallbackImage = (progId: string, currentSrc?: string): string => {
+  const fallbacks: Record<string, string> = {
+    'bs-psychology': 'https://i.ibb.co/zWQVBLTD/shutterstock-158110544-scaled.jpg',
+    'bs-physics': 'https://i.ibb.co/MkxJ7Nzy/Chat-GPT-Image-Sep-26-2026-09-44-35-AM.png',
+    'bba': 'https://i.ibb.co/TXgwt6f/Chat-GPT-Image-Sep-27-2026-07-07-56-AM.png',
+    'adp-artificial-intelligence': 'https://i.ibb.co/bMFsfmxh/hand-holding-ai-globe.jpg',
+    'adp-cyber-security': 'https://i.ibb.co/DPDbZQ7K/images.jpg',
+    'bs-cyber-security': 'https://i.ibb.co/DPDbZQ7K/images.jpg',
+    'bs-cyber': 'https://i.ibb.co/DPDbZQ7K/images.jpg',
+    'bs-mathematics': 'https://i.ibb.co/2Ys8Y5H3/shutterstock-2475273911-scaled.jpg',
+    'bs-chemistry': 'https://i.ibb.co/h1fDTVTm/p0f776fj.png',
+    'bs-zoology': 'https://i.ibb.co/hFKgG2vw/Zoology.png',
+    'adp-psychology': 'https://i.ibb.co/chP4mYWB/What-s-the-Difference-Between-a-Psychiatrist-and-Psychologist.webp',
+    'bs-english': 'https://i.ibb.co/cKvTywH6/360-F-409187796-W9bg-IQAKZYs-Wkc9g-Xt-Pbs5h-YAWXd6z1-T.jpg',
+    'bs-business-analytics': 'https://i.ibb.co/Ld75Vg2t/i-Stock-1311598658.jpg',
+    'bs-biotechnology': 'https://i.ibb.co/wFZF6w95/Biotechnology-1000x600px.jpg',
+    'bs-accounting-finance': 'https://i.ibb.co/p6MpMGDn/shutterstock-527098861-1-scaled.avif',
+    'bs-biochemistry': 'https://i.ibb.co/VW7jZHDF/pipette-over-test-tube-dropping-sample-chemical-into-sample-plant-scaled-jpg.webp',
+    'bs-computer-science': 'https://i.ibb.co/V0QdQKgG/images-1.jpg',
+    'adp-software-engineering': 'https://i.ibb.co/rf2T1y2M/images.jpg',
+    'adp-data-science': 'https://i.ibb.co/LDnggNLM/FUq-HEVVUs-AAb-ZB0.jpg',
+    'ads-zoology-botany-chemistry': 'https://i.ibb.co/GfDX6Zg7/pngtree-laboratory-plant-research-image-21361714.webp',
+    'ads-math-physics': 'https://i.ibb.co/wN2rcm0p/creative-concept-hand-holding-light-bulb-with-planets-mathematical-formulas-representing-idea-genera.jpg',
+    'adp-english': 'https://i.ibb.co/xdLNTjf/360-F-310395027-i-VFf-VOCWFUONEIo-Ri-Tk7-Wq-U7-GLTOf3-QE.jpg',
+    'adp-business-analytics': 'https://i.ibb.co/cKT5qwbp/What-is-business-analytics-Getty-Images-1281224851-e1708028042563.webp',
+    'adp-biotechnology': 'https://i.ibb.co/35mFgXjT/7052877-13ab.webp',
+    'adp-accounting-finance': 'https://i.ibb.co/xS78W5ZT/accounting-and-finance.jpg',
+    'adp-business-administration': 'https://i.ibb.co/Ps0SNKc7/images-1.jpg',
+    'adp-computer-science': 'https://i.ibb.co/nqtHPF6p/Online-Learning-South-Asia-Learning-Indoor-Getty-Images-1071652068.webp',
+  };
+  return fallbacks[progId] || currentSrc || '/public/hero-featured-campus.jpg';
+};
+
 export const AcademicProgrammesPage: React.FC<AcademicProgrammesPageProps> = ({
   onBackToHome,
   onOpenApply,
@@ -247,114 +281,85 @@ Helpline: 0800-00-827 / +92-62-111-827-827
           </div>
         </div>
 
-        {/* 1. PROGRAMME HERO */}
-        <section className="relative bg-[#092242] text-white overflow-hidden border-b border-[#14325a]">
-          <div className="absolute inset-0 z-0 opacity-25 mix-blend-luminosity">
+        {/* 1. PROGRAMME HERO (Light, radiant academic blue background, fading smoothly toward the right) */}
+        <section className="relative bg-[#1d4ed8] text-white overflow-hidden border-b border-blue-300/30">
+          {/* Full-width continuous background image with Ken-Burns animation, anchored right for clear visibility */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
             <img
               src={prog.image}
               alt={prog.name}
               referrerPolicy="no-referrer"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                if (prog.id === 'bs-psychology') {
-                  target.src = 'https://i.ibb.co/zWQVBLTD/shutterstock-158110544-scaled.jpg';
-                } else if (prog.id === 'bs-physics') {
-                  target.src = 'https://i.ibb.co/MkxJ7Nzy/Chat-GPT-Image-Sep-26-2026-09-44-35-AM.png';
-                } else if (prog.id === 'bba') {
-                  target.src = 'https://i.ibb.co/TXgwt6f/Chat-GPT-Image-Sep-27-2026-07-07-56-AM.png';
-                } else if (prog.id === 'adp-artificial-intelligence') {
-                  target.src = 'https://i.ibb.co/bMFsfmxh/hand-holding-ai-globe.jpg';
-                } else if (prog.id === 'adp-cyber-security' || prog.id === 'bs-cyber-security' || prog.id === 'bs-cyber') {
-                  target.src = 'https://i.ibb.co/DPDbZQ7K/images.jpg';
-                } else if (prog.id === 'bs-mathematics') {
-                  target.src = 'https://i.ibb.co/2Ys8Y5H3/shutterstock-2475273911-scaled.jpg';
-                } else if (prog.id === 'bs-chemistry') {
-                  target.src = 'https://i.ibb.co/h1fDTVTm/p0f776fj.png';
-                } else if (prog.id === 'bs-zoology') {
-                  target.src = 'https://i.ibb.co/hFKgG2vw/Zoology.png';
-                } else if (prog.id === 'adp-psychology') {
-                  target.src = 'https://i.ibb.co/chP4mYWB/What-s-the-Difference-Between-a-Psychiatrist-and-Psychologist.webp';
-                } else if (prog.id === 'bs-english') {
-                  target.src = 'https://i.ibb.co/cKvTywH6/360-F-409187796-W9bg-IQAKZYs-Wkc9g-Xt-Pbs5h-YAWXd6z1-T.jpg';
-                } else if (prog.id === 'bs-business-analytics') {
-                  target.src = 'https://i.ibb.co/Ld75Vg2t/i-Stock-1311598658.jpg';
-                } else if (prog.id === 'bs-biotechnology') {
-                  target.src = 'https://i.ibb.co/wFZF6w95/Biotechnology-1000x600px.jpg';
-                } else if (prog.id === 'bs-accounting-finance') {
-                  target.src = 'https://i.ibb.co/p6MpMGDn/shutterstock-527098861-1-scaled.avif';
-                } else if (prog.id === 'bs-biochemistry') {
-                  target.src = 'https://i.ibb.co/VW7jZHDF/pipette-over-test-tube-dropping-sample-chemical-into-sample-plant-scaled-jpg.webp';
-                } else if (prog.id === 'bs-computer-science') {
-                  target.src = 'https://i.ibb.co/V0QdQKgG/images-1.jpg';
-                } else if (prog.id === 'adp-software-engineering') {
-                  target.src = 'https://i.ibb.co/rf2T1y2M/images.jpg';
-                } else if (prog.id === 'adp-data-science') {
-                  target.src = 'https://i.ibb.co/LDnggNLM/FUq-HEVVUs-AAb-ZB0.jpg';
-                } else if (prog.id === 'ads-zoology-botany-chemistry') {
-                  target.src = 'https://i.ibb.co/GfDX6Zg7/pngtree-laboratory-plant-research-image-21361714.webp';
-                } else if (prog.id === 'ads-math-physics') {
-                  target.src = 'https://i.ibb.co/wN2rcm0p/creative-concept-hand-holding-light-bulb-with-planets-mathematical-formulas-representing-idea-genera.jpg';
-                } else if (prog.id === 'adp-english') {
-                  target.src = 'https://i.ibb.co/xdLNTjf/360-F-310395027-i-VFf-VOCWFUONEIo-Ri-Tk7-Wq-U7-GLTOf3-QE.jpg';
-                } else if (prog.id === 'adp-business-analytics') {
-                  target.src = 'https://i.ibb.co/cKT5qwbp/What-is-business-analytics-Getty-Images-1281224851-e1708028042563.webp';
-                } else if (prog.id === 'adp-biotechnology') {
-                  target.src = 'https://i.ibb.co/35mFgXjT/7052877-13ab.webp';
-                } else if (prog.id === 'adp-accounting-finance') {
-                  target.src = 'https://i.ibb.co/xS78W5ZT/accounting-and-finance.jpg';
-                } else if (prog.id === 'adp-business-administration') {
-                  target.src = 'https://i.ibb.co/Ps0SNKc7/images-1.jpg';
-                } else if (prog.id === 'adp-computer-science') {
-                  target.src = 'https://i.ibb.co/nqtHPF6p/Online-Learning-South-Asia-Learning-Indoor-Getty-Images-1071652068.webp';
-                }
+                target.src = getProgrammeFallbackImage(prog.id, prog.image);
               }}
-              className={`w-full h-full object-cover ${
-                prog.id === 'adp-business-administration' ? 'object-[center_35%]' : 'object-center'
+              className={`w-full h-full object-cover object-center md:object-right animate-hero-kenburns brightness-[1.14] contrast-[1.04] ${
+                prog.id === 'adp-business-administration' ? 'object-[center_35%]' : ''
               }`}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#092242] via-[#092242]/95 to-[#092242]/80 z-10" />
 
+          {/* Smooth seamless blend: lighter royal blue wash on left for text legibility, fading to transparent on the right */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#153e75]/75 from-0% via-[#1e4d8e]/40 via-40% to-transparent to-75% pointer-events-none" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#153e75]/35 via-transparent to-transparent pointer-events-none" />
+
+          {/* Foreground Hero Content: Clean, spacious text & actions on the left */}
           <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-            <div className="max-w-3xl">
+            <div className="max-w-3xl space-y-6">
               {/* Unboxed Metadata Header */}
-              <div className="flex items-center gap-2.5 text-xs text-stone-300 tracking-wider uppercase font-medium mb-4">
-                <span>{prog.level}</span>
-                <span className="text-stone-400">·</span>
-                <span>{prog.category}</span>
-                <span className="text-stone-400">·</span>
-                <span className="tabular-nums font-mono">{prog.creditHours} Credit Hours</span>
+              <div className="flex flex-wrap items-center gap-2.5 text-xs text-amber-300 tracking-wider uppercase font-semibold">
+                <span className="bg-amber-400/20 border border-amber-400/40 text-amber-300 px-2.5 py-0.5 rounded-full font-mono shadow-xs">
+                  {prog.level}
+                </span>
+                <span className="text-white/60">·</span>
+                <span className="text-white font-medium">{prog.category}</span>
+                <span className="text-white/60">·</span>
+                <span className="tabular-nums font-mono text-white font-medium">{prog.creditHours} Credit Hours</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white text-balance leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white leading-[1.12] drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] text-balance">
                 {prog.name}
               </h1>
 
-              <p className="mt-5 text-base sm:text-lg text-stone-300 leading-relaxed font-light">
+              <p className="text-base sm:text-lg text-white/95 leading-relaxed font-normal max-w-2xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.45)]">
                 {prog.shortDescription}
               </p>
 
               {/* Action Buttons */}
-              <div className="mt-8 flex flex-wrap items-center gap-3.5">
+              <div className="pt-2 flex flex-wrap items-center gap-3.5">
                 <button
                   onClick={() => handleApplyClick(prog.name)}
-                  className="px-6 py-3 bg-[#b8121a] hover:bg-[#9a0f16] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-all shadow-md focus:outline-none"
+                  className="px-6 py-3.5 bg-[#b8121a] hover:bg-[#9a0f16] active:scale-95 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-[#b8121a]/30 focus:outline-none flex items-center gap-2 cursor-pointer"
                 >
-                  Apply Now
+                  <span>Apply for Fall 2026</span>
+                  <ArrowRight size={14} />
                 </button>
                 <button
                   onClick={scrollToFeeTable}
-                  className="px-5 py-3 bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs font-bold uppercase tracking-wider rounded-lg transition-all focus:outline-none"
+                  className="px-5 py-3.5 bg-white/15 hover:bg-white/25 active:scale-95 text-white border border-white/30 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:outline-none cursor-pointer backdrop-blur-xs shadow-xs"
                 >
                   View Fee Structure
                 </button>
                 <button
                   onClick={() => handleDownloadDetails(prog)}
-                  className="px-5 py-3 bg-stone-900/60 hover:bg-stone-900 text-stone-200 border border-stone-700 text-xs font-semibold rounded-lg transition-all flex items-center gap-2 focus:outline-none"
+                  className="px-5 py-3.5 bg-black/40 hover:bg-black/60 active:scale-95 text-white border border-white/25 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 focus:outline-none cursor-pointer backdrop-blur-xs"
                 >
                   <Download size={14} />
                   <span>Download Details</span>
                 </button>
+              </div>
+
+              {/* Live Campus Highlights Strip */}
+              <div className="pt-3 border-t border-white/15 flex flex-wrap items-center gap-4 text-xs text-white/90">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Admissions Open for Fall 2026</span>
+                </div>
+                <span className="text-white/50">·</span>
+                <div className="flex items-center gap-1.5 text-white/90">
+                  <GraduationCap size={14} className="text-amber-400" />
+                  <span>UCP Constituent College Network</span>
+                </div>
               </div>
             </div>
           </div>
@@ -619,65 +624,19 @@ Helpline: 0800-00-827 / +92-62-111-827-827
             </div>
           </section>
 
-          <hr className="border-stone-200" />
-
-          {/* 9. ADMISSION ELIGIBILITY */}
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-4">
-              <span className="text-xs uppercase tracking-widest text-[#b8121a] font-bold block mb-1">
-                Candidate Requirements
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#092242] tracking-tight">
-                Admission Eligibility
-              </h2>
-            </div>
-            <div className="lg:col-span-8">
-              <div className="p-5 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-3">
-                <p className="text-sm text-stone-700 leading-relaxed">
-                  Eligibility requirements are subject to the official UCP admission criteria for the programme. Please confirm current requirements with the admissions office.
-                </p>
-                <div className="text-xs text-stone-500 font-mono pt-2 border-t border-stone-100 flex flex-wrap gap-x-6 gap-y-1">
-                  <span>Admissions Helpline: 0800-00-827</span>
-                  <span>Direct: +92-62-111-827-827</span>
-                  <span>Email: admissions.bwp@ucp.edu.pk</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* 10. APPLY NOW (BOTTOM CTA) */}
-          <section className="rounded-3xl bg-[#092242] text-white p-8 sm:p-12 border border-[#14325a] shadow-xl text-center">
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block mb-2">
-              Admissions Open — Fall 2026
+          {/* Bottom Return Bar */}
+          <div className="pt-6 border-t border-stone-200 flex items-center justify-between">
+            <button
+              onClick={handleCloseDetail}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-stone-700 hover:text-[#092242] transition-colors"
+            >
+              <ArrowLeft size={14} />
+              <span>Back to All Programmes</span>
+            </button>
+            <span className="text-xs text-stone-400 font-mono">
+              University of Central Punjab · Bahawalpur Campus
             </span>
-            <h3 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white max-w-xl mx-auto">
-              Ready to Begin Your Journey?
-            </h3>
-            <p className="mt-3 text-sm sm:text-base text-stone-300 max-w-lg mx-auto font-light leading-relaxed">
-              Submit your application through the official admissions portal or consult with our academic advising team.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <button
-                onClick={() => handleApplyClick(prog.name)}
-                className="px-7 py-3 bg-[#b8121a] hover:bg-[#9a0f16] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md focus:outline-none"
-              >
-                Apply Now
-              </button>
-              <a
-                href="mailto:admissions.bwp@ucp.edu.pk"
-                className="px-6 py-3 bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:outline-none"
-              >
-                Contact Admissions
-              </a>
-              <button
-                onClick={handleCloseDetail}
-                className="px-6 py-3 text-stone-300 hover:text-white text-xs font-semibold rounded-xl transition-colors focus:outline-none"
-              >
-                View All Programmes
-              </button>
-            </div>
-          </section>
+          </div>
 
         </div>
       </div>
@@ -690,40 +649,51 @@ Helpline: 0800-00-827 / +92-62-111-827-827
   return (
     <div id="academic-programmes-section" className="bg-[#fcfbf9] text-stone-900 min-h-screen">
       
-      {/* Editorial University Header */}
-      <section className="relative bg-[#092242] text-white border-b border-[#14325a] py-16 sm:py-24">
-        <div className="absolute inset-0 z-0 opacity-20 mix-blend-luminosity">
+      {/* Editorial University Header (Light, radiant academic blue background, fading smoothly toward right) */}
+      <section className="relative bg-[#1d4ed8] text-white border-b border-blue-300/30 py-16 sm:py-24 overflow-hidden">
+        {/* Full-width continuous background image with Ken-Burns animation, anchored right */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
           <img
             src="/src/assets/images/academic_hero_campus_1790317667918.jpg"
             alt="UCP Bahawalpur Campus Quadrangle"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center md:object-right animate-hero-kenburns brightness-[1.14] contrast-[1.04]"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#092242] via-[#092242]/90 to-[#092242]/70 z-10" />
 
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
-          <div className="text-xs uppercase tracking-widest text-amber-300 font-bold mb-3">
-            University of Central Punjab · Bahawalpur Campus
-          </div>
-          
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white text-balance">
-            ACADEMIC PROGRAMMES
-          </h1>
+        {/* Lighter, translucent gradient: royal blue wash on left, fading smoothly out toward the right */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#153e75]/75 from-0% via-[#1e4d8e]/40 via-40% to-transparent to-75% pointer-events-none" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#153e75]/35 via-transparent to-transparent pointer-events-none" />
 
-          <p className="mt-3 text-lg sm:text-xl font-serif italic text-stone-200">
-            “Explore Your Path at UCP Bahawalpur”
-          </p>
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl space-y-4">
+            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-amber-300 font-bold bg-amber-400/10 border border-amber-400/25 px-3 py-1 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span>University of Central Punjab · Bahawalpur Campus</span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white leading-tight">
+              ACADEMIC PROGRAMMES
+            </h1>
 
-          <p className="mt-4 text-sm sm:text-base text-stone-300 leading-relaxed font-light text-balance">
-            Discover undergraduate programmes designed to develop academic knowledge, practical skills and professional foundations for the future.
-          </p>
+            <p className="text-base sm:text-lg font-serif italic text-amber-200/90">
+              “Explore Your Path at UCP Bahawalpur”
+            </p>
 
-          {/* Operational Verification Tag */}
-          <div className="mt-6 inline-flex items-center gap-3 text-xs text-stone-300 font-mono bg-black/30 border border-white/10 px-4 py-1.5 rounded-full">
-            <span>Fee Structure — Fall 2026</span>
-            <span>·</span>
-            <span>25 Accredited Programmes</span>
+            <p className="text-sm sm:text-base text-stone-200 leading-relaxed font-light">
+              Discover undergraduate & associate degree programmes designed to develop academic excellence, modern computing capabilities, and professional career readiness.
+            </p>
+
+            {/* Operational Verification Tag */}
+            <div className="pt-2 flex flex-wrap items-center gap-3 text-xs text-stone-300 font-mono">
+              <div className="inline-flex items-center gap-2 bg-black/40 border border-white/15 px-3.5 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Fall 2026 Admissions Open</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-black/40 border border-white/15 px-3.5 py-1.5 rounded-full">
+                <span>27 Accredited Programmes</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

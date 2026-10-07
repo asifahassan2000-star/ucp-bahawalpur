@@ -46,7 +46,6 @@ app.get('/api/chat/status', (req, res) => {
   res.json({
     status: 'ok',
     hasKey: hasEnvKey,
-    model: 'gemini-3.5-flash',
     botName: 'UCP Bot'
   });
 });
@@ -60,7 +59,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const apiKey = customKey || process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || customKey;
     if (!apiKey) {
       return res.status(400).json({
         error: 'No Gemini API key available. The bot can still answer instantly via local knowledge engine.'
@@ -92,7 +91,7 @@ app.post('/api/chat', async (req, res) => {
     let response;
     try {
       response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-3.8-flash',
         contents,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
