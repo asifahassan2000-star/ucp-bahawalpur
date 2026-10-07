@@ -5,7 +5,7 @@ import {
   Award, Globe, Newspaper, PhoneCall, BookOpen, Compass,
   Sparkles, CheckCircle2, User, ExternalLink, ShieldCheck,
   Video, Laptop, Lightbulb, FileText, ArrowRight, Calendar,
-  Home
+  Home, MapPin
 } from 'lucide-react';
 import { UcpLogo } from './UcpLogo';
 import { FACULTIES, UCP_CONTACT } from '../data/ucpData';
@@ -24,8 +24,9 @@ interface NavbarProps {
   onOpenLegacyPage?: () => void;
   onOpenCampusLifePage?: () => void;
   onOpenScholarshipsPage?: () => void;
+  onOpenCnnAcademyPage?: () => void;
   onBackToHome?: () => void;
-  currentPage?: 'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure';
+  currentPage?: 'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure' | 'cnn-academy';
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -40,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLegacyPage,
   onOpenCampusLifePage,
   onOpenScholarshipsPage,
+  onOpenCnnAcademyPage,
   onBackToHome,
   currentPage = 'home',
 }) => {
@@ -83,15 +85,20 @@ export const Navbar: React.FC<NavbarProps> = ({
       const sections: { id: NavItemId; elementId: string }[] = [
         { id: 'contact', elementId: 'contact-section' },
         { id: 'contact', elementId: 'footer-section' },
+        { id: 'admissions', elementId: 'closing-campus-section' },
         { id: 'admissions', elementId: 'admissions-section' },
-        { id: 'facilities', elementId: 'facilities-section' },
         { id: 'campus-life', elementId: 'beyond-the-classroom-section' },
         { id: 'campus-life', elementId: 'campus-section' },
+        { id: 'about', elementId: 'leadership-section' },
+        { id: 'facilities', elementId: 'facilities-section' },
         { id: 'about', elementId: 'our-campus-section' },
         { id: 'about', elementId: 'about-section' },
-        { id: 'about', elementId: 'leadership-section' },
+        { id: 'programs', elementId: 'faculty-section' },
+        { id: 'programs', elementId: 'what-we-offer' },
+        { id: 'programs', elementId: 'faculties-section' },
         { id: 'programs', elementId: 'programs-section' },
         { id: 'programs', elementId: 'finder-section' },
+        { id: 'home', elementId: 'stats-section' },
         { id: 'home', elementId: 'top' },
       ];
 
@@ -406,6 +413,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
 
                     <button
+                      id="nav-dropdown-location-btn"
+                      type="button"
+                      onClick={() => { setActiveDropdown(null); handleNavClick('location-section'); }}
+                      className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer group"
+                    >
+                      <span className="flex items-center gap-2">
+                        <MapPin size={14} className="text-[#a30f16]" />
+                        <span className="font-medium text-[#0F2C61]">Our Location</span>
+                      </span>
+                      <span className="text-[11px] text-[#a30f16] font-medium group-hover:translate-x-0.5 transition-transform">Map & Directions ↗</span>
+                    </button>
+
+                    <button
                       type="button"
                       onClick={() => { setActiveDropdown(null); handleNavClick('leadership-section'); }}
                       className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
@@ -471,10 +491,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                     <button
                       type="button"
-                      onClick={() => { setActiveDropdown(null); onSelectFaculty('fmmc'); }}
+                      onClick={() => { 
+                        setActiveDropdown(null); 
+                        if (onOpenCnnAcademyPage) {
+                          onOpenCnnAcademyPage();
+                        } else {
+                          onSelectFaculty('fmmc');
+                        }
+                      }}
                       className="w-full text-left py-[8px] px-[14px] rounded-[6px] hover:bg-[#F5F5F5] text-[#333333] flex items-center justify-between cursor-pointer"
                     >
                       <span>CNN Academy at UCP</span>
+                      <span className="text-[10px] font-mono text-[#A51C30] font-bold bg-[#A51C30]/5 px-1.5 py-0.5 border border-[#A51C30]/20">
+                        Official
+                      </span>
                     </button>
 
                     <button
@@ -781,6 +811,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-xs text-amber-300">↗</span>
             </a>
             <button
+              onClick={() => { setMobileMenuOpen(false); handleNavClick('location-section'); }}
+              className="w-full text-left py-1.5 text-slate-200 hover:text-white flex items-center justify-between"
+            >
+              <span className="flex items-center gap-1.5">
+                <MapPin size={13} className="text-[#a30f16]" />
+                <span className="text-white font-medium">Our Location</span>
+              </span>
+              <span className="text-xs text-amber-300">Map & Directions ↗</span>
+            </button>
+            <button
               onClick={() => handleNavClick('leadership-section')}
               className="w-full text-left py-1.5 text-slate-200 hover:text-white"
             >
@@ -797,10 +837,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-xs text-amber-300 font-bold">Royal Heritage</span>
             </button>
             <button
-              onClick={() => { setMobileMenuOpen(false); onSelectFaculty('fmmc'); }}
-              className="w-full text-left py-1.5 text-slate-200 hover:text-white"
+              onClick={() => { 
+                setMobileMenuOpen(false); 
+                if (onOpenCnnAcademyPage) {
+                  onOpenCnnAcademyPage();
+                } else {
+                  onSelectFaculty('fmmc');
+                }
+              }}
+              className="w-full text-left py-1.5 text-slate-200 hover:text-white flex items-center justify-between"
             >
-              CNN Academy at UCP
+              <span>CNN Academy at UCP</span>
+              <span className="text-xs text-amber-300 font-bold">Official</span>
             </button>
             <button
               onClick={() => { setMobileMenuOpen(false); onOpenInfo('ucp-online'); }}

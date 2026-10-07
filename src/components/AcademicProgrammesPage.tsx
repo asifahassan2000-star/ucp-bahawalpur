@@ -18,6 +18,7 @@ import {
   OFFICIAL_BAHAWALPUR_PROGRAMMES, 
   BahawalpurProgramme 
 } from '../data/bahawalpurProgrammesData';
+import { SemesterCurriculumTable } from './SemesterCurriculumTable';
 
 interface AcademicProgrammesPageProps {
   onBackToHome?: () => void;
@@ -444,6 +445,29 @@ Helpline: 0800-00-827 / +92-62-111-827-827
                 ))}
               </div>
             </div>
+          </section>
+
+          <hr className="border-stone-200" />
+
+          {/* 3.5. SEMESTER-BY-SEMESTER ROADMAP & SUBJECTS (EXCEL STYLE TABLE) */}
+          <section className="space-y-4">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#b8121a] font-bold block mb-1">
+                Semester-Wise Curriculum
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#092242] tracking-tight">
+                Scheme of Studies & Course Road Map
+              </h2>
+              <p className="mt-1 text-xs text-stone-500 leading-relaxed max-w-2xl font-light">
+                Official semester-by-semester subject breakdown with course codes, academic classifications, and credit hour distribution for {prog.name}.
+              </p>
+            </div>
+
+            <SemesterCurriculumTable
+              programId={prog.id}
+              programName={prog.name}
+              level={prog.level}
+            />
           </section>
 
           <hr className="border-stone-200" />

@@ -6,9 +6,10 @@ interface TopBarProps {
   onOpenPortal: () => void;
   onOpenFee: () => void;
   onOpenApply: () => void;
+  onOpenCnnAcademyPage?: () => void;
 }
 
-export const TopBar: React.FC<TopBarProps> = ({ onOpenPortal, onOpenFee, onOpenApply }) => {
+export const TopBar: React.FC<TopBarProps> = ({ onOpenPortal, onOpenFee, onOpenApply, onOpenCnnAcademyPage }) => {
   const announcements = [
     'Admissions Open for Fall 2026 Semester – Apply Online Today!',
     'Official Merit Lists (1st & 2nd) are now live on UCP Portal.',
@@ -36,7 +37,16 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenPortal, onOpenFee, onOpenA
             <span className="bg-[#b8121a] text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider text-[10px] flex items-center gap-1 shrink-0 animate-pulse">
               <AlertCircle size={12} /> Notice
             </span>
-            <div className="truncate font-medium text-slate-200 hover:text-white transition-colors cursor-pointer" onClick={onOpenApply}>
+            <div 
+              className="truncate font-medium text-slate-200 hover:text-white transition-colors cursor-pointer" 
+              onClick={() => {
+                if (announcements[currentIdx].includes('CNN Academy') && onOpenCnnAcademyPage) {
+                  onOpenCnnAcademyPage();
+                } else {
+                  onOpenApply();
+                }
+              }}
+            >
               <span>{announcements[currentIdx]}</span>
             </div>
           </div>

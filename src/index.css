@@ -489,5 +489,68 @@ html:not(.reveal-ready) .quote-premium-scroll .quote-accent-bar {
   letter-spacing: 0.02em;
 }
 
+/* ==========================================================================
+   Leaflet Customization for UCP Bahawalpur (Official Color Scheme: Navy #0F2C61, Crimson #a30f16, Gold #C5A059)
+   ========================================================================== */
+@keyframes ucpGroundPulse {
+  0% {
+    transform: translateX(-50%) scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.4);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.9);
+    opacity: 0;
+  }
+}
+
+.ucp-marker-ring {
+  animation: ucpGroundPulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* Leaflet Native Zoom Controls in Official UCP Navy & Crimson */
+.leaflet-control-zoom {
+  border: 1px solid rgba(15, 44, 97, 0.16) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 6px 18px rgba(15, 44, 97, 0.15) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: #0F2C61 !important;
+  color: #ffffff !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #a30f16 !important;
+  color: #ffffff !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px !important;
+  box-shadow: 0 12px 32px rgba(15, 44, 97, 0.2) !important;
+  border: 1px solid rgba(15, 44, 97, 0.08) !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(15, 44, 97, 0.15) !important;
+}
+
 
 

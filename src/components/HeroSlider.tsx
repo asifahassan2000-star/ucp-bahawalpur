@@ -16,6 +16,7 @@ interface HeroSliderProps {
   onSelectFaculty: (facultyId: string) => void;
   onOpenProgrammesPage?: () => void;
   onOpenLegacyPage?: () => void;
+  onOpenCampusLifePage?: () => void;
 }
 
 // 3.6 seconds per slide (reduced by 1 second from 4.6s for faster, dynamic transitions)
@@ -28,6 +29,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   onSelectFaculty,
   onOpenProgrammesPage,
   onOpenLegacyPage,
+  onOpenCampusLifePage,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -127,7 +129,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       onOpenFee();
     }
     else if (actionKey === 'tour' || actionKey === 'campus-life') {
-      onScrollTo('campus-section');
+      if (onOpenCampusLifePage) {
+        onOpenCampusLifePage();
+      } else {
+        onScrollTo('campus-section');
+      }
     }
     else if (actionKey === 'fmmc') {
       onSelectFaculty('fmmc');

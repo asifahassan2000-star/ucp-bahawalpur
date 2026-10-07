@@ -3,9 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
+
+// Register GSAP ScrollTrigger plugin globally
+gsap.registerPlugin(ScrollTrigger);
 import { TopBar } from './components/TopBar';
 import { Navbar } from './components/Navbar';
 import { HeroSlider } from './components/HeroSlider';
@@ -23,6 +28,7 @@ import { CampusLife } from './components/CampusLife';
 import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
 import { WhatWeOfferAccordion } from './components/WhatWeOfferAccordion';
 import { CampusLifePage } from './components/CampusLifePage';
+import { CnnAcademyPage } from './components/CnnAcademyPage';
 import { AboutCampusSection } from './components/AboutCampusSection';
 import { FacilitiesSection } from './components/FacilitiesSection';
 import { AdmissionsExperienceSection } from './components/AdmissionsExperienceSection';
@@ -42,7 +48,7 @@ import { FACULTIES, UCP_CONTACT } from './data/ucpData';
 
 export default function App() {
   // Navigation / Page state
-  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'faculty' | 'programmes' | 'legacy' | 'campus-life' | 'scholarships' | 'fee-structure' | 'cnn-academy'>('home');
   const [facultyCategory, setFacultyCategory] = useState<string>('all');
   const [selectedProgrammeId, setSelectedProgrammeId] = useState<string | null>(null);
   const [selectedProgrammeCategory, setSelectedProgrammeCategory] = useState<string | null>(null);
@@ -56,6 +62,9 @@ export default function App() {
   const [selectedArticle, setSelectedArticle] = useState<NewsEventItem | null>(null);
   const [preselectedProgramName, setPreselectedProgramName] = useState<string>('');
 
+  // Lenis ref to programmatically control smooth scrolling during route transitions
+  const lenisRef = useRef<Lenis | null>(null);
+
   // 1. Lenis Smooth Scroll Initialization
   useEffect(() => {
     const lenis = new Lenis({
@@ -64,6 +73,14 @@ export default function App() {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
+    });
+
+    lenisRef.current = lenis;
+    (window as any).__appLenis = lenis;
+
+    // Synchronize Lenis scroll with GSAP ScrollTrigger globally
+    lenis.on('scroll', () => {
+      ScrollTrigger.update();
     });
 
     function raf(time: number) {
@@ -76,14 +93,46 @@ export default function App() {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      lenisRef.current = null;
+      delete (window as any).__appLenis;
     };
   }, []);
 
+  // Universal Instant Scroll-To-Top Helper for Seamless Page Transitions
+  const scrollToTopInstant = () => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true, force: true });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
+
+  // Crucial: Whenever currentPage switches (e.g. to 'campus-life'), strictly force scroll to top (0)
+  useEffect(() => {
+    scrollToTopInstant();
+    const rAF = requestAnimationFrame(() => {
+      scrollToTopInstant();
+    });
+    const timer = setTimeout(() => {
+      scrollToTopInstant();
+    }, 60);
+
+    return () => {
+      cancelAnimationFrame(rAF);
+      clearTimeout(timer);
+    };
+  }, [currentPage]);
+
   const handleOpenProgrammesPage = (progId?: string, category?: string) => {
+    scrollToTopInstant();
     setSelectedProgrammeId(progId || null);
     setSelectedProgrammeCategory(category || null);
     setCurrentPage('programmes');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleOpenProgrammesFromFaculty = (facultyId?: string) => {
@@ -97,21 +146,31 @@ export default function App() {
   };
 
   const handleOpenCampusLifePage = () => {
-    setCurrentPage('campus-life');
+    scrollToTopInstant();
     setSelectedProgrammeId(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCurrentPage('campus-life');
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleOpenScholarshipsPage = () => {
-    setCurrentPage('scholarships');
+    scrollToTopInstant();
     setSelectedProgrammeId(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCurrentPage('scholarships');
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleOpenFeeStructurePage = () => {
-    setCurrentPage('fee-structure');
+    scrollToTopInstant();
     setSelectedProgrammeId(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCurrentPage('fee-structure');
+    requestAnimationFrame(() => scrollToTopInstant());
+  };
+
+  const handleOpenCnnAcademyPage = () => {
+    scrollToTopInstant();
+    setSelectedProgrammeId(null);
+    setCurrentPage('cnn-academy');
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleOpenApply = (progName?: string) => {
@@ -186,21 +245,24 @@ export default function App() {
   };
 
   const handleOpenFacultyPage = (cat: string = 'all') => {
+    scrollToTopInstant();
     setFacultyCategory(cat);
     setCurrentPage('faculty');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleOpenLegacyPage = () => {
+    scrollToTopInstant();
     setCurrentPage('legacy');
     setSelectedProgrammeId(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleBackToHome = () => {
+    scrollToTopInstant();
     setCurrentPage('home');
     setSelectedProgrammeId(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => scrollToTopInstant());
   };
 
   const handleScrollTo = (sectionId: string) => {
@@ -261,6 +323,7 @@ export default function App() {
         onOpenPortal={() => setIsPortalOpen(true)}
         onOpenFee={handleOpenFee}
         onOpenApply={() => handleOpenApply()}
+        onOpenCnnAcademyPage={handleOpenCnnAcademyPage}
       />
 
       {/* 2. Main Navigation Bar */}
@@ -276,6 +339,7 @@ export default function App() {
         onOpenLegacyPage={handleOpenLegacyPage}
         onOpenCampusLifePage={handleOpenCampusLifePage}
         onOpenScholarshipsPage={handleOpenScholarshipsPage}
+        onOpenCnnAcademyPage={handleOpenCnnAcademyPage}
         onBackToHome={handleBackToHome}
         currentPage={currentPage}
       />
@@ -328,8 +392,15 @@ export default function App() {
             onOpenProgrammesPage={handleOpenProgrammesPage}
             onOpenScholarshipsPage={handleOpenScholarshipsPage}
           />
+        ) : currentPage === 'cnn-academy' ? (
+          /* Dedicated Official CNN Academy Strategic Collaboration & Guidance Page */
+          <CnnAcademyPage
+            onBackToHome={handleBackToHome}
+            onOpenPortal={() => setIsPortalOpen(true)}
+            onOpenProgrammesPage={handleOpenProgrammesPage}
+          />
         ) : (
-          /* Main Homepage Sections following Authentic Image Hierarchy */
+          /* Main Homepage Sections following World-Class SEO and Institutional Information Architecture */
           <>
             {/* 1. HERO — Flagship Sunset Campus Photograph (IMAGE 13) */}
             <HeroSlider
@@ -339,37 +410,20 @@ export default function App() {
               onSelectFaculty={handleSelectFaculty}
               onOpenProgrammesPage={handleOpenProgrammesPage}
               onOpenLegacyPage={handleOpenLegacyPage}
+              onOpenCampusLifePage={handleOpenCampusLifePage}
             />
 
-            {/* 2. LEADERSHIP — Director Prof. Dr. Hamid Iqbal & Principal Prof. Dr. Aurangzaib Virk */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <OurLeadershipSection 
-                onOpenApply={() => handleOpenApply()}
-                onScrollTo={handleScrollTo}
-              />
-            </motion.div>
-
-            {/* WHAT WE OFFER FOR YOU — Expanding Accordion Gallery */}
+            {/* 2. INSTITUTIONAL METRICS & ACCREDITATIONS — Immediate Proof & Quantitative Authority */}
             <motion.div
               initial={{ opacity: 0, y: 35 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
             >
-              <WhatWeOfferAccordion
-                onOpenApply={() => handleOpenApply()}
-                onOpenProgrammesPage={() => handleOpenProgrammesPage()}
-                onOpenCampusLifePage={handleOpenCampusLifePage}
-                onScrollTo={handleScrollTo}
-              />
+              <StatisticsSection onOpenScholarshipsPage={handleOpenScholarshipsPage} />
             </motion.div>
 
-            {/* 3. ACADEMIC FACULTIES GRID */}
+            {/* 3. ACADEMIC FACULTIES & DISCIPLINES — Core Educational Search Intent */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -382,7 +436,25 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 5. FACULTY SHOWCASE */}
+            {/* 4. WHAT WE OFFER FOR YOU — Expanding Interactive Academic Offerings */}
+            <motion.div
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <WhatWeOfferAccordion
+                onOpenApply={() => handleOpenApply()}
+                onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+                onOpenCampusLifePage={handleOpenCampusLifePage}
+                onOpenScholarshipsPage={handleOpenScholarshipsPage}
+                onOpenLegacyPage={handleOpenLegacyPage}
+                onOpenFacultyPage={() => handleOpenFacultyPage('all')}
+                onScrollTo={handleScrollTo}
+              />
+            </motion.div>
+
+            {/* 5. DISTINGUISHED FACULTY SHOWCASE — Faculty Profiles, Mentors & PhD Researchers */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -394,7 +466,7 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 6. OUR CAMPUS — An Environment Built for Growth */}
+            {/* 6. OUR CAMPUS — Architectural Presence & Scholarly Roots */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -408,7 +480,7 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 7. FACILITIES — Modern Learning Environment & Grand Staircase & Sunlit Hallway */}
+            {/* 7. WORLD-CLASS FACILITIES — Purpose-Built Laboratories & Learning Infrastructure */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -421,29 +493,20 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 8. INSTITUTIONAL METRICS */}
+            {/* 8. INSTITUTIONAL LEADERSHIP — Vision, Governance & Executive Guidance */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.12 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <StatisticsSection onOpenScholarshipsPage={handleOpenScholarshipsPage} />
-            </motion.div>
-
-            {/* 9. NEWS & EVENTS */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <NewsAndEvents
-                onSelectArticle={(article) => setSelectedArticle(article)}
+              <OurLeadershipSection 
+                onOpenApply={() => handleOpenApply()}
+                onScrollTo={handleScrollTo}
               />
             </motion.div>
 
-            {/* 10. CAMPUS LIFE — Decorated Corridor + Courtyard + Campus After Hours */}
+            {/* 9. CAMPUS LIFE — Student Life, Courtyard Gathering & Campus Culture */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -455,7 +518,7 @@ export default function App() {
               />
             </motion.div>
 
-            {/* EDITORIAL SECTION: BEYOND THE CLASSROOM — Experiences that shape student life */}
+            {/* 10. BEYOND THE CLASSROOM — Student Societies & Experiential Learning */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -468,7 +531,19 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 11. ADMISSIONS — Entrance Red Carpet Welcome */}
+            {/* 11. NEWS & EVENTS — Timely Updates, Academic Symposia & Campus Happenings */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <NewsAndEvents
+                onSelectArticle={(article) => setSelectedArticle(article)}
+              />
+            </motion.div>
+
+            {/* 12. ADMISSIONS EXPERIENCE — Red Carpet Welcome & Campus Visit Guidance */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -481,7 +556,7 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 12. CLOSING SECTION — Dramatic Architectural View */}
+            {/* 13. CLOSING DRAMATIC FINALE — Strategic Perspective & Application Anchors */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}

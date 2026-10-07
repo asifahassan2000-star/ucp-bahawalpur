@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Clock, Award, CheckCircle2, ArrowRight, BookOpen, GraduationCap, Building2, Briefcase } from 'lucide-react';
 import { Program, Faculty } from '../types';
 import { FACULTIES } from '../data/ucpData';
+import { SemesterCurriculumTable } from './SemesterCurriculumTable';
 
 interface ProgramDetailModalProps {
   program: Program | null;
@@ -22,7 +23,7 @@ export const ProgramDetailModal: React.FC<ProgramDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
         
         {/* Modal Top */}
         <div className="bg-[#112c4f] text-white p-6 relative">
@@ -56,7 +57,7 @@ export const ProgramDetailModal: React.FC<ProgramDetailModalProps> = ({
         </div>
 
         {/* Modal Content */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
           
           {/* Overview */}
           <div>
@@ -66,6 +67,18 @@ export const ProgramDetailModal: React.FC<ProgramDetailModalProps> = ({
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
               {program.description}
             </p>
+          </div>
+
+          {/* Scheme of Studies / Semester Roadmap Table (Excel Style) */}
+          <div>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              Scheme of Studies & Course Roadmap
+            </h3>
+            <SemesterCurriculumTable
+              programId={program.id}
+              programName={program.name}
+              level={program.degree}
+            />
           </div>
 
           {/* Eligibility Criteria */}

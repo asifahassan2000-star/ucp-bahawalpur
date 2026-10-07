@@ -3,7 +3,6 @@ import {
   ArrowLeft, ArrowRight, X, ChevronLeft, ChevronRight, 
   Sparkles, Camera
 } from 'lucide-react';
-import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FadingStackLightbox } from './FadingStackLightbox';
@@ -67,6 +66,58 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
       setAutoCycleIndex((prev) => prev + 1);
     }, 4000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Ensure Campus Life page always loads strictly at the top Hero section, preventing browser scroll retention
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    const appLenis = (window as any).__appLenis;
+    if (appLenis && typeof appLenis.scrollTo === 'function') {
+      appLenis.scrollTo(0, { immediate: true, force: true });
+    }
+
+    // Force zero scroll across all standard DOM roots
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    if (pageContainerRef.current) {
+      pageContainerRef.current.scrollTop = 0;
+    }
+
+    if (heroRef.current) {
+      heroRef.current.scrollIntoView({ behavior: 'instant' as ScrollBehavior, block: 'start' });
+    }
+
+    // Secondary frame check after React DOM render and images paint
+    const rAF = requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      if (appLenis && typeof appLenis.scrollTo === 'function') {
+        appLenis.scrollTo(0, { immediate: true, force: true });
+      }
+      if (heroRef.current) {
+        heroRef.current.scrollIntoView({ behavior: 'instant' as ScrollBehavior, block: 'start' });
+      }
+    });
+
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      if (appLenis && typeof appLenis.scrollTo === 'function') {
+        appLenis.scrollTo(0, { immediate: true, force: true });
+      }
+    }, 60);
+
+    return () => {
+      cancelAnimationFrame(rAF);
+      clearTimeout(timer);
+    };
   }, []);
 
   const openLightbox = (categoryImages: string[], categoryTitle: string = 'Campus Life') => {
@@ -235,32 +286,20 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
     ? galleryItems
     : galleryItems.filter(item => item.category === activeCategory);
 
-  // 1. Lenis Smooth Scroll + GSAP ScrollTrigger Integration
+  // 1. GSAP ScrollTrigger Integration (synchronized with global Lenis from App.tsx)
   useEffect(() => {
-    // Check reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let lenis: Lenis | null = null;
-    let tickerHandler: ((time: number) => void) | null = null;
-
-    if (!prefersReducedMotion) {
-      lenis = new Lenis({
-        duration: 1.15,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        touchMultiplier: 1.8,
-        infinite: false,
-      });
-
-      // Synchronize Lenis with GSAP ScrollTrigger
-      lenis.on('scroll', ScrollTrigger.update);
-
-      tickerHandler = (time: number) => {
-        lenis?.raf(time * 1000);
-      };
-
-      gsap.ticker.add(tickerHandler);
-      gsap.ticker.lagSmoothing(0);
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
     }
+    ScrollTrigger.clearScrollMemory?.('manual');
+
+    const appLenis = (window as any).__appLenis;
+    if (appLenis && typeof appLenis.scrollTo === 'function') {
+      appLenis.scrollTo(0, { immediate: true, force: true });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
 
     const ctx = gsap.context(() => {
       // -------------------------------------------------------------
@@ -432,17 +471,14 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
       });
     }, pageContainerRef);
 
-    // Refresh ScrollTrigger once everything is mounted
-    setTimeout(() => {
+    // Refresh ScrollTrigger once everything is mounted and scroll is guaranteed at top
+    const timer = setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 200);
+    }, 150);
 
     return () => {
+      clearTimeout(timer);
       ctx.revert();
-      if (lenis && tickerHandler) {
-        gsap.ticker.remove(tickerHandler);
-        lenis.destroy();
-      }
     };
   }, [activeCategory]);
 
@@ -527,6 +563,7 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
       {/* 2. COMPLETELY REDESIGNED EDITORIAL HERO */}
       <header 
         ref={heroRef}
+        id="campus-life-hero-section"
         className="relative h-screen w-full flex flex-col justify-between overflow-hidden bg-[#0A1931] select-none"
       >
         {/* Full Viewport Authentic Campus Photograph with Scroll Parallax */}
