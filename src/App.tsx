@@ -43,6 +43,7 @@ import { StudentPortalModal } from './components/StudentPortalModal';
 import { ProgramDetailModal } from './components/ProgramDetailModal';
 import { ArticleModal } from './components/ArticleModal';
 import { UcpInfoModal, InfoModalType } from './components/UcpInfoModal';
+import { UcpChatbot } from './components/UcpChatbot';
 import { Program, NewsEventItem } from './types';
 import { FACULTIES, UCP_CONTACT } from './data/ucpData';
 
@@ -594,6 +595,9 @@ export default function App() {
         onOpenScholarshipsPage={handleOpenScholarshipsPage}
         onOpenFeeStructurePage={handleOpenFeeStructurePage}
       />
+
+      {/* Official 24/7 UCP Bot (Instant Knowledge + Gemini AI) */}
+      <UcpChatbot />
 
       {/* Modal Dialogs */}
       <ApplyModal
