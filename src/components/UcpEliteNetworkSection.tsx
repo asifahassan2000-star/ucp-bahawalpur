@@ -1,233 +1,146 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Autoplay } from 'swiper/modules';
+import { ELITE_NETWORK_IMAGES } from '../data/eliteNetworkData';
 
-interface StripMember {
-  id: number;
-  marginTop: string;
-  height: string;
-  image: string;
-  name: string;
-  role: string;
-}
-
-const ELITE_STRIPS: StripMember[] = [
-  {
-    id: 1,
-    marginTop: '30px',
-    height: '300px',
-    image: '/assets/elite-1.jpg',
-    name: 'Member 1',
-    role: 'Lead Coordinator',
-  },
-  {
-    id: 2,
-    marginTop: '10px',
-    height: '320px',
-    image: '/assets/elite-2.jpg',
-    name: 'Member 2',
-    role: 'Student Ambassador',
-  },
-  {
-    id: 3,
-    marginTop: '0px',
-    height: '360px',
-    image: '/assets/elite-3.jpg',
-    name: 'Member 3',
-    role: 'Media & Outreach',
-  },
-  {
-    id: 4,
-    marginTop: '20px',
-    height: '330px',
-    image: '/assets/elite-4.jpg',
-    name: 'Member 4',
-    role: 'Community Lead',
-  },
-  {
-    id: 5,
-    marginTop: '30px',
-    height: '300px',
-    image: '/assets/elite-5.jpg',
-    name: 'Member 5',
-    role: 'Sports Secretary',
-  },
-  {
-    id: 6,
-    marginTop: '15px',
-    height: '325px',
-    image: '/assets/elite-6.jpg',
-    name: 'Member 6',
-    role: 'Academic Delegate',
-  },
-  {
-    id: 7,
-    marginTop: '5px',
-    height: '350px',
-    image: '/assets/elite-7.jpg',
-    name: 'Member 7',
-    role: 'Cultural Executive',
-  },
-  {
-    id: 8,
-    marginTop: '25px',
-    height: '310px',
-    image: '/assets/elite-8.jpg',
-    name: 'Member 8',
-    role: 'Volunteer Liaison',
-  },
-];
+// Swiper core styles
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/autoplay';
 
 export const UcpEliteNetworkSection: React.FC = () => {
-  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
-
-  const handleImgError = (id: number) => {
-    setImgErrors((prev) => ({ ...prev, [id]: true }));
-  };
-
   return (
-    <section
+    <motion.section
       id="ucp-elite-network"
-      className="w-full relative overflow-hidden select-none min-h-[680px] lg:h-[720px] flex flex-col justify-between"
-      style={{
-        background: 'linear-gradient(180deg, #0A1931 0%, #101F3A 100%)',
-        padding: '60px 0 40px 0',
-      }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full bg-[#ffffff] py-[80px] overflow-hidden select-none"
     >
-      {/* Background Subtle Diagonal Grid Pattern Overlay rgba(255,255,255,0.03) */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            repeating-linear-gradient(
-              45deg,
-              rgba(255, 255, 255, 0.03) 0,
-              rgba(255, 255, 255, 0.03) 1px,
-              transparent 0,
-              transparent 28px
-            ),
-            repeating-linear-gradient(
-              -45deg,
-              rgba(255, 255, 255, 0.03) 0,
-              rgba(255, 255, 255, 0.03) 1px,
-              transparent 0,
-              transparent 28px
-            )
-          `,
-        }}
-      />
-
-      {/* Subtle Ambient Radial Glow */}
-      <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[550px] pointer-events-none opacity-20"
-        style={{
-          background: 'radial-gradient(ellipse at center, #1b3b6f 0%, transparent 70%)',
-        }}
-      />
-
-      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-between h-full min-h-[620px]">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* =========================================================================
-            TOP TITLE:
-            "UCP ELITE" (Line 1)
-            "STUDENT NETWORK" (Line 2)
-            Font 42px bold, color #FFC700 yellow, Montserrat/Poppins, 1px tracking, line 1.2
+            HEADING:
+            UCP ELITE STUDENT NETWORK - center, color #0a1f44 dark blue,
+            font 36px bold 700 (mobile clamp(22px, 5vw, 36px)), letter-spacing 2px,
+            margin-bottom 40px. No yellow.
+            Below it: small line 60px width, 3px height, gold #d4af37 center.
             ========================================================================= */}
-        <div className="text-center">
+        <div className="text-center mb-[40px]">
           <h2
-            className="font-bold uppercase"
+            className="font-bold uppercase tracking-[2px] text-[#0a1f44]"
             style={{
-              fontFamily: "'Montserrat', 'Poppins', sans-serif",
-              fontSize: 'clamp(28px, 4.2vw, 42px)',
-              color: '#FFC700',
-              letterSpacing: '1px',
-              lineHeight: 1.2,
-              textShadow: '0 2px 16px rgba(255, 199, 0, 0.25)',
+              fontSize: 'clamp(22px, 5vw, 36px)',
+              lineHeight: 1.25,
+              fontWeight: 700,
             }}
           >
-            <span className="block">UCP ELITE</span>
-            <span className="block">STUDENT NETWORK</span>
+            UCP ELITE STUDENT NETWORK
           </h2>
+          {/* Small Gold Accent Line */}
+          <div 
+            className="w-[60px] h-[3px] bg-[#d4af37] mx-auto mt-3 rounded-full" 
+            aria-hidden="true"
+          />
         </div>
 
         {/* =========================================================================
-            MIDDLE: 8 VERTICAL STRIPS
-            Container max-width 1100px, margin 40px auto, flex gap 12px justify center
-            Each strip: width 110px, specific margin-top and height offset
+            GALLERY - PREMIUM LUMS STYLE CLEAN COVERFLOW:
+            Swiper.js Coverflow, loop true, autoplay 2500ms, centeredSlides true
+            Card size: desktop width 380px, height 240px, ratio 16:10, object-fit cover,
+            border-radius 12px, soft shadow 0 4px 20px rgba(0,0,0,0.08) only.
+            Side images: scale 0.9, opacity 0.6, no blur.
+            Center image: scale 1, opacity 1, fully visible.
+            On hover: scale 1.03, pause autoplay.
+            Gap between slides: 24px.
+            Mobile: <768px: 1 image per view, width 92vw, height 220px, centered.
             ========================================================================= */}
-        <div className="w-full my-[30px] lg:my-[40px] flex justify-start lg:justify-center items-center overflow-x-auto scrollbar-none py-4 px-4 snap-x snap-mandatory">
-          <div
-            className="flex items-start gap-[12px] justify-start lg:justify-center mx-auto min-w-max lg:min-w-0"
-            style={{
-              maxWidth: '1100px',
-              minHeight: '360px',
+        <div className="w-full relative ucp-elite-swiper-container">
+          <Swiper
+            modules={[EffectCoverflow, Autoplay]}
+            effect="coverflow"
+            grabCursor={true}
+            centeredSlides={true}
+            loop={true}
+            slidesPerView="auto"
+            spaceBetween={24}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             }}
+            coverflowEffect={{
+              rotate: 0,
+              stretch: 0,
+              depth: 0,
+              modifier: 1,
+              scale: 0.9,
+              slideShadows: false,
+            }}
+            breakpoints={{
+              320: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                centeredSlides: true,
+              },
+              768: {
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+                centeredSlides: true,
+              },
+            }}
+            className="ucp-elite-swiper w-full py-4 !overflow-visible"
           >
-            {ELITE_STRIPS.map((strip) => {
-              const hasError = imgErrors[strip.id];
-
-              return (
-                <div
-                  key={strip.id}
-                  className="group relative shrink-0 overflow-hidden cursor-pointer rounded-[4px] snap-center transition-all duration-400 ease-out"
-                  style={{
-                    width: '110px',
-                    height: strip.height,
-                    marginTop: strip.marginTop,
-                    backgroundColor: '#122543',
-                  }}
-                >
-                  {/* Inner Hover Transition Wrapper */}
-                  <div className="w-full h-full relative overflow-hidden transition-all duration-400 ease-out group-hover:scale-[1.06] group-hover:-translate-y-[6px] group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.5)]">
-                    {!hasError ? (
-                      <img
-                        src={strip.image}
-                        alt={`UCP Elite Volunteer ${strip.id}`}
-                        loading="lazy"
-                        onError={() => handleImgError(strip.id)}
-                        className="w-full h-full object-cover object-center transition-all duration-400 group-hover:brightness-105"
-                        style={{
-                          filter: 'brightness(0.95)',
-                        }}
-                      />
-                    ) : (
-                      /* Placeholder with Initial if photo fails to load */
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#162D52] to-[#0A1931] text-white p-2">
-                        <div className="w-12 h-12 rounded-full bg-[#FFC700]/15 border border-[#FFC700]/40 flex items-center justify-center font-bold text-[#FFC700] text-lg mb-2">
-                          #{strip.id}
-                        </div>
-                        <span className="text-[10px] uppercase font-mono tracking-wider text-slate-300 text-center">
-                          Elite Team
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Gradient darkening at base for prospectus depth */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/80 via-transparent to-black/10 pointer-events-none opacity-60 group-hover:opacity-30 transition-opacity duration-300" />
-                    
-                    {/* Subtle golden top accent on hover */}
-                    <div className="absolute top-0 inset-x-0 h-[2px] bg-[#FFC700] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+            {ELITE_NETWORK_IMAGES.map((item, index) => (
+              <SwiperSlide
+                key={item.id}
+                className="!w-[380px] !h-[240px] max-md:!w-[92vw] max-md:!h-[220px] max-md:mx-auto shrink-0 transition-transform duration-300"
+              >
+                {({ isActive }) => (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.5,
+                      delay: Math.min(index * 0.05, 0.6),
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className={`w-full h-full rounded-[12px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.08)] bg-slate-50 transition-all duration-300 ease-out hover:scale-[1.03] ${
+                      isActive ? 'opacity-100 scale-100' : 'opacity-60 scale-90 md:scale-95'
+                    }`}
+                  >
+                    <img
+                      src={item.localSrc}
+                      alt={item.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-center aspect-[16/10] block"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = item.fallbackSrc;
+                      }}
+                    />
+                  </motion.div>
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
         {/* =========================================================================
             BOTTOM TEXT:
-            "Volunteer Team Members"
-            Cursive handwritten font 'Great Vibes' / 'Allison', cursive
-            Color #FFFFFF, font 52px, text-align center, margin-top 30px, line 0.9, italic
+            "Volunteer Team Members" cursive at bottom, 24px margin top,
+            color #0a1f44, font 18px italic, no white.
             ========================================================================= */}
-        <div className="text-center mt-[10px] sm:mt-[20px] pb-2">
+        <div className="text-center mt-[24px]">
           <p
-            className="italic font-normal"
+            className="italic text-[#0a1f44] text-[18px] select-none"
             style={{
-              fontFamily: "'Great Vibes', 'Allison', 'Playfair Display', cursive",
-              fontSize: 'clamp(36px, 5.5vw, 52px)',
-              color: '#FFFFFF',
-              lineHeight: 0.9,
-              letterSpacing: '1px',
-              textShadow: '0 2px 20px rgba(0, 0, 0, 0.6)',
+              fontFamily: "'Great Vibes', 'Playfair Display', cursive, serif",
+              lineHeight: 1.2,
             }}
           >
             Volunteer Team Members
@@ -235,6 +148,32 @@ export const UcpEliteNetworkSection: React.FC = () => {
         </div>
 
       </div>
-    </section>
+
+      {/* Scoped CSS for Swiper Side Slides Scale & Opacity */}
+      <style>{`
+        .ucp-elite-swiper-container .swiper-slide {
+          transition: transform 0.4s ease, opacity 0.4s ease;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        @media (min-width: 768px) {
+          .ucp-elite-swiper-container .swiper-slide:not(.swiper-slide-active) {
+            opacity: 0.6;
+            transform: scale(0.9);
+          }
+          .ucp-elite-swiper-container .swiper-slide-active {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .ucp-elite-swiper-container .swiper-slide {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </motion.section>
   );
 };

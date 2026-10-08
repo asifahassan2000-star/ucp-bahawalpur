@@ -1,119 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { FacultyProfileModal, FacultyProfileModalData } from './FacultyProfileModal';
+import { FacultyProfileModal } from './FacultyProfileModal';
+import { ALL_FACULTY_MEMBERS, FacultyMemberData } from '../data/facultyData';
 
-export interface FacultyMember {
-  id: string;
-  name: string;
-  designation: string;
-  photoUrl: string;
-}
-
-export const FACULTY_MEMBERS: FacultyMember[] = [
-  {
-    id: 'prof-uzma-zulqurnai',
-    name: 'Prof. Uzma Zulqurnai',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dr-abdul-kareem',
-    name: 'Dr. Abdul Kareem',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-shahid-gulzar',
-    name: 'Prof. Shahid Gulzar',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-sibghat',
-    name: 'Prof. Sibghat',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dr-abbas-haider',
-    name: 'Dr. Abbas Haider',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dr-mushtaq',
-    name: 'Dr. Mushtaq',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dr-abdul-raouf',
-    name: 'Dr. Abdul Raouf',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dr-m-tahir',
-    name: 'Dr. M. Tahir',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-khizer-hayat',
-    name: 'Prof. Khizer Hayat',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-ali-shan',
-    name: 'Prof. Ali Shan',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-usman-kazmi',
-    name: 'Prof. Usman Kazmi',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-abeer-aslam',
-    name: 'Prof. Abeer Aslam',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-marriam-gill',
-    name: 'Prof. Marriam Gill',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-humra-owj',
-    name: 'Prof. Humra Owj',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-iqra-shabbir',
-    name: 'Prof. Iqra Shabbir',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-aliya-batool',
-    name: 'Prof. Aliya Batool',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'prof-huzaifa-akmal',
-    name: 'Prof. Huzaifa Akmal',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-];
+export type FacultyMember = FacultyMemberData;
+export const FACULTY_MEMBERS = ALL_FACULTY_MEMBERS;
 
 interface FacultySectionProps {
   onViewAllFaculty?: (category?: string) => void;
@@ -159,9 +51,9 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
           )}
         </div>
 
-        {/* Official Faculty Members Grid — Exactly One Line of 4 Faculty Members */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8 pt-4">
-          {FACULTY_MEMBERS.slice(0, 4).map((faculty, index) => {
+        {/* Official Faculty Members Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 pt-4">
+          {ALL_FACULTY_MEMBERS.map((faculty, index) => {
             return (
               <motion.div
                 key={faculty.id}
@@ -169,10 +61,10 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  delay: index * 0.1,
+                  delay: (index % 4) * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ once: true, amount: 0.15 }}
                 onClick={() => setSelectedFaculty(faculty)}
                 className="group flex flex-col items-center text-center cursor-pointer"
               >
@@ -181,12 +73,11 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
                   <img
                     src={faculty.photoUrl}
                     alt={faculty.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                    className={`w-full h-full object-cover ${faculty.objectPosition || 'object-top'} transition-transform duration-500 ease-out group-hover:scale-105`}
                     loading="lazy"
                     decoding="async"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+                      (e.target as HTMLImageElement).src = faculty.fallbackPhotoUrl;
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -214,14 +105,14 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
                 Academic Faculty Directory
               </h4>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-                Browse faculty members across all academic departments and disciplines.
+                Browse all {ALL_FACULTY_MEMBERS.length} faculty members across academic departments and disciplines.
               </p>
             </div>
             <button
               onClick={() => onViewAllFaculty('all')}
               className="bg-[#0F2C61] hover:bg-[#1a428a] text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-xs hover:shadow shrink-0"
             >
-              <span>View Faculty Directory</span>
+              <span>View Full Directory</span>
               <ArrowRight size={14} />
             </button>
           </div>
@@ -235,10 +126,11 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
           id: selectedFaculty.name,
           name: selectedFaculty.name,
           designation: selectedFaculty.designation,
-          department: 'University of Central Punjab (Bahawalpur Campus)',
-          highestDegree: 'Distinguished Academic Faculty',
-          experience: 'Dedicated Academic Mentorship & Research',
-          intro: `${selectedFaculty.name} is a distinguished faculty member dedicated to teaching, student mentorship, and scholarly excellence at UCP Bahawalpur.`,
+          department: selectedFaculty.department,
+          highestDegree: selectedFaculty.highestDegree,
+          experience: selectedFaculty.experienceYears,
+          specialization: selectedFaculty.specialization,
+          intro: selectedFaculty.intro,
           photoUrl: selectedFaculty.photoUrl,
         } : null}
         isOpen={!!selectedFaculty}
@@ -247,3 +139,5 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
     </section>
   );
 };
+
+export default FacultySection;

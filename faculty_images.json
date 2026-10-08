@@ -1,0 +1,82 @@
+{
+  "prof-shahid-gulzar": {
+    "name": "Prof. Shahid Gulzar",
+    "localSrc": "/assets/faculty/prof-shahid-gulzar.jpg",
+    "fallbackSrc": "https://i.ibb.co/21V4JkHq/Whats-App-Image-2026-10-05-at-2-38-53-AM.jpg"
+  },
+  "prof-sibghat": {
+    "name": "Prof. Sibghat",
+    "localSrc": "/assets/faculty/prof-sibghat.jpg",
+    "fallbackSrc": "https://i.ibb.co/39zT2s3J/Whats-App-Image-2026-10-05-at-2-39-20-AM.jpg"
+  },
+  "dr-mushtaq": {
+    "name": "Dr. Mushtaq",
+    "localSrc": "/assets/faculty/dr-mushtaq.jpg",
+    "fallbackSrc": "https://i.ibb.co/VYWsTm9N/Whats-App-Image-2026-10-05-at-2-39-07-AM-2.jpg"
+  },
+  "dr-abbas-haider": {
+    "name": "Prof. Dr. Abbas Haider",
+    "localSrc": "/assets/faculty/dr-abbas-haider.jpg",
+    "fallbackSrc": "https://i.ibb.co/DgYppWbw/Whats-App-Image-2026-10-08-at-12-14-27-AM-Copy.jpg"
+  },
+  "dr-abdul-raouf": {
+    "name": "Dr. Abdul Raouf",
+    "localSrc": "/assets/faculty/dr-abdul-raouf.jpg",
+    "fallbackSrc": "https://i.ibb.co/7dK3cCBN/Whats-App-Image-2026-10-05-at-2-39-08-AM-1.jpg"
+  },
+  "prof-ali-shan": {
+    "name": "Prof. Ali Shan",
+    "localSrc": "/assets/faculty/prof-ali-shan.jpg",
+    "fallbackSrc": "https://i.ibb.co/PZxkYH4b/Whats-App-Image-2026-10-05-at-2-39-11-AM-1.jpg"
+  },
+  "prof-iqra-shabbir": {
+    "name": "Prof. Iqra Shabbir",
+    "localSrc": "/assets/faculty/prof-iqra-shabbir.jpg",
+    "fallbackSrc": "https://i.ibb.co/7xC8cYRw/Whats-App-Image-2026-10-05-at-2-39-08-AM.jpg"
+  },
+  "prof-marriam-gill": {
+    "name": "Prof. Marriam Gill",
+    "localSrc": "/assets/faculty/prof-marriam-gill.jpg",
+    "fallbackSrc": "https://i.ibb.co/1GQJQLX2/Whats-App-Image-2026-10-05-at-2-39-09-AM-1.jpg"
+  },
+  "prof-abeer-aslam": {
+    "name": "Prof. Abeer Aslam",
+    "localSrc": "/assets/faculty/prof-abeer-aslam.jpg",
+    "fallbackSrc": "https://i.ibb.co/ccQWpXLX/Whats-App-Image-2026-10-05-at-2-38-53-AM-3.jpg"
+  },
+  "prof-aliya-batool": {
+    "name": "Prof. Aliya Batool",
+    "localSrc": "/assets/faculty/prof-aliya-batool.jpg",
+    "fallbackSrc": "https://i.ibb.co/4gm7pJKX/Whats-App-Image-2026-10-05-at-2-39-09-AM-2.jpg"
+  },
+  "dr-m-tahir": {
+    "name": "Dr. M Tahir Akbar",
+    "localSrc": "/assets/faculty/dr-m-tahir.jpg",
+    "fallbackSrc": "https://i.ibb.co/B59J6bVX/Whats-App-Image-2026-10-07-at-11-50-38-PM.jpg"
+  },
+  "prof-usman-kazmi": {
+    "name": "Prof. Usman Kazmi",
+    "localSrc": "/assets/faculty/prof-usman-kazmi.jpg",
+    "fallbackSrc": "https://i.ibb.co/TMH9GD8S/Whats-App-Image-2026-10-07-at-11-52-16-PM.jpg"
+  },
+  "prof-uzma-zulqurnai": {
+    "name": "Prof. Uzma Zulqurnai",
+    "localSrc": "/assets/faculty/prof-uzma-zulqurnai.jpg",
+    "fallbackSrc": "https://i.ibb.co/JWcPDS9B/Whats-App-Image-2026-10-07-at-10-48-45-PM.jpg"
+  },
+  "dr-abdul-kareem": {
+    "name": "Prof. Dr. Abdul Kareem",
+    "localSrc": "/assets/faculty/dr-abdul-kareem.jpg",
+    "fallbackSrc": "https://i.ibb.co/B5k2wfkK/Whats-App-Image-2026-10-08-at-1-00-05-AM.jpg"
+  },
+  "prof-humra-owj": {
+    "name": "Prof. Humra Owj",
+    "localSrc": "/assets/faculty/prof-humra-owj.jpg",
+    "fallbackSrc": "https://i.ibb.co/27qqBk78/Whats-App-Image-2026-10-07-at-10-48-45-PM.jpg"
+  },
+  "prof-khizer-hayat": {
+    "name": "Prof. Khizer Hayat",
+    "localSrc": "/assets/faculty/prof-khizer-hayat.jpg",
+    "fallbackSrc": "https://i.ibb.co/J8rpgh6/Whats-App-Image-2026-10-08-at-2-07-52-AM.jpg"
+  }
+}

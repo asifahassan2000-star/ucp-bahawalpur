@@ -24,7 +24,7 @@ import { OurLegacyPage } from './components/OurLegacyPage';
 import { ScholarshipsPage } from './components/ScholarshipsPage';
 import { FeeStructurePage } from './components/FeeStructurePage';
 import { NewsAndEvents } from './components/NewsAndEvents';
-import { CampusLife } from './components/CampusLife';
+import { UcpEliteNetworkSection } from './components/UcpEliteNetworkSection';
 import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
 import { WhatWeOfferAccordion } from './components/WhatWeOfferAccordion';
 import { CampusLifePage } from './components/CampusLifePage';
@@ -507,16 +507,14 @@ export default function App() {
               />
             </motion.div>
 
-            {/* 9. CAMPUS LIFE — Student Life, Courtyard Gathering & Campus Culture */}
+            {/* 9. UCP ELITE STUDENT NETWORK */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.12 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <CampusLife 
-                onOpenCampusLifePage={handleOpenCampusLifePage}
-              />
+              <UcpEliteNetworkSection />
             </motion.div>
 
             {/* 10. BEYOND THE CLASSROOM — Student Societies & Experiential Learning */}
@@ -527,7 +525,7 @@ export default function App() {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
               <BeyondTheClassroomSection
-                onScrollToCampusLife={() => handleScrollTo('campus-section')}
+                onScrollToCampusLife={handleOpenCampusLifePage}
                 onOpenCampusLifePage={handleOpenCampusLifePage}
               />
             </motion.div>

@@ -1,601 +1,377 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { 
-  ArrowRight, Users, Sparkles, Calendar, MapPin, 
-  Compass, Award, BookOpen, Music, Flag
-} from 'lucide-react';
-import { FadingStackLightbox } from './FadingStackLightbox';
-import { UcpEliteNetworkSection } from './UcpEliteNetworkSection';
-
-// Authentic project assets from src/assets/images
-import businessSeminarImg from '../assets/images/academic_business_seminar_1790317693556.jpg';
-import computingLabImg from '../assets/images/academic_computing_lab_1790317681008.jpg';
-import libraryImg from '../assets/images/academic_humanities_library_1790317720335.jpg';
-import studentPortraitImg from '../assets/images/bs_psychology_user.jpg';
-import bbaImg from '../assets/images/program_bba.png';
-import cyberSecurityImg from '../assets/images/program_cyber_security.jpg';
-import scienceLabImg from '../assets/images/academic_science_lab_1790317707417.jpg';
-
-// Authentic campus assets from public/assets/campus
-const corridorImg = '/assets/campus/6_campus_life_decorated_corridor.jpg';
-const courtyardImg = '/assets/campus/8_campus_life_courtyard.jpg';
-const nightCampusImg = '/assets/campus/3_campus_after_hours_night.jpg';
-const lawnImg = '/assets/campus/7_about_campus_building_lawn.jpg';
-const hallwayImg = '/assets/campus/10_campus_sunlit_hallway.jpg';
-const redCarpetImg = '/assets/campus/4_admissions_entrance_red_carpet.jpg';
-const closingDramaticImg = '/assets/campus/14_closing_dramatic_campus.jpg';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { CAMPUS_GALLERY_IMAGES } from '../data/campusGalleryData';
 
 interface CampusLifeProps {
   onOpenCampusLifePage?: () => void;
 }
 
-interface MarqueeItem {
-  id: string;
-  title: string;
-  tag: string;
-  image: string;
-  subtitle: string;
-}
-
 export const CampusLife: React.FC<CampusLifeProps> = ({ onOpenCampusLifePage }) => {
-  // Scroll reveal visibility flags for each block
-  const [headerVisible, setHeaderVisible] = useState(false);
-  const [spreadVisible, setSpreadVisible] = useState(false);
-  const [nightSpreadVisible, setNightSpreadVisible] = useState(false);
-  const [marqueeHeaderVisible, setMarqueeHeaderVisible] = useState(false);
+  // Lightbox state for viewing any image in full high-resolution
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [cycleStep, setCycleStep] = useState<number>(0);
 
-  // Fading Stack Lightbox state
-  const [stackLightboxOpen, setStackLightboxOpen] = useState(false);
-  const [stackLightboxImages, setStackLightboxImages] = useState<string[]>([]);
-  const [stackLightboxCategory, setStackLightboxCategory] = useState<string>('Campus Life');
-  const [autoCycleIndex, setAutoCycleIndex] = useState<number>(0);
-
-  // Auto-cycle visible card image every 4 seconds without opening
+  // 5-second interval timer for rotating images in upper section
   useEffect(() => {
     const timer = setInterval(() => {
-      setAutoCycleIndex((prev) => prev + 1);
-    }, 4000);
+      setCycleStep((prev) => prev + 1);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
-  const openStackLightbox = (images: string[], categoryTitle: string = 'Campus Life') => {
-    setStackLightboxImages(images);
-    setStackLightboxCategory(categoryTitle);
-    setStackLightboxOpen(true);
+  // Compute dynamic image for each of the 7 slots
+  // Mathematically guaranteed: (cycleStep * 3 + slotIndex * 7) % length
+  // Always ensures all 7 slots display completely different images at any moment
+  const getSlotImage = (slotIndex: number) => {
+    const total = CAMPUS_GALLERY_IMAGES.length;
+    const imgIndex = (cycleStep * 3 + slotIndex * 7) % total;
+    return {
+      image: CAMPUS_GALLERY_IMAGES[imgIndex],
+      index: imgIndex,
+    };
   };
 
-  const corridorList = [corridorImg, courtyardImg, nightCampusImg, hallwayImg, lawnImg];
-  const courtyardList = [courtyardImg, corridorImg, hallwayImg, lawnImg, redCarpetImg];
-  const nightCampusList = [nightCampusImg, corridorImg, courtyardImg, closingDramaticImg, hallwayImg];
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+  };
 
-  const currentCorridorImg = corridorList[autoCycleIndex % corridorList.length];
-  const currentCourtyardImg = courtyardList[(autoCycleIndex + 1) % courtyardList.length];
-  const currentNightCampusImg = nightCampusList[(autoCycleIndex + 2) % nightCampusList.length];
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+  };
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const spreadRef = useRef<HTMLDivElement>(null);
-  const nightSpreadRef = useRef<HTMLDivElement>(null);
-  const marqueeHeaderRef = useRef<HTMLDivElement>(null);
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (lightboxIndex !== null) {
+      setLightboxIndex((prev) => (prev! > 0 ? prev! - 1 : CAMPUS_GALLERY_IMAGES.length - 1));
+    }
+  };
 
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (lightboxIndex !== null) {
+      setLightboxIndex((prev) => (prev! < CAMPUS_GALLERY_IMAGES.length - 1 ? prev! + 1 : 0));
+    }
+  };
+
+  // Keyboard navigation for lightbox
   useEffect(() => {
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (entry.target === headerRef.current) setHeaderVisible(true);
-          if (entry.target === spreadRef.current) setSpreadVisible(true);
-          if (entry.target === nightSpreadRef.current) setNightSpreadVisible(true);
-          if (entry.target === marqueeHeaderRef.current) setMarqueeHeaderVisible(true);
-        }
-      });
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') setLightboxIndex((prev) => (prev! > 0 ? prev! - 1 : CAMPUS_GALLERY_IMAGES.length - 1));
+      if (e.key === 'ArrowRight') setLightboxIndex((prev) => (prev! < CAMPUS_GALLERY_IMAGES.length - 1 ? prev! + 1 : 0));
     };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIndex]);
 
-    const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.12,
-      rootMargin: '40px 0px -40px 0px',
-    });
-
-    if (headerRef.current) observer.observe(headerRef.current);
-    if (spreadRef.current) observer.observe(spreadRef.current);
-    if (nightSpreadRef.current) observer.observe(nightSpreadRef.current);
-    if (marqueeHeaderRef.current) observer.observe(marqueeHeaderRef.current);
-
-    // Fallback timer so animations always display quickly
-    const fallbackTimer = setTimeout(() => {
-      setHeaderVisible(true);
-      setSpreadVisible(true);
-      setNightSpreadVisible(true);
-      setMarqueeHeaderVisible(true);
-    }, 1200);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(fallbackTimer);
-    };
-  }, []);
-
-  // Premium Marquee Sequence (All Real Campus & Event Imagery)
-  const marqueeItems: MarqueeItem[] = [
-    {
-      id: 'mq-1',
-      title: 'Keynote Symposiums & Summits',
-      tag: 'Academic Discourse',
-      image: businessSeminarImg,
-      subtitle: 'Student leadership dialogues in the grand auditorium',
-    },
-    {
-      id: 'mq-2',
-      title: 'Central Gathering Courtyard',
-      tag: 'Student Spaces',
-      image: courtyardImg,
-      subtitle: 'Sunlit open-air forum between lecture hours',
-    },
-    {
-      id: 'mq-3',
-      title: 'Annual Festival Corridor',
-      tag: 'Campus Traditions',
-      image: corridorImg,
-      subtitle: 'Themed exhibition halls and seasonal festivities',
-    },
-    {
-      id: 'mq-4',
-      title: 'Sunlit Architectural Walkways',
-      tag: 'Campus Architecture',
-      image: hallwayImg,
-      subtitle: 'Spacious corridors bathed in natural light',
-    },
-    {
-      id: 'mq-5',
-      title: 'Red Carpet Welcoming Ceremony',
-      tag: 'Student Community',
-      image: redCarpetImg,
-      subtitle: 'Annual matriculation and celebratory receptions',
-    },
-    {
-      id: 'mq-6',
-      title: 'Evening Labs & Innovation Quads',
-      tag: 'Campus After Hours',
-      image: nightCampusImg,
-      subtitle: 'Illuminated campus welcoming collaborative teams',
-    },
-    {
-      id: 'mq-7',
-      title: 'Hands-On Computing Workshops',
-      tag: 'Collaborative Labs',
-      image: computingLabImg,
-      subtitle: 'State-of-the-art tech society hackathons',
-    },
-    {
-      id: 'mq-8',
-      title: 'Humanities & Research Library',
-      tag: 'Intellectual Circles',
-      image: libraryImg,
-      subtitle: 'Quiet study sanctuaries and group discourse tables',
-    },
-    {
-      id: 'mq-9',
-      title: 'Manicured Lawns & Green Spaces',
-      tag: 'Outdoor Life',
-      image: lawnImg,
-      subtitle: 'Expansive campus grounds for recreation and dialogue',
-    },
-    {
-      id: 'mq-10',
-      title: 'Southern Punjab Horizon',
-      tag: 'Campus Identity',
-      image: closingDramaticImg,
-      subtitle: 'Dignified institutional architecture under evening skies',
-    },
-  ];
+  // Helper to render dynamic slot in desktop/tablet collage
+  const renderDynamicSlot = (slotIdx: number, aspectClass: string) => {
+    const slot = getSlotImage(slotIdx);
+    return (
+      <div
+        onClick={() => openLightbox(slot.index)}
+        className={`relative w-full ${aspectClass} overflow-hidden bg-slate-900 cursor-pointer group`}
+      >
+        <AnimatePresence mode="popLayout">
+          <motion.img
+            key={slot.image.id}
+            src={slot.image.localSrc}
+            alt={slot.image.alt}
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover object-center absolute inset-0 block transition-transform duration-700 ease-out group-hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = slot.image.fallbackSrc || '';
+            }}
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+          <Maximize2 size={24} className="text-white drop-shadow" />
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <>
-    <section 
-      id="campus-section" 
-      className="relative py-[100px] bg-[#FDFBF7] text-[#0A1931] border-b border-[#0A1931]/10 overflow-hidden"
-      aria-labelledby="campus-life-heading"
+    <section
+      id="campus-section"
+      className="w-full bg-[#07192f] py-14 sm:py-20 lg:py-24 text-white overflow-hidden select-none"
+      aria-label="Campus Life Image Gallery"
     >
-      {/* Subtle Fine Academic Grid Texture */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.035]"
-        style={{
-          backgroundImage: 'radial-gradient(#0A1931 1px, transparent 1px)',
-          backgroundSize: '36px 36px',
-        }}
-        aria-hidden="true"
-      />
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        
-        {/* ====================================================================
-            1. SOPHISTICATED SECTION HEADING
-            "Life at UCP Bahawalpur"
-            Small label: "CAMPUS LIFE"
-            Supporting text: "Beyond the classroom, every experience becomes part of the UCP journey."
-            ==================================================================== */}
-        <header 
-          ref={headerRef}
-          className={`max-w-3xl mb-20 sm:mb-28 transition-all duration-700 ease-out ${
-            headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'
-          }`}
+        {/* =========================================================================
+            FLAGSHIP BROCHURE COLLAGE (MATCHING USER UPLOADED BROCHURE)
+            - Dynamic 5-second rotation across all slots
+            - Always keeps different images visible
+            - Seamless joined images with thin dividers and NO text on images
+            ========================================================================= */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-6xl mx-auto relative p-2 sm:p-4 md:p-6 bg-[#0a1e3b] border-2 border-white/40 shadow-2xl rounded-sm"
         >
-          {/* Small label: CAMPUS LIFE with subtle gold accent line */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-mono font-bold uppercase tracking-[0.28em] text-[#C5A880]">
-              CAMPUS LIFE
-            </span>
-            <span className="h-px w-10 bg-[#C5A880]/60" aria-hidden="true" />
-          </div>
+          {/* Inner Thin Border Line creating the authentic collegiate double-frame */}
+          <div className="relative border border-white/60 p-1.5 sm:p-3 md:p-4 bg-[#07192f]">
 
-          {/* Main Title: Life at UCP Bahawalpur */}
-          <h2
-            id="campus-life-heading"
-            className="text-3xl sm:text-5xl lg:text-[56px] font-serif font-bold text-[#0A1931] tracking-tight leading-[1.12] mb-6"
-            style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', 'Playfair Display', Georgia, serif" }}
-          >
-            Life at UCP Bahawalpur
-          </h2>
+            {/* ----------------- DESKTOP & TABLET COLLAGE GRID ----------------- */}
+            <div className="hidden md:flex flex-col gap-2 sm:gap-2.5 w-full">
 
-          {/* Supporting Text: Beyond the classroom, every experience becomes part of the UCP journey. */}
-          <p className="text-lg sm:text-xl text-slate-700 font-serif italic leading-relaxed border-l-2 border-[#C5A880] pl-4 sm:pl-5 mb-5">
-            Beyond the classroom, every experience becomes part of the UCP journey.
-          </p>
+              {/* ROW 1: 2 Wide Landscape Images (Joined 50% / 50%) */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full">
+                {renderDynamicSlot(0, 'aspect-[16/10]')}
+                {renderDynamicSlot(1, 'aspect-[16/10]')}
+              </div>
 
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-sans max-w-2xl">
-            From lively student gathering spaces in open courtyards to academic festivals, dynamic student societies, and vibrant campus events, life at UCP Bahawalpur fosters lifelong friendships and professional leadership.
-          </p>
-        </header>
-
-        {/* ====================================================================
-            2. ASYMMETRIC EDITORIAL SPREAD — LARGE CURVED/ROUNDED PHOTOGRAPHY
-            Features:
-            - Left: Large vertical curved photograph (Decorated Corridor IMAGE 06)
-            - Right top: Expansive curved arched photograph (Courtyard IMAGE 08)
-            - Right bottom: Refined editorial narrative with elegant typography
-            ==================================================================== */}
-        <div 
-          ref={spreadRef}
-          className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center mb-28 sm:mb-36 transition-all duration-800 ease-out ${
-            spreadVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          {/* Left Column: Striking Large Curved Vertical Editorial Image */}
-          <div className="lg:col-span-6">
-            <div className="relative group">
-              {/* Primary Anchor: Decorated Corridor with sophisticated curved silhouette */}
-              <div 
-                onClick={() => openStackLightbox([corridorImg, courtyardImg, nightCampusImg, hallwayImg, lawnImg], 'Collegiate Atmosphere')}
-                className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden rounded-[36px_16px_48px_16px] border border-[#0A1931]/10 bg-slate-100 shadow-[0_16px_40px_rgba(10,25,49,0.07)] cursor-pointer hover:brightness-105 transition-all duration-300"
-              >
-                <img
-                  key={currentCorridorImg}
-                  src={currentCorridorImg}
-                  alt="Student Life Beyond the Classroom - Decorated Corridor at UCP Bahawalpur"
-                  loading="eager"
-                  className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.03] animate-in fade-in"
-                />
-                
-                {/* Refined gradient scrim for editorial caption */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/85 via-[#0A1931]/20 to-transparent pointer-events-none" />
-
-                <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 text-white pointer-events-none">
-                  <span className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#C5A880] font-semibold block mb-1.5">
-                    COLLEGIATE ATMOSPHERE
-                  </span>
-                  <h3 
-                    className="font-serif text-2xl sm:text-3xl font-bold leading-tight drop-shadow-sm mb-2"
-                    style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                  >
-                    The Rhythm of Campus Life
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-200 font-sans leading-relaxed max-w-md">
-                    Themed academic corridors, student exhibition displays, and seasonal campus celebrations that bring energy to daily collegiate study.
-                  </p>
+              {/* ROW 2: 3 Joined Images (Left, Center landmark, Right) */}
+              <div className="grid grid-cols-12 gap-2 sm:gap-2.5 w-full">
+                <div className="col-span-4">
+                  {renderDynamicSlot(2, 'aspect-[4/3]')}
+                </div>
+                <div className="col-span-4">
+                  {renderDynamicSlot(3, 'aspect-[4/3]')}
+                </div>
+                <div className="col-span-4">
+                  {renderDynamicSlot(4, 'aspect-[4/3]')}
                 </div>
               </div>
 
-              {/* Decorative Subtle Accent Tag */}
-              <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-[#0A1931]/10 shadow-lg text-[11px] font-mono uppercase tracking-wider text-[#0A1931]">
-                <Sparkles size={13} className="text-[#C5A880]" />
-                <span>Editorial Feature</span>
+              {/* ROW 3: Left Image, Center Branding Card, Right Image */}
+              <div className="grid grid-cols-12 gap-2 sm:gap-2.5 w-full items-stretch">
+                <div className="col-span-4">
+                  {renderDynamicSlot(5, 'aspect-[4/3]')}
+                </div>
+
+                {/* CENTER BRANDING BLOCK */}
+                <div className="col-span-4 relative flex flex-col items-center justify-center bg-[#07192f] p-4 sm:p-6 text-center select-none overflow-hidden border border-white/20">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#1d4ed8_0%,transparent_75%)] opacity-20 pointer-events-none" />
+
+                  <span
+                    className="text-white font-normal leading-none mb-3 sm:mb-4 tracking-wide"
+                    style={{
+                      fontFamily: "'Great Vibes', cursive, 'Playfair Display', serif",
+                      fontSize: 'clamp(38px, 4.2vw, 56px)',
+                      textShadow: '0 2px 14px rgba(0,0,0,0.6)',
+                    }}
+                  >
+                    Campus life
+                  </span>
+
+                  <div className="flex items-center justify-center my-1 sm:my-2">
+                    <img
+                      src="/assets/ucp-official-logo.png"
+                      alt="University of Central Punjab"
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-contain filter drop-shadow-md"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-1">
+                    <span className="font-['Cinzel',serif] text-xs sm:text-sm lg:text-base font-bold uppercase tracking-[0.18em] text-white block">
+                      University of Central Punjab
+                    </span>
+                    <span className="text-[10px] sm:text-xs font-mono font-medium tracking-[0.25em] text-amber-400 uppercase mt-0.5 block">
+                      Bahawalpur Campus
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col-span-4">
+                  {renderDynamicSlot(6, 'aspect-[4/3]')}
+                </div>
               </div>
+
             </div>
-          </div>
 
-          {/* Right Column: Arched Courtyard Photograph & Editorial Narrative */}
-          <div className="lg:col-span-6 flex flex-col space-y-8">
-            
-            {/* Arched Courtyard Image (Large curved/rounded photograph) */}
-            <div 
-              onClick={() => openStackLightbox([courtyardImg, corridorImg, hallwayImg, lawnImg, redCarpetImg], 'Student Gathering Grounds')}
-              className="relative group overflow-hidden rounded-t-[70px] rounded-b-2xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_14px_35px_rgba(10,25,49,0.06)] aspect-[16/10] w-full cursor-pointer hover:brightness-105 transition-all duration-300"
-            >
-              <img
-                key={currentCourtyardImg}
-                src={currentCourtyardImg}
-                alt="Central Courtyards and Student Gathering Grounds at UCP Bahawalpur"
-                loading="eager"
-                className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.03] animate-in fade-in"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/80 via-transparent to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-5 left-6 right-6 text-white pointer-events-none">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A880] font-semibold block mb-0.5">
-                  STUDENT GATHERING GROUNDS
+            {/* ----------------- MOBILE VIEW (<768px): CLEAR, ADAPTIVE ----------------- */}
+            <div className="flex md:hidden flex-col gap-2 w-full">
+              <div className="w-full flex flex-col items-center justify-center bg-[#07192f] py-6 px-4 text-center border border-white/20">
+                <span
+                  className="text-white font-normal leading-none mb-2"
+                  style={{
+                    fontFamily: "'Great Vibes', cursive, 'Playfair Display', serif",
+                    fontSize: 'clamp(34px, 9vw, 46px)',
+                  }}
+                >
+                  Campus life
                 </span>
-                <h4 
-                  className="font-serif text-xl sm:text-2xl font-bold leading-snug drop-shadow-sm"
-                  style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                >
-                  Central Courtyards & Open Quads
-                </h4>
-              </div>
-            </div>
-
-            {/* Editorial Narrative Block */}
-            <div className="space-y-6 pt-2">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2.5">
-                  <span className="h-2 w-2 rounded-full bg-[#A51C30]" />
-                  <span className="font-mono text-xs uppercase tracking-[0.22em] text-[#A51C30] font-bold">
-                    COMMUNITY & LEADERSHIP
-                  </span>
+                <div className="flex items-center justify-center my-1.5">
+                  <img
+                    src="/assets/ucp-official-logo.png"
+                    alt="UCP"
+                    className="w-12 h-12 object-contain filter drop-shadow"
+                  />
                 </div>
-                <h3 
-                  className="text-2xl sm:text-3xl font-serif font-bold text-[#0A1931] leading-tight"
-                  style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                >
-                  A Vibrant Ecosystem of Student Engagement
-                </h3>
-                <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-sans">
-                  At UCP Bahawalpur, learning thrives in conversation. Between classes, students gather in lush quads, plan national debating fixtures, organize theatre festivals, and coordinate community outreach programs.
-                </p>
+                <span className="font-['Cinzel',serif] text-xs font-bold uppercase tracking-[0.16em] text-white">
+                  University of Central Punjab
+                </span>
+                <span className="text-[10px] font-mono tracking-[0.22em] text-amber-400 uppercase mt-0.5">
+                  Bahawalpur Campus
+                </span>
               </div>
 
-              {/* Sophisticated Distinctive Columns (No childish cards or heavy borders) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-[#0A1931]/10">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0A1931] font-bold uppercase tracking-wider">
-                    <Users size={14} className="text-[#C5A880]" />
-                    <span>65+ Active Societies</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Student-governed chapters spanning Literary, Debates, Computer Science, Dramatic Arts, and Entrepreneurship.
-                  </p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0A1931] font-bold uppercase tracking-wider">
-                    <Calendar size={14} className="text-[#C5A880]" />
-                    <span>Annual Traditions</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Inter-faculty Olympiads, spring festivals, cultural galas, and regional excursions across Pakistan.
-                  </p>
-                </div>
-              </div>
-
-              {/* Clean Editorial Action Link */}
-              {onOpenCampusLifePage && (
-                <div className="pt-2">
-                  <button
-                    onClick={onOpenCampusLifePage}
-                    className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#0A1931] hover:text-[#A51C30] transition-colors cursor-pointer group"
-                  >
-                    <span>View Dedicated Campus Life Archive</span>
-                    <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5 text-[#C5A880]" />
-                  </button>
-                </div>
-              )}
-            </div>
-
-          </div>
-        </div>
-
-        {/* ====================================================================
-            3. CINEMATIC WIDE ARCHITECTURAL PANORAMA — "CAMPUS AFTER HOURS"
-            Large, immersive photograph with rounded curvature and refined typography
-            ==================================================================== */}
-        <div 
-          ref={nightSpreadRef}
-          className={`mb-32 sm:mb-40 transition-all duration-800 ease-out ${
-            nightSpreadVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div 
-            onClick={() => openStackLightbox([nightCampusImg, corridorImg, courtyardImg, closingDramaticImg, hallwayImg], 'Campus After Hours')}
-            className="relative group overflow-hidden rounded-[28px] sm:rounded-[40px] border border-[#0A1931]/10 bg-[#07192F] shadow-[0_20px_50px_rgba(10,25,49,0.08)] cursor-pointer hover:brightness-105 transition-all duration-300"
-          >
-            <div className="relative aspect-[16/10] sm:aspect-[21/9] w-full overflow-hidden">
-              <img
-                key={currentNightCampusImg}
-                src={currentNightCampusImg}
-                alt="Campus After Hours - Illuminated Architectural View of UCP Bahawalpur"
-                loading="eager"
-                className="w-full h-full object-cover object-center transition-all duration-1000 ease-out group-hover:scale-[1.025] animate-in fade-in"
-              />
-
-              {/* Scrim for rich evening atmosphere */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07192F]/90 via-[#07192F]/30 to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-6 left-6 right-6 sm:bottom-12 sm:left-12 sm:right-12 flex flex-col md:flex-row md:items-end justify-between gap-6 text-white pointer-events-none">
-                <div className="max-w-2xl">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-[11px] font-mono uppercase tracking-[0.26em] text-[#C5A880] font-bold">
-                      CAMPUS AFTER HOURS
-                    </span>
-                    <span className="h-px w-8 bg-[#C5A880]/50" />
-                  </div>
-
-                  <h3 
-                    className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white drop-shadow-md mb-2 sm:mb-3"
-                    style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                  >
-                    Where Academic Passion Extends into the Evening
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-slate-200 font-sans leading-relaxed max-w-xl">
-                    As twilight settles over the Cholistan horizon, the campus architecture illuminates, welcoming evening symposiums, hackathons, robotics labs, and collaborative team research that carry forward student curiosity.
-                  </p>
-                </div>
-
-                <div className="pointer-events-auto flex-shrink-0">
-                  {onOpenCampusLifePage && (
-                    <button
-                      onClick={onOpenCampusLifePage}
-                      className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/30 text-xs font-mono uppercase tracking-widest backdrop-blur-md transition-all duration-300 shadow-sm hover:shadow-lg active:scale-95 cursor-pointer group"
+              <div className="columns-2 gap-2 w-full">
+                {[0, 1, 2, 3, 4, 5, 6].map((slotIdx) => {
+                  const slot = getSlotImage(slotIdx);
+                  return (
+                    <div
+                      key={`mob-flag-${slotIdx}`}
+                      onClick={() => openLightbox(slot.index)}
+                      className="break-inside-avoid mb-2 relative overflow-hidden bg-slate-900 cursor-pointer rounded-sm"
                     >
-                      <span>Explore Experiences</span>
-                      <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1 text-[#C5A880]" />
-                    </button>
-                  )}
-                </div>
+                      <AnimatePresence mode="popLayout">
+                        <motion.img
+                          key={slot.image.id}
+                          src={slot.image.localSrc}
+                          alt={slot.image.alt}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.8 }}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-auto block object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = slot.image.fallbackSrc;
+                          }}
+                        />
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
               </div>
-
             </div>
-          </div>
-        </div>
 
-        {/* ====================================================================
-            4. INFINITE HORIZONTAL IMAGE MARQUEE SECTION
-            Heading:
-            "Moments That Define Campus Life"
-            Below it:
-            "Explore the people, experiences, events and memories that make UCP Bahawalpur more than a place to study."
-            Continuous movement from LEFT TO RIGHT with smooth hover pause.
-            Large, clearly visible, premium proportions, no tiny thumbnails.
-            ==================================================================== */}
-        <div 
-          ref={marqueeHeaderRef}
-          className={`space-y-10 sm:space-y-12 transition-all duration-700 ease-out ${
-            marqueeHeaderVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'
-          }`}
-        >
-          {/* Header above Marquee */}
-          <div className="text-center max-w-3xl mx-auto space-y-3 px-4">
-            <span className="text-xs font-mono font-bold uppercase tracking-[0.26em] text-[#C5A880]">
-              CURATED RETROSPECTIVE
+          </div>
+        </motion.div>
+
+        {/* =========================================================================
+            DYNAMIC MASONRY GALLERY (ALL IMAGES - FRAMES ADAPT TO PIC SIZE)
+            ========================================================================= */}
+        <div className="w-full max-w-6xl mx-auto mt-10 sm:mt-16">
+          <div className="flex items-center justify-between mb-5 px-1 border-b border-white/10 pb-3">
+            <div>
+              <span className="text-xs font-mono font-bold uppercase tracking-[0.22em] text-amber-400 block">
+                Campus Moments Gallery
+              </span>
+              <span className="text-xs text-slate-300 font-sans mt-0.5 block">
+                Full collection of {CAMPUS_GALLERY_IMAGES.length} collegiate moments — showing full photo frames
+              </span>
+            </div>
+            <span className="text-xs font-mono text-slate-400 hidden sm:inline">
+              Click any photo to expand full-screen
             </span>
-            <h3 
-              className="text-2xl sm:text-4xl font-serif font-bold text-[#0A1931] tracking-tight leading-tight"
-              style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-            >
-              Moments That Define Campus Life
-            </h3>
-            <p className="text-sm sm:text-base text-slate-600 font-sans leading-relaxed max-w-2xl mx-auto">
-              Explore the people, experiences, events and memories that make UCP Bahawalpur more than a place to study.
-            </p>
           </div>
 
-          {/* Marquee Outer Container with Edge Fade Masks */}
-          <div className="marquee-container relative w-full overflow-hidden py-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-            
-            {/* Left & Right Editorial Fades for Seamless Viewport Transitions */}
-            <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#FDFBF7] to-transparent z-20 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#FDFBF7] to-transparent z-20 pointer-events-none" />
-
-            {/* Seamless Infinite Marquee Track Moving LEFT TO RIGHT */}
-            <div className="animate-marquee-ltr flex items-center gap-6 sm:gap-8">
-              
-              {/* First Sequence of Large Premium Images */}
-              {marqueeItems.map((item, idx) => (
-                <div 
-                  key={`mq-first-${item.id}-${idx}`}
-                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer hover:brightness-105 transition-all duration-300"
-                  onClick={() => {
-                    const fiveImages = [
-                      item.image,
-                      ...marqueeItems.map(m => m.image).filter(img => img !== item.image)
-                    ].slice(0, 5);
-                    openStackLightbox(fiveImages, item.tag || item.title);
-                  }}
+          <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 gap-3 sm:gap-4 w-full">
+            {CAMPUS_GALLERY_IMAGES.map((img, idx) => {
+              return (
+                <motion.div
+                  key={`ext-masonry-${img.id}`}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.4 }}
+                  onClick={() => openLightbox(idx)}
+                  className="break-inside-avoid mb-3 sm:mb-4 relative rounded-xl overflow-hidden bg-[#0a1e3b] border border-white/15 shadow-md group cursor-pointer transition-all duration-300 hover:border-amber-400/60 hover:shadow-xl hover:-translate-y-0.5"
                 >
                   <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="eager"
-                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/card:scale-105"
+                    src={img.localSrc}
+                    alt={img.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-auto block rounded-xl transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = img.fallbackSrc;
+                    }}
                   />
-                  
-                  {/* Scrim */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/85 via-[#0A1931]/20 to-transparent pointer-events-none transition-opacity duration-300 group-hover/card:opacity-95" />
-
-                  {/* Editorial Tag & Title Overlay */}
-                  <div className="absolute bottom-4 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 text-white pointer-events-none">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#C5A880] font-semibold block mb-1">
-                      {item.tag}
-                    </span>
-                    <h4 
-                      className="font-serif text-base sm:text-xl font-bold text-white leading-tight drop-shadow-xs mb-1"
-                      style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                    >
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 font-sans">
-                      {item.subtitle}
-                    </p>
+                  <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none rounded-xl">
+                    <Maximize2 size={22} className="text-white drop-shadow-md" />
                   </div>
-                </div>
-              ))}
-
-              {/* Exact Duplicated Sequence for Perfect Gapless Infinite Loop (Left-to-Right) */}
-              {marqueeItems.map((item, idx) => (
-                <div 
-                  key={`mq-second-${item.id}-${idx}`}
-                  className="group/card relative w-[320px] sm:w-[400px] md:w-[440px] aspect-[16/11] flex-shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-[#0A1931]/10 bg-slate-100 shadow-[0_10px_30px_rgba(10,25,49,0.06)] cursor-pointer hover:brightness-105 transition-all duration-300"
-                  onClick={() => {
-                    const fiveImages = [
-                      item.image,
-                      ...marqueeItems.map(m => m.image).filter(img => img !== item.image)
-                    ].slice(0, 5);
-                    openStackLightbox(fiveImages, item.tag || item.title);
-                  }}
-                  aria-hidden="true"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="eager"
-                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/card:scale-105"
-                  />
-                  
-                  {/* Scrim */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1931]/85 via-[#0A1931]/20 to-transparent pointer-events-none transition-opacity duration-300 group-hover/card:opacity-95" />
-
-                  {/* Editorial Tag & Title Overlay */}
-                  <div className="absolute bottom-4 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 text-white pointer-events-none">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#C5A880] font-semibold block mb-1">
-                      {item.tag}
-                    </span>
-                    <h4 
-                      className="font-serif text-base sm:text-xl font-bold text-white leading-tight drop-shadow-xs mb-1"
-                      style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                    >
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] sm:text-xs text-slate-200 line-clamp-1 font-sans">
-                      {item.subtitle}
-                    </p>
-                  </div>
-                </div>
-              ))}
-
-            </div>
+                </motion.div>
+              );
+            })}
           </div>
+
         </div>
 
       </div>
 
-      {/* Fading Stack Lightbox Modal */}
-      <FadingStackLightbox
-        isOpen={stackLightboxOpen}
-        onClose={() => setStackLightboxOpen(false)}
-        images={stackLightboxImages}
-        categoryName={stackLightboxCategory}
-      />
-    </section>
+      {/* =========================================================================
+          HIGH-RESOLUTION LIGHTBOX MODAL (SHOWS FULL PICTURE, NO CROP)
+          ========================================================================= */}
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={closeLightbox}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          >
+            <button
+              onClick={closeLightbox}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+              aria-label="Close image lightbox"
+            >
+              <X size={24} />
+            </button>
 
-    {/* UCP ELITE STUDENT NETWORK — Volunteer Team Members Section */}
-    <UcpEliteNetworkSection />
-    </>
+            <div className="absolute top-5 left-5 z-50 text-xs font-mono text-white/70 bg-black/50 px-3 py-1 rounded-full border border-white/20">
+              {lightboxIndex + 1} / {CAMPUS_GALLERY_IMAGES.length}
+            </div>
+
+            <button
+              onClick={handlePrev}
+              className="absolute left-3 sm:left-6 z-50 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 transition-all cursor-pointer"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="absolute right-3 sm:right-6 z-50 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 transition-all cursor-pointer"
+              aria-label="Next image"
+            >
+              <ChevronRight size={24} />
+            </button>
+
+            <motion.div
+              key={lightboxIndex}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl max-h-[88vh] w-full flex items-center justify-center"
+            >
+              <img
+                src={CAMPUS_GALLERY_IMAGES[lightboxIndex]?.localSrc}
+                alt={CAMPUS_GALLERY_IMAGES[lightboxIndex]?.alt}
+                className="max-w-full max-h-[88vh] w-auto h-auto object-contain rounded-md shadow-2xl border border-white/20"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    CAMPUS_GALLERY_IMAGES[lightboxIndex]?.fallbackSrc || '';
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </section>
   );
 };
 

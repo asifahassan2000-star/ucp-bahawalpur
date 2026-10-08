@@ -1,123 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  GraduationCap, Briefcase, ArrowLeft, ArrowRight, 
-  Search, BookOpen, Building2, User, Filter, CheckCircle2 
-} from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { FacultyProfileModal } from './FacultyProfileModal';
 import { FacultyStickyGallery } from './FacultyStickyGallery';
+import { ALL_FACULTY_MEMBERS, FacultyMemberData } from '../data/facultyData';
 
-export interface FacultySlot {
-  id: number;
-  name: string;
-  designation: string;
-  photoUrl: string;
-}
-
-export const OFFICIAL_FACULTY_MEMBERS: FacultySlot[] = [
-  {
-    id: 1,
-    name: 'Prof. Uzma Zulqurnai',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 2,
-    name: 'Dr. Abdul Kareem',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 3,
-    name: 'Prof. Shahid Gulzar',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 4,
-    name: 'Prof. Sibghat',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 5,
-    name: 'Dr. Abbas Haider',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 6,
-    name: 'Dr. Mushtaq',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 7,
-    name: 'Dr. Abdul Raouf',
-    designation: 'Associate Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 8,
-    name: 'Dr. M. Tahir',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 9,
-    name: 'Prof. Khizer Hayat',
-    designation: 'Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 10,
-    name: 'Prof. Ali Shan',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 11,
-    name: 'Prof. Usman Kazmi',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 12,
-    name: 'Prof. Abeer Aslam',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 13,
-    name: 'Prof. Marriam Gill',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 14,
-    name: 'Prof. Humra Owj',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 15,
-    name: 'Prof. Iqra Shabbir',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 16,
-    name: 'Prof. Aliya Batool',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 17,
-    name: 'Prof. Huzaifa Akmal',
-    designation: 'Assistant Professor',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  },
-];
+export type FacultySlot = FacultyMemberData;
+export const OFFICIAL_FACULTY_MEMBERS = ALL_FACULTY_MEMBERS;
 
 interface FacultyPageProps {
   onBackToHome: () => void;
@@ -128,11 +17,13 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
   onBackToHome,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedFaculty, setSelectedFaculty] = useState<FacultySlot | null>(null);
+  const [selectedFaculty, setSelectedFaculty] = useState<FacultyMemberData | null>(null);
 
-  const filteredFaculty = OFFICIAL_FACULTY_MEMBERS.filter(faculty => {
+  const filteredFaculty = ALL_FACULTY_MEMBERS.filter(faculty => {
     return searchQuery === '' || 
-      faculty.name.toLowerCase().includes(searchQuery.toLowerCase());
+      faculty.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faculty.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faculty.department.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -147,7 +38,7 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
             <button
               id="back-to-home-btn"
               onClick={onBackToHome}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-200 hover:text-amber-300 transition-colors bg-white/10 hover:bg-white/15 px-3.5 py-1.5 rounded-lg border border-white/15"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-200 hover:text-amber-300 transition-colors bg-white/10 hover:bg-white/15 px-3.5 py-1.5 rounded-lg border border-white/15 cursor-pointer"
             >
               <ArrowLeft size={16} />
               <span>Back to Home</span>
@@ -182,7 +73,7 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-300 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-300 hover:text-white cursor-pointer"
                 >
                   Clear
                 </button>
@@ -199,38 +90,28 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
         {/* Directory Count Header */}
         <div className="mb-8 pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-1.5 h-4 bg-[#a30f16] rounded-xs inline-block" />
-              <span className="text-xs font-bold text-[#a30f16] uppercase tracking-wider">
-                Official Directory
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#092242]">
+            <h2 className="text-lg font-bold text-[#092242]">
               Academic Faculty Members
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Showing {filteredFaculty.length} distinguished faculty members
+            <p className="text-xs text-slate-500 font-sans mt-0.5">
+              Showing {filteredFaculty.length} of {ALL_FACULTY_MEMBERS.length} faculty profiles
             </p>
           </div>
         </div>
 
-        {/* Official Faculty Members Grid — Responsive Cards Layout (Image, Name & Designation) */}
+        {/* Faculty Grid */}
         {filteredFaculty.length === 0 ? (
-          <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-            <User size={36} className="mx-auto text-slate-400 mb-2" />
-            <h3 className="text-base font-bold text-slate-700">No faculty members found</h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Try adjusting your search criteria.
-            </p>
+          <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+            <p className="text-sm text-slate-600">No faculty members found matching "{searchQuery}"</p>
             <button
               onClick={() => setSearchQuery('')}
-              className="mt-3 text-xs text-[#a30f16] font-semibold hover:underline"
+              className="mt-3 text-xs font-semibold text-[#092242] underline hover:text-[#b8121a] cursor-pointer"
             >
-              Reset Search
+              Clear search filter
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 pt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
             {filteredFaculty.map((faculty, index) => (
               <motion.div
                 key={faculty.id}
@@ -238,7 +119,7 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.5,
-                  delay: (index % 5) * 0.06,
+                  delay: (index % 4) * 0.06,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 viewport={{ once: true, amount: 0.15 }}
@@ -250,12 +131,11 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
                   <img
                     src={faculty.photoUrl}
                     alt={faculty.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                    className={`w-full h-full object-cover ${faculty.objectPosition || 'object-top'} transition-transform duration-500 ease-out group-hover:scale-105`}
                     loading="lazy"
                     decoding="async"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+                      (e.target as HTMLImageElement).src = faculty.fallbackPhotoUrl;
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -277,10 +157,10 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
 
       </main>
 
-      {/* 3. Our Faculty Glimpse — Apple-Style Sticky Scroll (Desktop 300vh, Mobile Clean Vertical Stack) */}
+      {/* 3. Our Faculty Glimpse — Apple-Style Sticky Scroll */}
       <FacultyStickyGallery />
 
-      {/* 4. Bottom Pagination / Back to Home navigation */}
+      {/* 4. Bottom Navigation */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <button
@@ -300,13 +180,14 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
       {/* Official Faculty Profile Modal */}
       <FacultyProfileModal
         faculty={selectedFaculty ? {
-          id: selectedFaculty.id,
+          id: selectedFaculty.name,
           name: selectedFaculty.name,
           designation: selectedFaculty.designation,
-          department: 'University of Central Punjab (Bahawalpur Campus)',
-          highestDegree: 'Distinguished Academic Faculty',
-          experience: 'Dedicated Academic Mentorship & Research',
-          intro: `${selectedFaculty.name} is a distinguished faculty member dedicated to teaching, student mentorship, and scholarly excellence at UCP Bahawalpur.`,
+          department: selectedFaculty.department,
+          highestDegree: selectedFaculty.highestDegree,
+          experience: selectedFaculty.experienceYears,
+          specialization: selectedFaculty.specialization,
+          intro: selectedFaculty.intro,
           photoUrl: selectedFaculty.photoUrl,
         } : null}
         isOpen={!!selectedFaculty}
@@ -316,3 +197,5 @@ export const FacultyPage: React.FC<FacultyPageProps> = ({
     </div>
   );
 };
+
+export default FacultyPage;

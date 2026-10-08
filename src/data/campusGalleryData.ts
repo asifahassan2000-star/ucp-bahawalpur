@@ -1,0 +1,303 @@
+export interface CampusGalleryImage {
+  id: number;
+  localSrc: string;
+  fallbackSrc: string;
+  alt: string;
+}
+
+export const CAMPUS_GALLERY_IMAGES: CampusGalleryImage[] = [
+  {
+    "id": 1,
+    "localSrc": "/assets/campus-life-new/campus-1.jpg",
+    "fallbackSrc": "https://i.ibb.co/wF7fbh1h/Whats-App-Image-2026-10-05-at-1-17-53-AM-13-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 1"
+  },
+  {
+    "id": 2,
+    "localSrc": "/assets/campus-life-new/campus-2.jpg",
+    "fallbackSrc": "https://i.ibb.co/qLNm8JHv/Whats-App-Image-2026-10-05-at-1-17-53-AM-12.jpg",
+    "alt": "UCP Bahawalpur Campus Life 2"
+  },
+  {
+    "id": 3,
+    "localSrc": "/assets/campus-life-new/campus-3.jpg",
+    "fallbackSrc": "https://i.ibb.co/MxkcXbzY/Whats-App-Image-2026-10-05-at-1-17-53-AM-11.jpg",
+    "alt": "UCP Bahawalpur Campus Life 3"
+  },
+  {
+    "id": 4,
+    "localSrc": "/assets/campus-life-new/campus-4.jpg",
+    "fallbackSrc": "https://i.ibb.co/bjYg3SZc/Whats-App-Image-2026-10-05-at-1-17-53-AM-9.jpg",
+    "alt": "UCP Bahawalpur Campus Life 4"
+  },
+  {
+    "id": 5,
+    "localSrc": "/assets/campus-life-new/campus-5.jpg",
+    "fallbackSrc": "https://i.ibb.co/dJXJwCKk/Whats-App-Image-2026-10-05-at-1-17-53-AM-7-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 5"
+  },
+  {
+    "id": 6,
+    "localSrc": "/assets/campus-life-new/campus-6.jpg",
+    "fallbackSrc": "https://i.ibb.co/PvhQzQgn/Whats-App-Image-2026-10-05-at-1-17-53-AM-5-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 6"
+  },
+  {
+    "id": 7,
+    "localSrc": "/assets/campus-life-new/campus-7.jpg",
+    "fallbackSrc": "https://i.ibb.co/KxnwgN6v/Whats-App-Image-2026-10-05-at-1-17-53-AM-4-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 7"
+  },
+  {
+    "id": 8,
+    "localSrc": "/assets/campus-life-new/campus-8.jpg",
+    "fallbackSrc": "https://i.ibb.co/rfQMzVZ6/Whats-App-Image-2026-10-05-at-1-17-53-AM-3-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 8"
+  },
+  {
+    "id": 9,
+    "localSrc": "/assets/campus-life-new/campus-9.jpg",
+    "fallbackSrc": "https://i.ibb.co/8D3ZbPGK/Whats-App-Image-2026-10-05-at-1-17-53-AM-2-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 9"
+  },
+  {
+    "id": 10,
+    "localSrc": "/assets/campus-life-new/campus-10.jpg",
+    "fallbackSrc": "https://i.ibb.co/tpSrPtDC/Whats-App-Image-2026-10-05-at-1-17-53-AM-1-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 10"
+  },
+  {
+    "id": 11,
+    "localSrc": "/assets/campus-life-new/campus-11.jpg",
+    "fallbackSrc": "https://i.ibb.co/yn90BQCV/Whats-App-Image-2026-10-05-at-1-17-53-AM-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 11"
+  },
+  {
+    "id": 12,
+    "localSrc": "/assets/campus-life-new/campus-12.jpg",
+    "fallbackSrc": "https://i.ibb.co/HTqzJNjb/Whats-App-Image-2026-10-05-at-1-12-46-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 12"
+  },
+  {
+    "id": 13,
+    "localSrc": "/assets/campus-life-new/campus-13.jpg",
+    "fallbackSrc": "https://i.ibb.co/yFqFszkp/Whats-App-Image-2026-10-05-at-2-39-06-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 13"
+  },
+  {
+    "id": 14,
+    "localSrc": "/assets/campus-life-new/campus-14.jpg",
+    "fallbackSrc": "https://i.ibb.co/d0PRZytK/Whats-App-Image-2026-10-05-at-2-39-14-AM-2.jpg",
+    "alt": "UCP Bahawalpur Campus Life 14"
+  },
+  {
+    "id": 15,
+    "localSrc": "/assets/campus-life-new/campus-15.jpg",
+    "fallbackSrc": "https://i.ibb.co/d0RFqWwY/Whats-App-Image-2026-10-08-at-12-46-41-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 15"
+  },
+  {
+    "id": 16,
+    "localSrc": "/assets/campus-life-new/campus-16.jpg",
+    "fallbackSrc": "https://i.ibb.co/QjrY7Kdj/Whats-App-Image-2026-10-08-at-12-48-20-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 16"
+  },
+  {
+    "id": 17,
+    "localSrc": "/assets/campus-life-new/campus-17.jpg",
+    "fallbackSrc": "https://i.ibb.co/rKVgFRvy/Whats-App-Image-2026-10-08-at-12-46-42-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 17"
+  },
+  {
+    "id": 18,
+    "localSrc": "/assets/campus-life-new/campus-18.jpg",
+    "fallbackSrc": "https://i.ibb.co/k20Sp6Gq/Whats-App-Image-2026-10-08-at-12-46-42-AM-3.jpg",
+    "alt": "UCP Bahawalpur Campus Life 18"
+  },
+  {
+    "id": 19,
+    "localSrc": "/assets/campus-life-new/campus-19.jpg",
+    "fallbackSrc": "https://i.ibb.co/RGbvfxFB/Whats-App-Image-2026-10-08-at-12-46-41-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 19"
+  },
+  {
+    "id": 20,
+    "localSrc": "/assets/campus-life-new/campus-20.jpg",
+    "fallbackSrc": "https://i.ibb.co/60dcG4G6/Whats-App-Image-2026-10-08-at-12-46-42-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 20"
+  },
+  {
+    "id": 21,
+    "localSrc": "/assets/campus-life-new/campus-21.jpg",
+    "fallbackSrc": "https://i.ibb.co/j9TWHkwv/Whats-App-Image-2026-10-05-at-2-39-14-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 21"
+  },
+  {
+    "id": 22,
+    "localSrc": "/assets/campus-life-new/campus-22.jpg",
+    "fallbackSrc": "https://i.ibb.co/7dn2pjhT/Whats-App-Image-2026-10-05-at-2-39-16-AM-Copy-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 22"
+  },
+  {
+    "id": 23,
+    "localSrc": "/assets/campus-life-new/campus-23.jpg",
+    "fallbackSrc": "https://i.ibb.co/Ndc8YMw4/Whats-App-Image-2026-10-05-at-2-39-16-AM-1-Copy-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 23"
+  },
+  {
+    "id": 24,
+    "localSrc": "/assets/campus-life-new/campus-24.jpg",
+    "fallbackSrc": "https://i.ibb.co/S4HkBCfy/Whats-App-Image-2026-10-05-at-2-39-04-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 24"
+  },
+  {
+    "id": 25,
+    "localSrc": "/assets/campus-life-new/campus-25.jpg",
+    "fallbackSrc": "https://i.ibb.co/Zz6vkHnG/Whats-App-Image-2026-10-05-at-2-39-04-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 25"
+  },
+  {
+    "id": 26,
+    "localSrc": "/assets/campus-life-new/campus-26.jpg",
+    "fallbackSrc": "https://i.ibb.co/Hfkk9bSJ/Whats-App-Image-2026-10-05-at-2-39-03-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 26"
+  },
+  {
+    "id": 27,
+    "localSrc": "/assets/campus-life-new/campus-27.jpg",
+    "fallbackSrc": "https://i.ibb.co/gM7hwfzK/Whats-App-Image-2026-10-05-at-2-39-01-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 27"
+  },
+  {
+    "id": 28,
+    "localSrc": "/assets/campus-life-new/campus-28.jpg",
+    "fallbackSrc": "https://i.ibb.co/wrr33WD5/Whats-App-Image-2026-10-05-at-2-39-00-AM-2.jpg",
+    "alt": "UCP Bahawalpur Campus Life 28"
+  },
+  {
+    "id": 29,
+    "localSrc": "/assets/campus-life-new/campus-29.jpg",
+    "fallbackSrc": "https://i.ibb.co/5ddtRNL/Whats-App-Image-2026-10-05-at-2-38-57-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 29"
+  },
+  {
+    "id": 30,
+    "localSrc": "/assets/campus-life-new/campus-30.jpg",
+    "fallbackSrc": "https://i.ibb.co/20TtTtdG/Whats-App-Image-2026-10-05-at-2-38-58-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 30"
+  },
+  {
+    "id": 31,
+    "localSrc": "/assets/campus-life-new/campus-31.jpg",
+    "fallbackSrc": "https://i.ibb.co/7t01ZKFr/Whats-App-Image-2026-10-05-at-2-38-59-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 31"
+  },
+  {
+    "id": 32,
+    "localSrc": "/assets/campus-life-new/campus-32.jpg",
+    "fallbackSrc": "https://i.ibb.co/QFrv62X0/Whats-App-Image-2026-10-05-at-2-38-58-AM-2.jpg",
+    "alt": "UCP Bahawalpur Campus Life 32"
+  },
+  {
+    "id": 33,
+    "localSrc": "/assets/campus-life-new/campus-33.jpg",
+    "fallbackSrc": "https://i.ibb.co/vxpfgrLP/Whats-App-Image-2026-10-05-at-2-39-01-AM-2.jpg",
+    "alt": "UCP Bahawalpur Campus Life 33"
+  },
+  {
+    "id": 34,
+    "localSrc": "/assets/campus-life-new/campus-34.jpg",
+    "fallbackSrc": "https://i.ibb.co/8nwhjT2X/Whats-App-Image-2026-10-05-at-2-39-01-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 34"
+  },
+  {
+    "id": 35,
+    "localSrc": "/assets/campus-life-new/campus-35.jpg",
+    "fallbackSrc": "https://i.ibb.co/kvPGG1D/Whats-App-Image-2026-10-05-at-2-38-55-AM-2.jpg",
+    "alt": "UCP Bahawalpur Campus Life 35"
+  },
+  {
+    "id": 36,
+    "localSrc": "/assets/campus-life-new/campus-36.jpg",
+    "fallbackSrc": "https://i.ibb.co/pvSKPsfW/Whats-App-Image-2026-10-05-at-2-38-52-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 36"
+  },
+  {
+    "id": 37,
+    "localSrc": "/assets/campus-life-new/campus-37.jpg",
+    "fallbackSrc": "https://i.ibb.co/NgfpTLRD/Whats-App-Image-2026-10-05-at-2-38-52-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 37"
+  },
+  {
+    "id": 38,
+    "localSrc": "/assets/campus-life-new/campus-38.jpg",
+    "fallbackSrc": "https://i.ibb.co/6JH4rbCJ/Whats-App-Image-2026-10-05-at-2-39-00-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 38"
+  },
+  {
+    "id": 39,
+    "localSrc": "/assets/campus-life-new/campus-39.jpg",
+    "fallbackSrc": "https://i.ibb.co/VWKTk73X/Whats-App-Image-2026-10-05-at-2-39-02-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 39"
+  },
+  {
+    "id": 40,
+    "localSrc": "/assets/campus-life-new/campus-40.jpg",
+    "fallbackSrc": "https://i.ibb.co/rRWwyJCc/Whats-App-Image-2026-10-05-at-2-39-05-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 40"
+  },
+  {
+    "id": 41,
+    "localSrc": "/assets/campus-life-new/campus-41.jpg",
+    "fallbackSrc": "https://i.ibb.co/39pXpSW1/Whats-App-Image-2026-10-05-at-2-39-17-AM-2-Copy-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 41"
+  },
+  {
+    "id": 42,
+    "localSrc": "/assets/campus-life-new/campus-42.jpg",
+    "fallbackSrc": "https://i.ibb.co/nsgLtdnw/Whats-App-Image-2026-10-05-at-2-39-17-AM-Copy-Copy.jpg",
+    "alt": "UCP Bahawalpur Campus Life 42"
+  },
+  {
+    "id": 43,
+    "localSrc": "/assets/campus-life-new/campus-43.jpg",
+    "fallbackSrc": "https://i.ibb.co/QFfNPhws/Whats-App-Image-2026-10-05-at-2-39-15-AM-1.jpg",
+    "alt": "UCP Bahawalpur Campus Life 43"
+  },
+  {
+    "id": 44,
+    "localSrc": "/assets/campus-life-new/campus-44.jpg",
+    "fallbackSrc": "https://i.ibb.co/SwkNDSvC/Whats-App-Image-2026-10-06-at-12-11-15-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 44"
+  },
+  {
+    "id": 45,
+    "localSrc": "/assets/campus-life-new/campus-45.jpg",
+    "fallbackSrc": "https://i.ibb.co/fYxXJxTR/Whats-App-Image-2026-10-08-at-12-46-42-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 45"
+  },
+  {
+    "id": 46,
+    "localSrc": "/assets/campus-life-new/campus-46.jpg",
+    "fallbackSrc": "https://i.ibb.co/WWVkFHwy/Whats-App-Image-2026-10-08-at-12-48-20-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 46"
+  },
+  {
+    "id": 47,
+    "localSrc": "/assets/campus-life-new/campus-47.jpg",
+    "fallbackSrc": "https://i.ibb.co/JYCmfbX/Whats-App-Image-2026-10-08-at-12-46-43-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 47"
+  },
+  {
+    "id": 48,
+    "localSrc": "/assets/campus-life-new/campus-48.jpg",
+    "fallbackSrc": "https://i.ibb.co/1txtRyKG/Whats-App-Image-2026-10-08-at-12-41-42-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 48"
+  },
+  {
+    "id": 49,
+    "localSrc": "/assets/campus-life-new/campus-49.jpg",
+    "fallbackSrc": "https://i.ibb.co/LXFcmYVG/Whats-App-Image-2026-10-08-at-12-41-41-AM.jpg",
+    "alt": "UCP Bahawalpur Campus Life 49"
+  }
+];
