@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { FacultyProfileModal } from './FacultyProfileModal';
+import { FacultyStickyGallery } from './FacultyStickyGallery';
 import { ALL_FACULTY_MEMBERS, FacultyMemberData } from '../data/facultyData';
 
 export type FacultyMember = FacultyMemberData;
@@ -11,65 +12,80 @@ interface FacultySectionProps {
   onViewAllFaculty?: (category?: string) => void;
 }
 
+// 5 Curated Academic Leaders representing core academic pillars
+const FEATURED_IDS = [
+  'dr-abdul-kareem',     // CS & AI
+  'dr-abbas-haider',     // Electrical & Systems Engineering
+  'prof-ali-shan',       // Software Engineering
+  'prof-uzma-zulqurnai', // Humanities & Social Sciences
+  'prof-shahid-gulzar',  // Management Sciences
+];
+
 export const FacultySection: React.FC<FacultySectionProps> = ({
   onViewAllFaculty
 }) => {
   const [selectedFaculty, setSelectedFaculty] = useState<FacultyMember | null>(null);
 
+  // Exact 5 featured faculty members
+  const featuredFaculty: FacultyMemberData[] = FEATURED_IDS.map(id => 
+    ALL_FACULTY_MEMBERS.find(f => f.id === id)
+  ).filter((f): f is FacultyMemberData => !!f);
+
   return (
     <section 
       id="faculty-section" 
-      className="bg-white py-[100px] border-b border-[#E5E7EB] text-[#0F2C61]"
+      className="bg-white py-10 sm:py-12 md:py-14 border-b border-slate-200 text-[#0F2C61] relative"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Minimal, Editorial Section Header */}
-        <div className="mb-14 sm:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        {/* Compact, Clean Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8 sm:mb-9">
           <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="w-8 h-[2px] bg-[#C5A059]" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#C5A059]">
-                Distinguished Academia
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-5 h-[2px] bg-[#C5A059]" />
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#C5A059]">
+                Distinguished Faculty
               </span>
             </div>
-            <h2 className="font-['Playfair_Display',serif] text-3xl sm:text-4xl lg:text-5xl font-normal text-[#0F2C61] tracking-tight">
+            
+            <h2 className="font-['Playfair_Display',serif] text-2xl sm:text-3xl lg:text-4xl font-normal text-[#0F2C61] tracking-tight">
               Our Faculty
             </h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 font-sans max-w-2xl leading-relaxed">
-              Distinguished professors, researchers, and mentors leading academic excellence at UCP Bahawalpur.
-            </p>
           </div>
 
           {onViewAllFaculty && (
             <button
               onClick={() => onViewAllFaculty('all')}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0F2C61] hover:text-[#C5A059] group transition-colors cursor-pointer self-start md:self-end shrink-0"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#0F2C61] hover:text-[#a30f16] group transition-colors cursor-pointer self-start sm:self-end shrink-0"
             >
-              <span>View Faculty Directory</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              <span>View All 20 Faculty Profiles</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           )}
         </div>
 
-        {/* Official Faculty Members Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 pt-4">
-          {ALL_FACULTY_MEMBERS.map((faculty, index) => {
+        {/* 
+          All Five Visible Clearly in a Single Compact, Minimal Row
+          Cards show ONLY Photo + Name (all extra metadata removed; viewable in profile modal on click)
+        */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-5">
+          {featuredFaculty.map((faculty, index) => {
             return (
               <motion.div
                 key={faculty.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.6,
-                  delay: (index % 4) * 0.08,
+                  duration: 0.5,
+                  delay: index * 0.07,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                viewport={{ once: true, amount: 0.15 }}
+                viewport={{ once: true, amount: 0.2 }}
                 onClick={() => setSelectedFaculty(faculty)}
                 className="group flex flex-col items-center text-center cursor-pointer"
               >
-                {/* Official Portrait Frame */}
-                <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/90 shadow-xs group-hover:shadow-md group-hover:border-[#C5A059]/60 transition-all duration-300 relative">
+                {/* Compact, Crisp Portrait */}
+                <div className="w-full aspect-[4/5] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/90 shadow-xs group-hover:shadow-md group-hover:border-[#C5A059] transition-all duration-300 relative">
                   <img
                     src={faculty.photoUrl}
                     alt={faculty.name}
@@ -80,47 +96,28 @@ export const FacultySection: React.FC<FacultySectionProps> = ({
                       (e.target as HTMLImageElement).src = faculty.fallbackPhotoUrl;
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
 
-                {/* Name: Crisp, prominent typography */}
-                <div className="mt-3.5 px-1">
-                  <h3 className="font-['Playfair_Display',serif] text-base sm:text-lg font-bold text-[#0F2C61] group-hover:text-[#b8121a] transition-colors leading-snug">
+                {/* Just the Name */}
+                <div className="mt-2.5 px-0.5 w-full">
+                  <h3 className="font-['Playfair_Display',serif] text-sm sm:text-base font-bold text-[#0F2C61] group-hover:text-[#a30f16] transition-colors leading-snug line-clamp-2">
                     {faculty.name}
                   </h3>
-                  <p className="text-xs text-slate-500 font-sans mt-0.5 font-medium">
-                    {faculty.designation}
-                  </p>
                 </div>
               </motion.div>
             );
           })}
         </div>
 
-        {/* Minimal Directory Footer Callout */}
-        {onViewAllFaculty && (
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 p-6 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB]">
-            <div>
-              <h4 className="font-['Playfair_Display',serif] text-lg font-medium text-[#0F2C61]">
-                Academic Faculty Directory
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 font-sans">
-                Browse all {ALL_FACULTY_MEMBERS.length} faculty members across academic departments and disciplines.
-              </p>
-            </div>
-            <button
-              onClick={() => onViewAllFaculty('all')}
-              className="bg-[#0F2C61] hover:bg-[#1a428a] text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-xs hover:shadow shrink-0"
-            >
-              <span>View Full Directory</span>
-              <ArrowRight size={14} />
-            </button>
-          </div>
-        )}
-
       </div>
 
-      {/* Premium Faculty Profile Modal */}
+      {/* Faculty in Action: One Image Place with Scroll Transitions & 3s Auto-Change */}
+      <div className="mt-8 border-t border-slate-100">
+        <FacultyStickyGallery />
+      </div>
+
+      {/* Premium Faculty Profile Modal - Displays full degree, department, experience, and specialization on click */}
       <FacultyProfileModal
         faculty={selectedFaculty ? {
           id: selectedFaculty.name,

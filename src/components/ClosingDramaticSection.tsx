@@ -25,7 +25,7 @@ export const ClosingDramaticSection: React.FC<ClosingDramaticSectionProps> = ({
         <img
           src="/assets/campus/14_closing_dramatic_campus.jpg"
           alt="Dramatic Architectural Perspective of University of Central Punjab Bahawalpur"
-          loading="eager"
+          loading="lazy"
           decoding="async"
           className="w-full h-full object-cover object-center scale-100 hover:scale-105 transition-transform duration-1000 ease-out"
         />

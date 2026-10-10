@@ -1,9 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import type { Variants } from 'framer-motion';
+import React from 'react';
 import { Quote } from 'lucide-react';
-
-const EASE_CUBIC: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 interface LeaderProfile {
   id: string;
@@ -78,21 +74,6 @@ interface LeaderRowProps {
 }
 
 const LeaderRow: React.FC<LeaderRowProps> = ({ leader, index, total }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-
-  // Subtle scroll-linked movement for the image: moves approx 15px relative to text
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start']
-  });
-
-  const imageParallaxY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    shouldReduceMotion ? [0, 0] : [14, -14]
-  );
-
   // Alternating layout on large screens:
   // Leader 01 (index 0): Large image LEFT, Text RIGHT
   // Leader 02 (index 1): Text LEFT, Large image RIGHT
@@ -100,67 +81,25 @@ const LeaderRow: React.FC<LeaderRowProps> = ({ leader, index, total }) => {
   // Leader 04 (index 3): Text LEFT, Large image RIGHT
   const isImageLeft = index % 2 === 0;
 
-  // Staggered text reveal variants
-  const textContainerVariants: Variants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.12
-      }
-    }
-  };
-
-  const textItemVariants: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: EASE_CUBIC
-      }
-    }
-  };
-
-  const imageEntranceVariants: Variants = {
-    hidden: { opacity: 0.85, y: shouldReduceMotion ? 0 : 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.75,
-        ease: EASE_CUBIC
-      }
-    }
-  };
-
   return (
-    <div ref={containerRef} className="w-full">
-      {/* Editorial Profile Experience: 80-100vh of vertical presence */}
+    <div className="w-full">
+      {/* Editorial Profile Experience: Naturally proportioned on mobile, stately on desktop */}
       <section
         aria-label={`${leader.name} Profile`}
-        className="min-h-[75vh] lg:min-h-[85vh] flex items-center py-12 sm:py-16 lg:py-20"
+        className="py-8 sm:py-12 lg:py-20 lg:min-h-[75vh] flex items-center"
       >
         <div
-          className={`w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 flex flex-col ${
+          className={`w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex flex-col ${
             isImageLeft ? 'lg:flex-row' : 'lg:flex-row-reverse'
-          } items-center justify-between gap-12 sm:gap-16 lg:gap-20 xl:gap-24`}
+          } items-center justify-between gap-8 sm:gap-12 lg:gap-16 xl:gap-24`}
         >
           {/* =========================================================================
               EDITORIAL PORTRAIT
-              Occupy 48–52% of available width with generous breathing room
-              Subtle hover movement: scale 1.015
-              Subtle scroll parallax: 10–20px
+              Clear, prominent, perfectly centered on mobile with crisp boundaries
               ========================================================================= */}
-          <div className="w-full lg:w-[50%] xl:w-[49%] shrink-0">
-            <motion.div
-              variants={imageEntranceVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.25 }}
-              style={{ y: imageParallaxY }}
-              className="relative w-full max-w-[560px] mx-auto lg:max-w-none aspect-[4/5] rounded-[8px] overflow-hidden bg-slate-100 shadow-[0_20px_45px_rgba(10,25,49,0.08)] border border-slate-200/90 group"
+          <div className="w-full lg:w-[48%] xl:w-[47%] shrink-0">
+            <div
+              className="relative w-full max-w-[340px] sm:max-w-[440px] lg:max-w-none mx-auto aspect-[4/5] rounded-[8px] overflow-hidden bg-slate-100 shadow-[0_12px_36px_rgba(10,25,49,0.08)] border border-slate-200/90 group"
             >
               <img
                 src={leader.portraitUrl}
@@ -177,38 +116,33 @@ const LeaderRow: React.FC<LeaderRowProps> = ({ leader, index, total }) => {
               />
               {/* Refined subtle border overlay for crisp editorial boundary */}
               <div className="absolute inset-0 border border-[#0A1931]/10 pointer-events-none rounded-[8px]" />
-            </motion.div>
+            </div>
           </div>
 
           {/* =========================================================================
               EDITORIAL CONTENT
-              Occupy 38–42% of available width
-              Staggered reveal: Label -> Name -> Title -> Bio -> Message
+              Always 100% visible, beautifully spaced and readable on mobile
               ========================================================================= */}
-          <motion.div
-            variants={textContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="w-full lg:w-[44%] xl:w-[42%] flex flex-col justify-center space-y-6 lg:space-y-7"
+          <div
+            className="w-full lg:w-[48%] xl:w-[46%] flex flex-col justify-center space-y-4 sm:space-y-5 lg:space-y-6"
           >
             {/* 1. Small Leadership Label */}
-            <motion.div variants={textItemVariants} className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5">
               <span className="w-4 h-[2px] bg-[#a30f16]" aria-hidden="true" />
               <span className="text-[11px] font-mono font-bold uppercase tracking-[0.22em] text-[#a30f16]">
                 {leader.number} — LEADERSHIP
               </span>
-            </motion.div>
+            </div>
 
             {/* 2. Leader Name */}
-            <motion.div variants={textItemVariants}>
-              <h3 className="font-['Playfair_Display',serif] text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-bold text-[#0A1931] tracking-tight leading-[1.12]">
+            <div>
+              <h3 className="font-['Playfair_Display',serif] text-2xl sm:text-3xl lg:text-[40px] xl:text-[44px] font-bold text-[#0A1931] tracking-tight leading-[1.15]">
                 {leader.name}
               </h3>
-            </motion.div>
+            </div>
 
             {/* 3. Position / Title */}
-            <motion.div variants={textItemVariants} className="space-y-1">
+            <div className="space-y-1">
               <p className="text-sm sm:text-[15px] font-semibold text-[#0A1931] tracking-normal font-sans">
                 {leader.designation}
               </p>
@@ -217,31 +151,30 @@ const LeaderRow: React.FC<LeaderRowProps> = ({ leader, index, total }) => {
                   {leader.subRole}
                 </p>
               )}
-            </motion.div>
+            </div>
 
             {/* 4. Concise Professional Biography */}
-            <motion.div variants={textItemVariants}>
-              <p className="text-[14.5px] sm:text-[15.5px] text-slate-600 leading-[1.8] font-sans">
+            <div>
+              <p className="text-[13.5px] sm:text-[15px] text-slate-600 leading-[1.75] font-sans">
                 {leader.biography}
               </p>
-            </motion.div>
+            </div>
 
             {/* 5. Separate Subtle Leadership Message Area */}
-            <motion.div
-              variants={textItemVariants}
-              className="pt-6 border-t border-[#0A1931]/12 space-y-3.5"
+            <div
+              className="pt-4 sm:pt-5 border-t border-[#0A1931]/12 space-y-2.5 sm:space-y-3"
             >
               <div className="flex items-center gap-2">
-                <Quote size={20} className="text-[#a30f16]" aria-hidden="true" />
-                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#0A1931]/70 font-semibold">
+                <Quote size={18} className="text-[#a30f16]" aria-hidden="true" />
+                <span className="text-[10.5px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-[#0A1931]/70 font-semibold">
                   Leadership Message
                 </span>
               </div>
-              <blockquote className="font-['Playfair_Display',serif] text-[16px] sm:text-[17.5px] italic text-[#0A1931] leading-relaxed pl-3 border-l-2 border-[#a30f16]">
+              <blockquote className="font-['Playfair_Display',serif] text-[15px] sm:text-[16.5px] italic text-[#0A1931] leading-relaxed pl-3 border-l-2 border-[#a30f16]">
                 “{leader.message}”
               </blockquote>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -250,7 +183,7 @@ const LeaderRow: React.FC<LeaderRowProps> = ({ leader, index, total }) => {
           Significant breathing space, thin UCP navy divider, indicator 01 / 04
           ========================================================================= */}
       {index < total - 1 && (
-        <div className="w-full my-12 sm:my-20 lg:my-24 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between gap-6 select-none">
+        <div className="w-full my-8 sm:my-14 lg:my-20 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between gap-6 select-none">
           <div className="h-px bg-[#0A1931]/12 flex-1" />
           <span className="font-mono text-xs sm:text-[13px] font-bold tracking-[0.25em] text-[#0A1931]/45 px-3">
             {leader.number} / {String(total).padStart(2, '0')}
@@ -271,7 +204,7 @@ export const OurLeadershipSection: React.FC<OurLeadershipSectionProps> = () => {
   return (
     <section
       id="leadership-section"
-      className="relative bg-white text-[#0A1931] py-24 sm:py-32 lg:py-40 border-t border-slate-200/80 overflow-hidden select-none"
+      className="relative bg-white text-[#0A1931] py-14 sm:py-20 lg:py-32 border-t border-slate-200/80 overflow-hidden"
       aria-labelledby="leadership-heading"
     >
       {/* Anchor alias so existing links to chairman-section also scroll smoothly */}
@@ -281,14 +214,10 @@ export const OurLeadershipSection: React.FC<OurLeadershipSectionProps> = () => {
           LEADERSHIP INTRO
           Minimal, spacious and elegant section introduction
           ========================================================================= */}
-      <motion.header
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7, ease: EASE_CUBIC }}
-        className="max-w-4xl mx-auto text-center mb-20 sm:mb-28 lg:mb-36 px-5 sm:px-8"
+      <header
+        className="max-w-4xl mx-auto text-center mb-10 sm:mb-16 lg:mb-24 px-4 sm:px-8"
       >
-        <div className="inline-flex items-center gap-2 mb-4">
+        <div className="inline-flex items-center gap-2 mb-3">
           <span className="w-4 h-[2px] bg-[#a30f16]" aria-hidden="true" />
           <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#a30f16] font-mono">
             LEADERSHIP
@@ -298,20 +227,20 @@ export const OurLeadershipSection: React.FC<OurLeadershipSectionProps> = () => {
 
         <h2
           id="leadership-heading"
-          className="font-['Playfair_Display',serif] text-3xl sm:text-4xl lg:text-5xl xl:text-[54px] font-bold text-[#0A1931] tracking-tight leading-[1.14] mb-6"
+          className="font-['Playfair_Display',serif] text-2xl sm:text-4xl lg:text-5xl xl:text-[52px] font-bold text-[#0A1931] tracking-tight leading-[1.15] mb-4 sm:mb-6"
         >
           Leadership with Vision. Excellence with Purpose.
         </h2>
 
-        <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-sans max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed font-sans max-w-2xl mx-auto">
           At UCP Bahawalpur, leadership is rooted in academic excellence, responsible guidance and a commitment to creating meaningful opportunities for students.
         </p>
-      </motion.header>
+      </header>
 
       {/* =========================================================================
           FOUR LEADERS — DISTINCT FULL-WIDTH EDITORIAL EXPERIENCES
           ========================================================================= */}
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         {LEADERSHIP_PROFILES.map((leader, index) => (
           <LeaderRow
             key={leader.id}
@@ -326,21 +255,17 @@ export const OurLeadershipSection: React.FC<OurLeadershipSectionProps> = () => {
           SECTION TRANSITION
           Refined closing statement with generous whitespace
           ========================================================================= */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.75, ease: EASE_CUBIC }}
-        className="mt-28 sm:mt-36 lg:mt-44 pt-16 sm:pt-20 border-t border-[#0A1931]/10 text-center max-w-3xl mx-auto px-6"
+      <div
+        className="mt-14 sm:mt-24 lg:mt-32 pt-10 sm:pt-16 border-t border-[#0A1931]/10 text-center max-w-3xl mx-auto px-6"
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-[#a30f16] mx-auto mb-6" aria-hidden="true" />
-        <blockquote className="font-['Playfair_Display',serif] text-2xl sm:text-3xl lg:text-[32px] font-medium italic text-[#0A1931] leading-relaxed">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#a30f16] mx-auto mb-4 sm:mb-6" aria-hidden="true" />
+        <blockquote className="font-['Playfair_Display',serif] text-xl sm:text-2xl lg:text-[30px] font-medium italic text-[#0A1931] leading-relaxed">
           “Leadership is not simply about direction — it is about creating a future worth moving toward.”
         </blockquote>
-        <p className="mt-4 font-mono text-[11px] sm:text-xs uppercase tracking-[0.24em] text-slate-500">
+        <p className="mt-3 sm:mt-4 font-mono text-[10.5px] sm:text-xs uppercase tracking-[0.24em] text-slate-500">
           University of Central Punjab · Bahawalpur Campus
         </p>
-      </motion.div>
+      </div>
     </section>
   );
 };

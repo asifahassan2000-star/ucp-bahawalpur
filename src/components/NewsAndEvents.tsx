@@ -82,6 +82,7 @@ export const NewsAndEvents: React.FC<NewsAndEventsProps> = ({ onSelectArticle })
                     src={NEWS_EVENTS[0].image}
                     alt={NEWS_EVENTS[0].title}
                     data-parallax-img
+                    loading="lazy"
                     decoding="async"
                     className="parallax-img w-full h-full object-cover subtle-hover-scale"
                     onError={(e) => {
@@ -151,6 +152,7 @@ export const NewsAndEvents: React.FC<NewsAndEventsProps> = ({ onSelectArticle })
                   <img
                     src={item.image}
                     alt={item.title}
+                    loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover subtle-hover-scale"
                     onError={(e) => {

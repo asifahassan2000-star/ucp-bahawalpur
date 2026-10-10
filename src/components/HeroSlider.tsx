@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-  ChevronLeft, ChevronRight, ArrowRight,
-  GraduationCap, Building2, Award, Briefcase, Sparkles 
+  ChevronLeft, ChevronRight, ArrowRight
 } from 'lucide-react';
 import { HERO_SLIDES } from '../data/ucpData';
 import computingLabImg from '../assets/images/academic_computing_lab_1790317681008.jpg';
@@ -94,8 +93,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
   // Resolve slide image (handling local asset references)
   const getSlideImage = (slide: typeof HERO_SLIDES[0]) => {
+    if (slide.image) {
+      return slide.image;
+    }
     if (slide.id === 'bahawalpur-excellence') {
-      return slide.image || '/assets/campus/13_hero_sunset_campus.jpg';
+      return '/assets/campus/13_hero_sunset_campus.jpg';
     }
     if (slide.id === 'campus-tomorrow') {
       return ucpBuildingBlueprintImg;
@@ -103,7 +105,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     if (slide.id === 'discover-future') {
       return computingLabImg;
     }
-    if (slide.id === 'next-generation' && !slide.image) {
+    if (slide.id === 'next-generation') {
       return ucpBwpBuilding5Local;
     }
     return slide.image;
@@ -176,9 +178,9 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 <img
                   src={imageSrc}
                   alt={slide.title}
-                  loading="eager"
+                  loading={index === 0 ? "eager" : "lazy"}
                   decoding="async"
-                  fetchPriority={index === 0 ? "high" : "auto"}
+                  fetchPriority={index === 0 ? "high" : "low"}
                   referrerPolicy="no-referrer"
                   style={{
                     transform: isActive ? 'scale(1.08)' : 'scale(1)',
@@ -320,105 +322,67 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       </div>
 
       {/* =========================================================================
-          4. "WHY CHOOSE UCP BAHAWALPUR" OFFICIAL TRUST BAR (3D OVERLAPPING -48PX)
+          4. INSTITUTIONAL HIGHLIGHTS — JUST WORDS, NO BORDER, BELOW HERO SECTION
           ========================================================================= */}
       <section 
-        aria-label="Why Choose UCP Bahawalpur - Institutional Trust"
-        className="w-full relative z-40 select-none px-3 sm:px-6 pointer-events-auto -mb-6 md:-mb-10"
+        aria-label="Why Choose UCP Bahawalpur - Institutional Highlights"
+        className="w-full relative z-20 select-none px-4 sm:px-6 lg:px-8 pt-8 pb-10 sm:pt-10 sm:pb-12 bg-[#07192f]"
       >
         <div 
-          className="w-full max-w-[1240px] mx-auto bg-[#092242] rounded-[10px] border border-white/[0.12] border-t border-white/[0.18] relative overflow-hidden animate-trust-bar-active md:h-[110px] flex items-center px-3 sm:px-8 lg:px-[40px]"
+          className="w-full max-w-7xl mx-auto"
         >
-          {/* Light Sweep moving shine (Skew -20deg moving 5s loop) */}
-          <div 
-            className="absolute top-0 bottom-0 w-[80px] h-full pointer-events-none -skew-x-[20deg] z-20 animate-sweep-shine bg-gradient-to-r from-transparent via-white/[0.15] to-transparent" 
-            aria-hidden="true"
-          />
-
-          <div className="w-full grid grid-cols-2 lg:grid-cols-4 items-center relative z-10">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
             
-            {/* Column 1: Punjab Group Legacy */}
+            {/* Punjab Group Legacy */}
             <div 
               onClick={() => onOpenLegacyPage ? onOpenLegacyPage() : onScrollTo('heritage-section')}
-              className="group cursor-pointer flex flex-row items-center gap-[16px] py-3.5 px-2.5 sm:py-[20px] sm:px-[24px] border-r border-white/[0.08] border-b lg:border-b-0 transition-all duration-300 hover:-translate-y-[2px] hover:scale-[1.02] hover:bg-white/[0.12] rounded-[8px]"
+              className="group cursor-pointer flex flex-col text-left transition-colors duration-200"
             >
-              <div 
-                style={{ animation: 'iconPulse 2.5s ease-in-out infinite 0s', willChange: 'transform' }}
-                className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1] transition-transform duration-300 group-hover:rotate-[5deg]"
-              >
-                <Award className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex flex-col text-left font-['Inter',sans-serif]">
-                <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
-                  Punjab Group Legacy
-                </span>
-                <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
-                  40 Years of Educational Excellence
-                </span>
-              </div>
+              <h3 className="text-white font-medium text-base sm:text-[17px] tracking-normal group-hover:text-amber-300 transition-colors">
+                Punjab Group Legacy
+              </h3>
+              <p className="text-slate-300/80 text-xs sm:text-sm font-normal mt-1 leading-relaxed">
+                40 Years of Educational Excellence
+              </p>
             </div>
 
-            {/* Column 2: HEC Recognized Degrees */}
+            {/* HEC Recognized Degrees */}
             <div 
               onClick={() => onOpenProgrammesPage ? onOpenProgrammesPage() : onScrollTo('faculties-section')}
-              className="group cursor-pointer flex flex-row items-center gap-[16px] py-3.5 px-2.5 sm:py-[20px] sm:px-[24px] border-b lg:border-b-0 border-white/[0.08] lg:border-r transition-all duration-300 hover:-translate-y-[2px] hover:scale-[1.02] hover:bg-white/[0.12] rounded-[8px]"
+              className="group cursor-pointer flex flex-col text-left transition-colors duration-200"
             >
-              <div 
-                style={{ animation: 'iconPulse 2.5s ease-in-out infinite 0.2s', willChange: 'transform' }}
-                className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1] transition-transform duration-300 group-hover:rotate-[5deg]"
-              >
-                <GraduationCap className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex flex-col text-left font-['Inter',sans-serif]">
-                <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
-                  HEC Recognized Degrees
-                </span>
-                <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
-                  25 Accredited Programs
-                </span>
-              </div>
+              <h3 className="text-white font-medium text-base sm:text-[17px] tracking-normal group-hover:text-amber-300 transition-colors">
+                HEC Recognized Degrees
+              </h3>
+              <p className="text-slate-300/80 text-xs sm:text-sm font-normal mt-1 leading-relaxed">
+                25 Accredited Programs
+              </p>
             </div>
 
-            {/* Column 3: Purpose-Built Campus */}
+            {/* Purpose-Built Campus */}
             <div 
               onClick={() => onScrollTo('campus-section')}
-              className="group cursor-pointer flex flex-row items-center gap-[16px] py-3.5 px-2.5 sm:py-[20px] sm:px-[24px] border-r border-white/[0.08] transition-all duration-300 hover:-translate-y-[2px] hover:scale-[1.02] hover:bg-white/[0.12] rounded-[8px]"
+              className="group cursor-pointer flex flex-col text-left transition-colors duration-200"
             >
-              <div 
-                style={{ animation: 'iconPulse 2.5s ease-in-out infinite 0.4s', willChange: 'transform' }}
-                className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1] transition-transform duration-300 group-hover:rotate-[5deg]"
-              >
-                <Building2 className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex flex-col text-left font-['Inter',sans-serif]">
-                <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
-                  Purpose-Built Campus
-                </span>
-                <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
-                  Modern Labs & Smart Facilities
-                </span>
-              </div>
+              <h3 className="text-white font-medium text-base sm:text-[17px] tracking-normal group-hover:text-amber-300 transition-colors">
+                Purpose-Built Campus
+              </h3>
+              <p className="text-slate-300/80 text-xs sm:text-sm font-normal mt-1 leading-relaxed">
+                Modern Labs & Smart Facilities
+              </p>
             </div>
 
-            {/* Column 4: Career-Focused Education */}
+            {/* Career-Focused Education */}
             <div 
               onClick={() => onOpenProgrammesPage ? onOpenProgrammesPage() : onScrollTo('what-we-offer')}
-              className="group cursor-pointer flex flex-row items-center gap-[16px] py-3.5 px-2.5 sm:py-[20px] sm:px-[24px] transition-all duration-300 hover:-translate-y-[2px] hover:scale-[1.02] hover:bg-white/[0.12] rounded-[8px]"
+              className="group cursor-pointer flex flex-col text-left transition-colors duration-200"
             >
-              <div 
-                style={{ animation: 'iconPulse 2.5s ease-in-out infinite 0.6s', willChange: 'transform' }}
-                className="w-[36px] h-[36px] rounded-full shrink-0 flex items-center justify-center bg-white/[0.06] border border-white/[0.1] transition-transform duration-300 group-hover:rotate-[5deg]"
-              >
-                <Briefcase className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex flex-col text-left font-['Inter',sans-serif]">
-                <span className="text-[14px] font-[600] text-white leading-snug tracking-normal">
-                  Career-Focused Education
-                </span>
-                <span className="text-[11px] uppercase font-[500] text-white/60 tracking-[0.8px] mt-0.5 leading-tight">
-                  Industry Linkages & Scholarships
-                </span>
-              </div>
+              <h3 className="text-white font-medium text-base sm:text-[17px] tracking-normal group-hover:text-amber-300 transition-colors">
+                Career-Focused Education
+              </h3>
+              <p className="text-slate-300/80 text-xs sm:text-sm font-normal mt-1 leading-relaxed">
+                Industry Linkages & Scholarships
+              </p>
             </div>
 
           </div>

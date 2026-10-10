@@ -328,99 +328,42 @@ video, canvas, svg {
   transform: none;
 }
 
-/* Images NEVER hide at opacity 0 - they are already present on screen */
+/* Images and all content are ALWAYS 100% visible - zero blank screens or hidden sections */
 img,
+[data-reveal],
 [data-reveal="image"],
 .img-fast-presence {
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* 2. When Scroll Reveal system is initialized by JavaScript */
-html.reveal-ready [data-reveal]:not([data-reveal="image"]) {
-  opacity: 0;
-  will-change: opacity, transform;
-}
-
-/* Images remain 100% visible from initial render */
-html.reveal-ready [data-reveal="image"] {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateY(0) scale(1) !important;
-}
-
-/* 3. Fast Section Headings (280ms duration, snappy 10px translateY) */
-html.reveal-ready [data-reveal="heading"] {
-  transform: translateY(10px);
-  transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 4. Fast Supporting Text & Paragraphs (260ms duration, snappy 8px translateY) */
-html.reveal-ready [data-reveal="text"],
-html.reveal-ready [data-reveal="fade-up"] {
-  transform: translateY(8px);
-  transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 5. Fast Cards & Grid Items (280ms duration, snappy 10px translateY) */
-html.reveal-ready [data-reveal="card"] {
-  transform: translateY(10px);
-  transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+/* 2. Gentle enhancement for desktop viewports without hiding content */
+@media (min-width: 1025px) and (hover: hover) {
+  html.reveal-ready [data-reveal="heading"] {
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html.reveal-ready [data-reveal="text"],
+  html.reveal-ready [data-reveal="fade-up"],
+  html.reveal-ready [data-reveal="card"] {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
 }
 
 /* 7. Revealed State: Snaps smoothly to natural layout position */
-html.reveal-ready [data-reveal].is-revealed,
-html.reveal-ready [data-reveal][data-revealed="true"] {
+[data-reveal].is-revealed,
+[data-reveal][data-revealed="true"] {
   opacity: 1 !important;
   transform: translateY(0) scale(1) !important;
   will-change: auto;
 }
 
-/* Rapid Micro-Staggers: Never exceed 120ms delay so content appears immediately */
-html.reveal-ready [data-reveal-delay] { transition-delay: 0ms; }
-html.reveal-ready [data-reveal-delay="0"] { transition-delay: 0ms; }
-html.reveal-ready [data-reveal-delay="60"],
-html.reveal-ready [data-reveal-delay="80"],
-html.reveal-ready [data-reveal-delay="100"] { transition-delay: 40ms; }
-html.reveal-ready [data-reveal-delay="120"],
-html.reveal-ready [data-reveal-delay="150"],
-html.reveal-ready [data-reveal-delay="180"] { transition-delay: 70ms; }
-html.reveal-ready [data-reveal-delay="200"],
-html.reveal-ready [data-reveal-delay="240"],
-html.reveal-ready [data-reveal-delay="270"],
-html.reveal-ready [data-reveal-delay="300"] { transition-delay: 90ms; }
-html.reveal-ready [data-reveal-delay="350"],
-html.reveal-ready [data-reveal-delay="360"],
-html.reveal-ready [data-reveal-delay="390"],
-html.reveal-ready [data-reveal-delay="420"],
-html.reveal-ready [data-reveal-delay="450"],
-html.reveal-ready [data-reveal-delay="480"],
-html.reveal-ready [data-reveal-delay="500"],
-html.reveal-ready [data-reveal-delay="540"],
-html.reveal-ready [data-reveal-delay="570"],
-html.reveal-ready [data-reveal-delay="600"],
-html.reveal-ready [data-reveal-delay="690"],
-html.reveal-ready [data-reveal-delay="720"],
-html.reveal-ready [data-reveal-delay="750"],
-html.reveal-ready [data-reveal-delay="840"],
-html.reveal-ready [data-reveal-delay="870"],
-html.reveal-ready [data-reveal-delay="900"],
-html.reveal-ready [data-reveal-delay="990"],
-html.reveal-ready [data-reveal-delay="1020"],
-html.reveal-ready [data-reveal-delay="1050"],
-html.reveal-ready [data-reveal-delay="1170"] { transition-delay: 100ms; }
-
-/* 8. Mobile Responsiveness */
-@media (max-width: 640px) {
-  html.reveal-ready [data-reveal="heading"],
-  html.reveal-ready [data-reveal="card"],
-  html.reveal-ready [data-reveal="text"],
-  html.reveal-ready [data-reveal="fade-up"] {
-    transform: translateY(6px);
-    transition-duration: 200ms;
+/* 8. Mobile & Touch: Guarantee immediate full visibility and zero delay on mobile and touch */
+@media (max-width: 1024px), (pointer: coarse) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
   }
 }
 

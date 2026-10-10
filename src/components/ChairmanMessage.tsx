@@ -27,6 +27,7 @@ export const ChairmanMessage: React.FC<ChairmanMessageProps> = ({ onOpenApply, o
                   src="https://ucp.edu.pk/wp-content/uploads/2023/01/home_chiarmain.webp"
                   alt="Mian Amer Mahmood - Chairman UCP"
                   data-parallax-img
+                  loading="lazy"
                   decoding="async"
                   className="parallax-img w-full h-auto object-cover object-top subtle-hover-scale"
                   onError={(e) => {

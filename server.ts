@@ -46,6 +46,7 @@ app.get('/api/chat/status', (req, res) => {
   res.json({
     status: 'ok',
     hasKey: hasEnvKey,
+    model: 'gemini-3.5-flash',
     botName: 'UCP Bot'
   });
 });
@@ -59,7 +60,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || customKey;
+    const apiKey = customKey || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(400).json({
         error: 'No Gemini API key available. The bot can still answer instantly via local knowledge engine.'
@@ -91,7 +92,7 @@ app.post('/api/chat', async (req, res) => {
     let response;
     try {
       response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-3.5-flash',
         contents,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
@@ -135,6 +136,7 @@ async function startServer() {
       server: {
         middlewareMode: true,
         hmr: false,
+        ws: false as any,
         watch: null,
       },
       appType: 'spa'
@@ -143,7 +145,7 @@ async function startServer() {
   } else {
     const distPath = path.resolve(__dirname, 'dist');
     if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
+      app.use(express.static(distPath, { maxAge: '7d', etag: true }));
       app.get('*', (req, res) => {
         res.sendFile(path.resolve(distPath, 'index.html'));
       });

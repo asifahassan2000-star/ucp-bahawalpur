@@ -17,7 +17,7 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
   return (
     <section 
       id="our-campus-section"
-      className="relative bg-white py-[100px] border-b border-slate-200/80"
+      className="relative bg-white py-14 sm:py-20 lg:py-[100px] border-b border-slate-200/80"
       aria-labelledby="about-campus-heading"
     >
       {/* Anchor alias for About navigation */}
@@ -74,26 +74,15 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
             viewport={{ once: false, amount: 0.3 }}
           >
             
-            {/* IMAGE 12: Close Architectural Exterior Photograph */}
-            <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-[#FAF8F5] shadow-xs w-full aspect-[16/9]">
+            {/* IMAGE 12: Architectural Exterior Photograph (Full Bleed 16:9, Edge-to-Edge) */}
+            <div className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-xs w-full aspect-[16/9]">
               <img
                 src="/assets/campus/12_about_architecture_exterior.jpg"
                 alt="UCP Bahawalpur Architectural Exterior and Modern Campus Facade"
-                loading="eager"
-                className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover object-center block transition-transform duration-700 ease-out group-hover:scale-102"
               />
-
-              {/* Gentle bottom scrim for caption */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#092242]/75 via-transparent to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
-                <span className="text-[10px] font-sans uppercase tracking-[0.18em] text-rose-300 font-semibold block mb-0.5">
-                  Architectural Detail · UCP Bahawalpur
-                </span>
-                <h3 className="font-serif text-base sm:text-lg font-semibold leading-tight">
-                  Modern Institutional Facade & Academic Wing
-                </h3>
-              </div>
             </div>
 
             {/* Contemporary Learning Standards Narrative Block (Staggered y: 40) */}
@@ -159,71 +148,57 @@ export const AboutCampusSection: React.FC<AboutCampusSectionProps> = ({
           >
             
             {/* Campus Grounds & Architecture Showcase Card */}
-            <div className="bg-[#FAF8F5] border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs">
-              <div className="flex items-center gap-2 mb-4">
-                <Trees size={16} className="text-[#a30f16]" />
-                <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#092242]">
-                  Central Lawns & Academic Complex
+            <div className="bg-[#FAF8F5] border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#092242]">
+                  <Trees size={16} className="text-[#a30f16]" />
+                  <span>Central Lawns & Academic Complex</span>
+                </div>
+                <span className="text-[11px] font-medium text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+                  Full Campus View
                 </span>
               </div>
 
-              {/* Side-by-side presentation: Compact Full-View Image + Key Campus Specs */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                
-                {/* IMAGE 07: Exact ratio frame */}
-                <div 
-                  className="group relative overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-xs shrink-0 transition-transform duration-300 hover:shadow-md"
-                  style={{
-                    width: '185px',
-                    aspectRatio: '897 / 1600',
+              {/* Full-Bleed 16:9 Edge-to-Edge Image Showcase */}
+              <div className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-xs w-full aspect-[16/9]">
+                <img
+                  src="/assets/campus/7_about_campus_building_lawn.jpg"
+                  alt="University of Central Punjab Bahawalpur Campus Building with Central Lawns"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-center block transition-transform duration-700 ease-out group-hover:scale-102"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/assets/campus/12_about_architecture_exterior.jpg';
                   }}
-                >
-                  <img
-                    src="/assets/campus/7_about_campus_building_lawn.jpg"
-                    alt="University of Central Punjab Bahawalpur Campus Building with Central Lawns"
-                    loading="eager"
-                    className="w-full h-full object-contain block transition-transform duration-700 group-hover:scale-105"
-                    style={{
-                      aspectRatio: '897 / 1600',
-                    }}
-                  />
-
-                  {/* Discreet bottom caption */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#092242]/85 to-transparent p-2 text-center pointer-events-none">
-                    <span className="text-[10px] font-sans font-medium text-white tracking-wider block">
-                      Full Campus View
-                    </span>
-                  </div>
-                </div>
-
-                {/* Campus Specs list right alongside the compact image */}
-                <div className="flex-1 space-y-3 text-xs text-slate-700">
-                  <p className="text-slate-600 leading-relaxed font-sans">
-                    The Bahawalpur campus grounds combine expansive green lawns with modern academic wings, providing peaceful student gathering areas and outdoor study environments.
-                  </p>
-
-                  <div className="space-y-2 pt-1 border-t border-slate-200/70">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
-                      <span><strong>Purpose-Built:</strong> Comprehensive educational facility.</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
-                      <span><strong>Lush Green Grounds:</strong> Central courtyards & landscaped lawns.</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
-                      <span><strong>State-of-the-Art:</strong> Multimedia classrooms and labs.</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />
-                      <span><strong>Safe & Accessible:</strong> 24/7 security and pedestrian walkways.</span>
-                    </div>
-                  </div>
-                </div>
-
+                />
               </div>
 
+              {/* Campus Specs list right underneath the full image */}
+              <div className="space-y-3 text-xs sm:text-[13px] text-slate-700">
+                <p className="text-slate-600 leading-relaxed font-sans">
+                  The Bahawalpur campus grounds combine expansive green lawns with modern academic wings, providing peaceful student gathering areas and outdoor study environments.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-3 border-t border-slate-200/70">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 size={15} className="text-emerald-600 mt-0.5 shrink-0" />
+                    <span><strong>Purpose-Built:</strong> Comprehensive higher education complex.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 size={15} className="text-emerald-600 mt-0.5 shrink-0" />
+                    <span><strong>Lush Green Grounds:</strong> Central courtyards & manicured lawns.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 size={15} className="text-emerald-600 mt-0.5 shrink-0" />
+                    <span><strong>State-of-the-Art:</strong> Multimedia lecture halls and research labs.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 size={15} className="text-emerald-600 mt-0.5 shrink-0" />
+                    <span><strong>Safe & Accessible:</strong> 24/7 security & pedestrian concourses.</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
           </motion.div>

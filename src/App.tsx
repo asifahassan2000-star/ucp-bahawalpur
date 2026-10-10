@@ -14,38 +14,45 @@ gsap.registerPlugin(ScrollTrigger);
 import { TopBar } from './components/TopBar';
 import { Navbar } from './components/Navbar';
 import { HeroSlider } from './components/HeroSlider';
-import { OurLeadershipSection } from './components/OurLeadershipSection';
 import { StatisticsSection } from './components/StatisticsSection';
 import { FacultiesGrid } from './components/FacultiesGrid';
-import { FacultySection } from './components/FacultySection';
-import { FacultyPage } from './components/FacultyPage';
-import { AcademicProgrammesPage } from './components/AcademicProgrammesPage';
-import { OurLegacyPage } from './components/OurLegacyPage';
-import { ScholarshipsPage } from './components/ScholarshipsPage';
-import { FeeStructurePage } from './components/FeeStructurePage';
-import { NewsAndEvents } from './components/NewsAndEvents';
-import { UcpEliteNetworkSection } from './components/UcpEliteNetworkSection';
-import { BeyondTheClassroomSection } from './components/BeyondTheClassroomSection';
-import { WhatWeOfferAccordion } from './components/WhatWeOfferAccordion';
-import { CampusLifePage } from './components/CampusLifePage';
-import { CnnAcademyPage } from './components/CnnAcademyPage';
-import { AboutCampusSection } from './components/AboutCampusSection';
-import { FacilitiesSection } from './components/FacilitiesSection';
-import { AdmissionsExperienceSection } from './components/AdmissionsExperienceSection';
-import { ClosingDramaticSection } from './components/ClosingDramaticSection';
-import { Footer } from './components/Footer';
-import { FloatingSideRibbons } from './components/FloatingSideRibbons';
 import { ClickGlowManager } from './components/ClickGlowManager';
 import { ScrollRevealManager } from './components/ScrollReveal';
-import { ApplyModal } from './components/ApplyModal';
-import { FeeCalculatorModal } from './components/FeeCalculatorModal';
-import { StudentPortalModal } from './components/StudentPortalModal';
-import { ProgramDetailModal } from './components/ProgramDetailModal';
-import { ArticleModal } from './components/ArticleModal';
-import { UcpInfoModal, InfoModalType } from './components/UcpInfoModal';
-import { UcpChatbot } from './components/UcpChatbot';
+import type { InfoModalType } from './components/UcpInfoModal';
 import { Program, NewsEventItem } from './types';
 import { FACULTIES, UCP_CONTACT } from './data/ucpData';
+
+// Code-split below-the-fold homepage sections to dramatically reduce initial JavaScript bundle size and accelerate page load
+const WhatWeOfferAccordion = React.lazy(() => import('./components/WhatWeOfferAccordion').then(m => ({ default: m.WhatWeOfferAccordion })));
+const FacultySection = React.lazy(() => import('./components/FacultySection').then(m => ({ default: m.FacultySection })));
+const AboutCampusSection = React.lazy(() => import('./components/AboutCampusSection').then(m => ({ default: m.AboutCampusSection })));
+const FacilitiesSection = React.lazy(() => import('./components/FacilitiesSection').then(m => ({ default: m.FacilitiesSection })));
+const OurLeadershipSection = React.lazy(() => import('./components/OurLeadershipSection').then(m => ({ default: m.OurLeadershipSection })));
+const CampusLife = React.lazy(() => import('./components/CampusLife').then(m => ({ default: m.CampusLife })));
+const BeyondTheClassroomSection = React.lazy(() => import('./components/BeyondTheClassroomSection').then(m => ({ default: m.BeyondTheClassroomSection })));
+const NewsAndEvents = React.lazy(() => import('./components/NewsAndEvents').then(m => ({ default: m.NewsAndEvents })));
+const AdmissionsExperienceSection = React.lazy(() => import('./components/AdmissionsExperienceSection').then(m => ({ default: m.AdmissionsExperienceSection })));
+const ClosingDramaticSection = React.lazy(() => import('./components/ClosingDramaticSection').then(m => ({ default: m.ClosingDramaticSection })));
+const Footer = React.lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
+const FloatingSideRibbons = React.lazy(() => import('./components/FloatingSideRibbons').then(m => ({ default: m.FloatingSideRibbons })));
+
+// Code-split heavy subpages to dramatically reduce initial JavaScript bundle size and accelerate page load
+const FacultyPage = React.lazy(() => import('./components/FacultyPage').then(m => ({ default: m.FacultyPage })));
+const AcademicProgrammesPage = React.lazy(() => import('./components/AcademicProgrammesPage').then(m => ({ default: m.AcademicProgrammesPage })));
+const OurLegacyPage = React.lazy(() => import('./components/OurLegacyPage').then(m => ({ default: m.OurLegacyPage })));
+const ScholarshipsPage = React.lazy(() => import('./components/ScholarshipsPage').then(m => ({ default: m.ScholarshipsPage })));
+const FeeStructurePage = React.lazy(() => import('./components/FeeStructurePage').then(m => ({ default: m.FeeStructurePage })));
+const CampusLifePage = React.lazy(() => import('./components/CampusLifePage').then(m => ({ default: m.CampusLifePage })));
+const CnnAcademyPage = React.lazy(() => import('./components/CnnAcademyPage').then(m => ({ default: m.CnnAcademyPage })));
+
+// Code-split modals and chatbot loaded on demand
+const ApplyModal = React.lazy(() => import('./components/ApplyModal').then(m => ({ default: m.ApplyModal })));
+const FeeCalculatorModal = React.lazy(() => import('./components/FeeCalculatorModal').then(m => ({ default: m.FeeCalculatorModal })));
+const StudentPortalModal = React.lazy(() => import('./components/StudentPortalModal').then(m => ({ default: m.StudentPortalModal })));
+const ProgramDetailModal = React.lazy(() => import('./components/ProgramDetailModal').then(m => ({ default: m.ProgramDetailModal })));
+const ArticleModal = React.lazy(() => import('./components/ArticleModal').then(m => ({ default: m.ArticleModal })));
+const UcpInfoModal = React.lazy(() => import('./components/UcpInfoModal').then(m => ({ default: m.UcpInfoModal })));
+const UcpChatbot = React.lazy(() => import('./components/UcpChatbot').then(m => ({ default: m.UcpChatbot })));
 
 export default function App() {
   // Navigation / Page state
@@ -66,10 +73,15 @@ export default function App() {
   // Lenis ref to programmatically control smooth scrolling during route transitions
   const lenisRef = useRef<Lenis | null>(null);
 
-  // 1. Lenis Smooth Scroll Initialization
+  // 1. Lenis Smooth Scroll Initialization (Desktop mouse wheel only, native fast scrolling on mobile)
   useEffect(() => {
+    const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 1024);
+    if (isTouch) {
+      return;
+    }
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
@@ -346,6 +358,14 @@ export default function App() {
       />
 
       <main>
+        <React.Suspense fallback={
+          <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              <span className="text-xs uppercase tracking-widest text-slate-400 font-mono">Loading Experience...</span>
+            </div>
+          </div>
+        }>
         {currentPage === 'programmes' ? (
           /* Official UCP Bahawalpur Academic Programmes Experience */
           <AcademicProgrammesPage 
@@ -415,35 +435,20 @@ export default function App() {
             />
 
             {/* 2. INSTITUTIONAL METRICS & ACCREDITATIONS — Immediate Proof & Quantitative Authority */}
-            <motion.div
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <StatisticsSection onOpenScholarshipsPage={handleOpenScholarshipsPage} />
-            </motion.div>
+            </div>
 
             {/* 3. ACADEMIC FACULTIES & DISCIPLINES — Core Educational Search Intent */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <FacultiesGrid
                 onSelectFaculty={handleSelectFaculty}
                 onExploreFacultyPrograms={handleOpenProgrammesFromFaculty}
               />
-            </motion.div>
+            </div>
 
             {/* 4. WHAT WE OFFER FOR YOU — Expanding Interactive Academic Offerings */}
-            <motion.div
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <WhatWeOfferAccordion
                 onOpenApply={() => handleOpenApply()}
                 onOpenProgrammesPage={() => handleOpenProgrammesPage()}
@@ -453,187 +458,150 @@ export default function App() {
                 onOpenFacultyPage={() => handleOpenFacultyPage('all')}
                 onScrollTo={handleScrollTo}
               />
-            </motion.div>
+            </div>
 
             {/* 5. DISTINGUISHED FACULTY SHOWCASE — Faculty Profiles, Mentors & PhD Researchers */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <FacultySection 
                 onViewAllFaculty={handleOpenFacultyPage}
               />
-            </motion.div>
+            </div>
 
             {/* 6. OUR CAMPUS — Architectural Presence & Scholarly Roots */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <AboutCampusSection
                 onOpenApply={() => handleOpenApply()}
                 onOpenLegacyPage={handleOpenLegacyPage}
                 onScrollTo={handleScrollTo}
               />
-            </motion.div>
+            </div>
 
             {/* 7. WORLD-CLASS FACILITIES — Purpose-Built Laboratories & Learning Infrastructure */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <FacilitiesSection 
                 onOpenApply={() => handleOpenApply()}
                 onOpenCampusLifePage={handleOpenCampusLifePage}
               />
-            </motion.div>
+            </div>
 
             {/* 8. INSTITUTIONAL LEADERSHIP — Vision, Governance & Executive Guidance */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <OurLeadershipSection 
                 onOpenApply={() => handleOpenApply()}
                 onScrollTo={handleScrollTo}
               />
-            </motion.div>
+            </div>
 
-            {/* 9. UCP ELITE STUDENT NETWORK */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <UcpEliteNetworkSection />
-            </motion.div>
-
-            {/* 10. BEYOND THE CLASSROOM — Student Societies & Experiential Learning */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <BeyondTheClassroomSection
-                onScrollToCampusLife={handleOpenCampusLifePage}
+            {/* 9. CAMPUS LIFE — Student Life, Courtyard Gathering & Campus Culture */}
+            <div className="w-full">
+              <CampusLife 
                 onOpenCampusLifePage={handleOpenCampusLifePage}
               />
-            </motion.div>
+            </div>
+
+            {/* 10. BEYOND THE CLASSROOM — Student Societies & Experiential Learning */}
+            <div className="w-full">
+              <BeyondTheClassroomSection
+                onScrollToCampusLife={() => handleScrollTo('campus-section')}
+                onOpenCampusLifePage={handleOpenCampusLifePage}
+              />
+            </div>
 
             {/* 11. NEWS & EVENTS — Timely Updates, Academic Symposia & Campus Happenings */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <NewsAndEvents
                 onSelectArticle={(article) => setSelectedArticle(article)}
               />
-            </motion.div>
+            </div>
 
             {/* 12. ADMISSIONS EXPERIENCE — Red Carpet Welcome & Campus Visit Guidance */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <AdmissionsExperienceSection
                 onOpenApply={() => handleOpenApply()}
                 onOpenFee={handleOpenFee}
               />
-            </motion.div>
+            </div>
 
             {/* 13. CLOSING DRAMATIC FINALE — Strategic Perspective & Application Anchors */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="w-full">
               <ClosingDramaticSection
                 onOpenApply={() => handleOpenApply()}
                 onOpenProgrammesPage={() => handleOpenProgrammesPage()}
                 onScrollTo={handleScrollTo}
               />
-            </motion.div>
+            </div>
           </>
         )}
+        </React.Suspense>
       </main>
 
-      {/* 10. Official Comprehensive Footer */}
-      <Footer
-        onOpenApply={() => handleOpenApply()}
-        onOpenFee={handleOpenFee}
-        onOpenPortal={() => setIsPortalOpen(true)}
-        onOpenInfo={handleOpenInfo}
-        onScrollTo={handleScrollTo}
-        onSelectFaculty={handleSelectFaculty}
-        onOpenLegacyPage={handleOpenLegacyPage}
-      />
+      {/* 10. Official Comprehensive Footer & Floating Ribbons */}
+      <React.Suspense fallback={null}>
+        <Footer
+          onOpenApply={() => handleOpenApply()}
+          onOpenFee={handleOpenFee}
+          onOpenPortal={() => setIsPortalOpen(true)}
+          onOpenInfo={handleOpenInfo}
+          onScrollTo={handleScrollTo}
+          onSelectFaculty={handleSelectFaculty}
+          onOpenLegacyPage={handleOpenLegacyPage}
+        />
 
-      {/* Right Edge Floating Ribbons & WhatsApp Button */}
-      <FloatingSideRibbons
-        onOpenApply={() => handleOpenApply()}
-        onOpenInfo={handleOpenInfo}
-        onOpenLegacyPage={handleOpenLegacyPage}
-        onOpenCampusLifePage={handleOpenCampusLifePage}
-        onOpenProgrammesPage={() => handleOpenProgrammesPage()}
-        onOpenScholarshipsPage={handleOpenScholarshipsPage}
-        onOpenFeeStructurePage={handleOpenFeeStructurePage}
-      />
+        {/* Right Edge Floating Ribbons & WhatsApp Button */}
+        <FloatingSideRibbons
+          onOpenApply={() => handleOpenApply()}
+          onOpenInfo={handleOpenInfo}
+          onOpenLegacyPage={handleOpenLegacyPage}
+          onOpenCampusLifePage={handleOpenCampusLifePage}
+          onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+          onOpenScholarshipsPage={handleOpenScholarshipsPage}
+          onOpenFeeStructurePage={handleOpenFeeStructurePage}
+        />
+      </React.Suspense>
 
-      {/* Official 24/7 UCP Bot (Instant Knowledge + Gemini AI) */}
-      <UcpChatbot />
+      {/* Lazy-loaded Modals and Chatbot with null fallback */}
+      <React.Suspense fallback={null}>
+        {/* Official 24/7 UCP Bot (Instant Knowledge + Gemini AI) */}
+        <UcpChatbot />
 
-      {/* Modal Dialogs */}
-      <ApplyModal
-        isOpen={isApplyOpen}
-        onClose={() => setIsApplyOpen(false)}
-        preselectedProgram={preselectedProgramName}
-      />
+        {/* Modal Dialogs */}
+        <ApplyModal
+          isOpen={isApplyOpen}
+          onClose={() => setIsApplyOpen(false)}
+          preselectedProgram={preselectedProgramName}
+        />
 
-      <FeeCalculatorModal
-        isOpen={isFeeOpen}
-        onClose={() => setIsFeeOpen(false)}
-        onOpenApply={() => handleOpenApply()}
-      />
+        <FeeCalculatorModal
+          isOpen={isFeeOpen}
+          onClose={() => setIsFeeOpen(false)}
+          onOpenApply={() => handleOpenApply()}
+        />
 
-      <StudentPortalModal
-        isOpen={isPortalOpen}
-        onClose={() => setIsPortalOpen(false)}
-      />
+        <StudentPortalModal
+          isOpen={isPortalOpen}
+          onClose={() => setIsPortalOpen(false)}
+        />
 
-      <UcpInfoModal
-        type={selectedInfoModal}
-        onClose={() => setSelectedInfoModal(null)}
-        onOpenApply={() => handleOpenApply()}
-        onOpenPortal={() => setIsPortalOpen(true)}
-        onOpenProgrammesPage={() => handleOpenProgrammesPage()}
-      />
+        <UcpInfoModal
+          type={selectedInfoModal}
+          onClose={() => setSelectedInfoModal(null)}
+          onOpenApply={() => handleOpenApply()}
+          onOpenPortal={() => setIsPortalOpen(true)}
+          onOpenProgrammesPage={() => handleOpenProgrammesPage()}
+        />
 
-      <ProgramDetailModal
-        program={selectedProgram}
-        onClose={() => setSelectedProgram(null)}
-        onApply={(progName?: string) => handleOpenApply(progName)}
-        onOpenFee={handleOpenFee}
-      />
+        <ProgramDetailModal
+          program={selectedProgram}
+          onClose={() => setSelectedProgram(null)}
+          onApply={(progName?: string) => handleOpenApply(progName)}
+          onOpenFee={handleOpenFee}
+        />
 
-      <ArticleModal
-        article={selectedArticle}
-        onClose={() => setSelectedArticle(null)}
-      />
+        <ArticleModal
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+        />
+      </React.Suspense>
 
     </div>
   );

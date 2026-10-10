@@ -39,7 +39,7 @@ export const ALL_FACULTY_MEMBERS: FacultyMemberData[] = [
     specialization: 'Artificial Intelligence, Algorithms & Cloud Architectures',
     intro: 'Prof. Dr. Abdul Kareem leads computing and software initiatives, mentoring student engineers in advanced algorithmic thinking and AI architectures.',
     photoUrl: '/assets/faculty/dr-abdul-kareem.jpg',
-    fallbackPhotoUrl: 'https://i.ibb.co/B5k2wfkK/Whats-App-Image-2026-10-08-at-1-00-05-AM.jpg',
+    fallbackPhotoUrl: 'https://i.ibb.co/sJQpVcRw/Whats-App-Image-2026-10-08-at-2-45-19-AM.jpg',
     objectPosition: 'object-top',
   },
   {
@@ -81,8 +81,8 @@ export const ALL_FACULTY_MEMBERS: FacultyMemberData[] = [
     specialization: 'Embedded Systems, Cyber-Physical Automation & Robotics',
     intro: 'Prof. Dr. Abbas Haider has authored numerous international research papers in control engineering, autonomous robotics, and computational systems.',
     photoUrl: '/assets/faculty/dr-abbas-haider.jpg',
-    fallbackPhotoUrl: 'https://i.ibb.co/DgYppWbw/Whats-App-Image-2026-10-08-at-12-14-27-AM-Copy.jpg',
-    objectPosition: 'object-center',
+    fallbackPhotoUrl: 'https://i.ibb.co/dwx6W8F1/Whats-App-Image-2026-10-05-at-2-39-09-AM.jpg',
+    objectPosition: 'object-top',
   },
   {
     id: 'dr-mushtaq',
@@ -151,8 +151,8 @@ export const ALL_FACULTY_MEMBERS: FacultyMemberData[] = [
     specialization: 'Full-Stack Architectures, Agile Methodologies & DevOps',
     intro: 'Prof. Ali Shan focuses on industry-grade software lifecycles, project management, and cutting-edge software construction principles.',
     photoUrl: '/assets/faculty/prof-ali-shan.jpg',
-    fallbackPhotoUrl: 'https://i.ibb.co/gb0V6x3N/image.jpg',
-    objectPosition: 'object-[center_20%]',
+    fallbackPhotoUrl: 'https://i.ibb.co/nMSpG1Vv/Whats-App-Image-2026-10-08-at-2-39-40-AM.jpg',
+    objectPosition: 'object-top',
   },
   {
     id: 'prof-usman-kazmi',

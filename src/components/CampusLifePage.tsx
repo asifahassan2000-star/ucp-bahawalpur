@@ -16,7 +16,6 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
   onOpenProgrammesPage,
 }) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [cycleStep, setCycleStep] = useState<number>(0);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -25,25 +24,23 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
     document.body.scrollTop = 0;
   }, []);
 
-  // 5-second interval timer for rotating images in upper section
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCycleStep((prev) => prev + 1);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Compute dynamic image for each of the 7 slots
-  // Mathematically guaranteed: (cycleStep * 3 + slotIndex * 7) % length
-  // Always ensures all 7 slots display completely different images at any moment
-  const getSlotImage = (slotIndex: number) => {
-    const total = CAMPUS_GALLERY_IMAGES.length;
-    const imgIndex = (cycleStep * 3 + slotIndex * 7) % total;
-    return {
-      image: CAMPUS_GALLERY_IMAGES[imgIndex],
-      index: imgIndex,
-    };
+  // Featured prominent top showcase photo ("little big size" from https://ibb.co/NdjKNS0n)
+  const FEATURED_TOP_SLOT = {
+    image: CAMPUS_GALLERY_IMAGES[0], // campus-new-d (id 104)
+    index: 0,
+    alt: 'UCP Bahawalpur Grand Campus Community & Student Celebration Showcase',
   };
+
+  // Fixed curated images for upper flagship collage (permanent, keeping all existing photos)
+  const FIXED_COLLAGE_SLOTS = [
+    { image: CAMPUS_GALLERY_IMAGES[1], index: 1, alt: 'UCP Bahawalpur Grand Annual Concert & Musical Night' }, // campus-new-a (id 101)
+    { image: CAMPUS_GALLERY_IMAGES[2], index: 2, alt: 'UCP Bahawalpur Student Life & Campus Engagement' }, // campus-15 (id 15)
+    { image: CAMPUS_GALLERY_IMAGES[3], index: 3, alt: 'UCP Bahawalpur Campus Community Gathering' }, // campus-26 (id 26)
+    { image: CAMPUS_GALLERY_IMAGES[4], index: 4, alt: 'UCP Bahawalpur Annual Festivities & Gathering' }, // campus-30 (id 30)
+    { image: CAMPUS_GALLERY_IMAGES[5], index: 5, alt: 'UCP Bahawalpur Concert & Stage Event' }, // campus-36 (id 36)
+    { image: CAMPUS_GALLERY_IMAGES[6], index: 6, alt: 'UCP Bahawalpur Student Societies & Outdoor Moments' }, // campus-37 (id 37)
+    { image: CAMPUS_GALLERY_IMAGES[7], index: 7, alt: 'UCP Bahawalpur Campus Event & Student Celebration' }, // campus-new-c (id 103)
+  ];
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -79,31 +76,24 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxIndex]);
 
-  // Helper to render dynamic slot in desktop/tablet collage
-  const renderDynamicSlot = (slotIdx: number, aspectClass: string) => {
-    const slot = getSlotImage(slotIdx);
+  // Helper to render fixed slot in desktop/tablet collage
+  const renderFixedSlot = (slotIdx: number, aspectClass: string) => {
+    const slot = FIXED_COLLAGE_SLOTS[slotIdx];
     return (
       <div
         onClick={() => openLightbox(slot.index)}
         className={`relative w-full ${aspectClass} overflow-hidden bg-slate-900 cursor-pointer group`}
       >
-        <AnimatePresence mode="popLayout">
-          <motion.img
-            key={slot.image.id}
-            src={slot.image.localSrc}
-            alt={slot.image.alt}
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            loading="eager"
-            decoding="async"
-            className="w-full h-full object-cover object-center absolute inset-0 block transition-transform duration-700 ease-out group-hover:scale-105"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = slot.image.fallbackSrc || '';
-            }}
-          />
-        </AnimatePresence>
+        <img
+          src={slot.image.localSrc}
+          alt={slot.alt || slot.image.alt}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover object-center absolute inset-0 block transition-transform duration-700 ease-out group-hover:scale-105"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = slot.image.fallbackSrc || '';
+          }}
+        />
         <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
           <Maximize2 size={24} className="text-white drop-shadow" />
         </div>
@@ -167,32 +157,52 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
           {/* Inner Thin Border Line */}
           <div className="relative border border-white/60 p-1.5 sm:p-3 md:p-4 bg-[#07192f]">
 
-            {/* Desktop & Tablet Layout with Dynamic Crossfades */}
+            {/* Desktop & Tablet Layout with Curated Permanent Featured Photography */}
             <div className="hidden md:flex flex-col gap-2 sm:gap-2.5 w-full">
 
-              {/* Row 1: 2 Landscape Photos (Rotates every 5s with distinct images) */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full">
-                {renderDynamicSlot(0, 'aspect-[16/10]')}
-                {renderDynamicSlot(1, 'aspect-[16/10]')}
+              {/* Row 1: Featured 'Little Big Size' Showcase Photo (from https://ibb.co/NdjKNS0n) */}
+              <div
+                onClick={() => openLightbox(FEATURED_TOP_SLOT.index)}
+                className="relative w-full aspect-[2.35/1] max-h-[420px] overflow-hidden bg-slate-900 cursor-pointer group"
+              >
+                <img
+                  src={FEATURED_TOP_SLOT.image.localSrc}
+                  alt={FEATURED_TOP_SLOT.alt}
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-cover object-center absolute inset-0 block transition-transform duration-700 ease-out group-hover:scale-103"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FEATURED_TOP_SLOT.image.fallbackSrc || '';
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+                  <Maximize2 size={26} className="text-white drop-shadow-lg" />
+                </div>
               </div>
 
-              {/* Row 2: 3 Photos (Left, Center Landmark, Right - Rotates every 5s) */}
+              {/* Row 2: 2 Landscape Photos (Concert Night Performance & Group Photo) */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full">
+                {renderFixedSlot(0, 'aspect-[16/10]')}
+                {renderFixedSlot(1, 'aspect-[16/10]')}
+              </div>
+
+              {/* Row 3: 3 Photos (Courtyard, Campus Lawn, Society Celebrations) */}
               <div className="grid grid-cols-12 gap-2 sm:gap-2.5 w-full">
                 <div className="col-span-4">
-                  {renderDynamicSlot(2, 'aspect-[4/3]')}
+                  {renderFixedSlot(2, 'aspect-[4/3]')}
                 </div>
                 <div className="col-span-4">
-                  {renderDynamicSlot(3, 'aspect-[4/3]')}
+                  {renderFixedSlot(3, 'aspect-[4/3]')}
                 </div>
                 <div className="col-span-4">
-                  {renderDynamicSlot(4, 'aspect-[4/3]')}
+                  {renderFixedSlot(4, 'aspect-[4/3]')}
                 </div>
               </div>
 
-              {/* Row 3: Left, Center Branding Card, Right */}
+              {/* Row 4: Left, Center Branding Card, Right */}
               <div className="grid grid-cols-12 gap-2 sm:gap-2.5 w-full items-stretch">
                 <div className="col-span-4">
-                  {renderDynamicSlot(5, 'aspect-[4/3]')}
+                  {renderFixedSlot(5, 'aspect-[4/3]')}
                 </div>
 
                 {/* Center Branding Block */}
@@ -229,13 +239,13 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
                 </div>
 
                 <div className="col-span-4">
-                  {renderDynamicSlot(6, 'aspect-[4/3]')}
+                  {renderFixedSlot(6, 'aspect-[4/3]')}
                 </div>
               </div>
 
             </div>
 
-            {/* Mobile View (<768px): Clear, Adaptive, Cycles every 5s */}
+            {/* Mobile View (<768px): Clear, Adaptive, Fixed Best Featured Photos */}
             <div className="flex md:hidden flex-col gap-2 w-full">
               <div className="w-full flex flex-col items-center justify-center bg-[#07192f] py-6 px-4 text-center border border-white/20">
                 <span
@@ -262,32 +272,47 @@ export const CampusLifePage: React.FC<CampusLifePageProps> = ({
                 </span>
               </div>
 
+              {/* Mobile Featured Top Photo */}
+              <div
+                onClick={() => openLightbox(FEATURED_TOP_SLOT.index)}
+                className="w-full aspect-[16/10] overflow-hidden bg-slate-900 cursor-pointer relative group rounded-sm"
+              >
+                <img
+                  src={FEATURED_TOP_SLOT.image.localSrc}
+                  alt={FEATURED_TOP_SLOT.alt}
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FEATURED_TOP_SLOT.image.fallbackSrc || '';
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                  <Maximize2 size={22} className="text-white drop-shadow" />
+                </div>
+              </div>
+
               <div className="columns-2 gap-2 w-full">
-                {[0, 1, 2, 3, 4, 5, 6].map((slotIdx) => {
-                  const slot = getSlotImage(slotIdx);
+                {FIXED_COLLAGE_SLOTS.map((slot, slotIdx) => {
                   return (
                     <div
                       key={`mob-flag-${slotIdx}`}
                       onClick={() => openLightbox(slot.index)}
-                      className="break-inside-avoid mb-2 relative overflow-hidden bg-slate-900 cursor-pointer rounded-sm"
+                      className="break-inside-avoid mb-2 relative overflow-hidden bg-slate-900 cursor-pointer rounded-sm group"
                     >
-                      <AnimatePresence mode="popLayout">
-                        <motion.img
-                          key={slot.image.id}
-                          src={slot.image.localSrc}
-                          alt={slot.image.alt}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.8 }}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-auto block object-contain"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = slot.image.fallbackSrc;
-                          }}
-                        />
-                      </AnimatePresence>
+                      <img
+                        src={slot.image.localSrc}
+                        alt={slot.alt || slot.image.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-auto block object-contain transition-transform duration-500 group-hover:scale-102"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = slot.image.fallbackSrc;
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                        <Maximize2 size={20} className="text-white drop-shadow" />
+                      </div>
                     </div>
                   );
                 })}

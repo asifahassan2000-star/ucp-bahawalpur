@@ -11,21 +11,109 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/png" href="/assets/ucp-official-logo.png" />
     <script>
-      // Suppress Vite HMR WebSocket connection errors in sandbox iframe environment
-      window.addEventListener('unhandledrejection', function(event) {
-        var reason = event.reason;
-        if (reason && (
-          (typeof reason.message === 'string' && (reason.message.indexOf('WebSocket') !== -1 || reason.message.indexOf('closed without opened') !== -1)) ||
-          (typeof reason === 'string' && (reason.indexOf('WebSocket') !== -1 || reason.indexOf('closed without opened') !== -1))
-        )) {
-          event.preventDefault();
+      // Suppress and intercept Vite HMR WebSocket connection errors in sandbox iframe environment
+      (function() {
+        if (typeof window === 'undefined') return;
+
+        // 1. Intercept Vite HMR WebSocket attempts to prevent network failures & connection closing errors
+        var OrigWS = window.WebSocket;
+        if (OrigWS) {
+          window.WebSocket = function(url, protocols) {
+            var urlStr = String(url || '');
+            var isViteHmr = protocols === 'vite-hmr' || urlStr.indexOf('vite-hmr') !== -1 || urlStr.indexOf('token=') !== -1 || urlStr.indexOf(':24678') !== -1;
+            if (isViteHmr) {
+              var listeners = {};
+              var fake = {
+                binaryType: 'blob',
+                bufferedAmount: 0,
+                extensions: '',
+                protocol: 'vite-hmr',
+                readyState: 1, // WebSocket.OPEN
+                url: urlStr,
+                CONNECTING: 0,
+                OPEN: 1,
+                CLOSING: 2,
+                CLOSED: 3,
+                send: function() {},
+                close: function() {
+                  fake.readyState = 3;
+                },
+                addEventListener: function(type, fn) {
+                  if (!listeners[type]) listeners[type] = [];
+                  listeners[type].push(fn);
+                  if (type === 'open') {
+                    setTimeout(function() {
+                      try { fn(new Event('open')); } catch(e) {}
+                    }, 0);
+                  }
+                },
+                removeEventListener: function(type, fn) {
+                  if (!listeners[type]) return;
+                  listeners[type] = listeners[type].filter(function(cb) { return cb !== fn; });
+                },
+                dispatchEvent: function(event) {
+                  var cbs = listeners[event.type] || [];
+                  cbs.forEach(function(cb) {
+                    try { cb(event); } catch(e) {}
+                  });
+                  return true;
+                }
+              };
+              return fake;
+            }
+            return new OrigWS(url, protocols);
+          };
+          window.WebSocket.prototype = OrigWS.prototype;
+          window.WebSocket.CONNECTING = 0;
+          window.WebSocket.OPEN = 1;
+          window.WebSocket.CLOSING = 2;
+          window.WebSocket.CLOSED = 3;
         }
-      });
+
+        // 2. Global Unhandled Rejection interceptor
+        function isWsError(msg) {
+          if (!msg) return false;
+          var str = typeof msg === 'string' ? msg : (msg.message || String(msg));
+          return str.indexOf('WebSocket') !== -1 || str.indexOf('closed without opened') !== -1 || str.indexOf('vite:ws') !== -1;
+        }
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (isWsError(event.reason)) {
+            event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') {
+              event.stopImmediatePropagation();
+            }
+          }
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          if (isWsError(event.message || event.error)) {
+            event.preventDefault();
+            if (typeof event.stopImmediatePropagation === 'function') {
+              event.stopImmediatePropagation();
+            }
+          }
+        }, true);
+
+        // 3. Filter console.error from vite client
+        var origConsoleError = console.error;
+        console.error = function() {
+          var args = Array.prototype.slice.call(arguments);
+          var first = args[0];
+          if (typeof first === 'string' && (
+            first.indexOf('[vite] failed to connect to websocket') !== -1 || 
+            first.indexOf('WebSocket closed without opened') !== -1
+          )) {
+            return;
+          }
+          origConsoleError.apply(console, args);
+        };
+      })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="/assets/campus/13_hero_sunset_campus.jpg" fetchpriority="high" />
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -46,7 +134,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

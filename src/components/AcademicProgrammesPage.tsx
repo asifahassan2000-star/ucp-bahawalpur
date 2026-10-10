@@ -868,6 +868,8 @@ Helpline: 0800-00-827 / +92-62-111-827-827
                     <img
                       src={prog.image}
                       alt={prog.name}
+                      loading="lazy"
+                      decoding="async"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -1003,6 +1005,8 @@ Helpline: 0800-00-827 / +92-62-111-827-827
                     <img
                       src={prog.image}
                       alt={prog.name}
+                      loading="lazy"
+                      decoding="async"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;

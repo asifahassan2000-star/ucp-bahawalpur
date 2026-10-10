@@ -7,12 +7,12 @@ import businessSeminarImg from '../assets/images/academic_business_seminar_17903
 import computingLabImg from '../assets/images/academic_computing_lab_1790317681008.jpg';
 import scienceLabImg from '../assets/images/academic_science_lab_1790317707417.jpg';
 import libraryImg from '../assets/images/academic_humanities_library_1790317720335.jpg';
-import studentPortraitImg from '../assets/images/bs_psychology_user.jpg';
-import bbaImg from '../assets/images/program_bba.png';
+import studentPortraitImg from '../assets/images/bs_psychology_user.webp';
+import bbaImg from '../assets/images/program_bba.webp';
 import cyberSecurityImg from '../assets/images/program_cyber_security.jpg';
 import englishImg from '../assets/images/program_bs_english.jpg';
 import aiImg from '../assets/images/program_adp_ai.jpg';
-import zoologyImg from '../assets/images/program_bs_zoology.png';
+import zoologyImg from '../assets/images/program_bs_zoology.webp';
 import nawabImg from '../assets/images/nawab_of_bahawalpur.jpg';
 
 // Authentic campus assets from public/assets/campus

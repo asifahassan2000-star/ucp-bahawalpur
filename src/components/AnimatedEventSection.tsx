@@ -79,7 +79,8 @@ export const AnimatedEventSection: React.FC<AnimatedEventSectionProps> = ({
               <img
                 src={mainImage?.src}
                 alt={mainImage?.alt}
-                loading="eager"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0F2C61]/80 via-transparent to-transparent pointer-events-none" />
@@ -109,7 +110,8 @@ export const AnimatedEventSection: React.FC<AnimatedEventSectionProps> = ({
                 <img
                   src={subImage1?.src}
                   alt={subImage1?.alt}
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2C61]/75 via-transparent to-transparent pointer-events-none" />
@@ -133,7 +135,8 @@ export const AnimatedEventSection: React.FC<AnimatedEventSectionProps> = ({
                 <img
                   src={subImage2?.src}
                   alt={subImage2?.alt}
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2C61]/75 via-transparent to-transparent pointer-events-none" />

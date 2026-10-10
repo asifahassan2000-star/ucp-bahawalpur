@@ -1,5 +1,7 @@
-import React from 'react';
-import { Building2, Sparkles, Compass, ArrowRight, ShieldCheck, Cpu, BookOpen, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Building2, Cpu, BookOpen, Microscope, ArrowRight
+} from 'lucide-react';
 
 interface FacilitiesSectionProps {
   onOpenApply?: () => void;
@@ -10,194 +12,366 @@ export const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({
   onOpenApply,
   onOpenCampusLifePage,
 }) => {
+  const [activeTab, setActiveTab] = useState<'all' | 'environment' | 'library' | 'computer' | 'science'>('all');
+
   return (
     <section 
       id="facilities-section"
-      className="py-[100px] bg-[#FBF9F5] border-b border-slate-200/80 overflow-hidden"
+      className="py-12 sm:py-16 bg-[#FAFAF8] border-b border-slate-200"
       aria-labelledby="facilities-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* 1. Header with Mask Reveal */}
-        <header className="max-w-3xl mb-14 sm:mb-16" data-reveal="mask">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#a30f16]">
-              FACILITIES & ARCHITECTURE
-            </span>
-            <span className="h-px w-8 bg-[#a30f16]/40" aria-hidden="true" />
-          </div>
-
-          <div className="mask-reveal-wrap">
-            <h2
-              id="facilities-heading"
-              className="mask-reveal-child text-3xl sm:text-4xl lg:text-[46px] font-serif font-semibold text-[#092242] tracking-tight leading-[1.18]"
-              style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-            >
-              Modern Learning Environment
-            </h2>
-          </div>
-
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-sans max-w-2xl">
-            Every square foot of UCP Bahawalpur is engineered to cultivate focus, collaboration, and intellectual rigor through purpose-built academic architecture and cutting-edge resources.
+        {/* Header */}
+        <header className="max-w-3xl mb-8 sm:mb-10">
+          <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block mb-2">
+            Campus Facilities
+          </span>
+          <h2
+            id="facilities-heading"
+            className="text-2xl sm:text-3xl font-serif font-semibold text-slate-900 tracking-tight"
+          >
+            Learning Environment, Library & Laboratories
+          </h2>
+          <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed font-sans">
+            Explore the academic spaces, central library, computer labs, and science facilities at UCP Bahawalpur.
           </p>
+
+          {/* Minimal Category Tabs */}
+          <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'environment', label: 'Learning Environment' },
+              { id: 'library', label: 'Central Library' },
+              { id: 'computer', label: 'Computer Labs' },
+              { id: 'science', label: 'Science Labs' },
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`px-3 py-1.5 rounded text-xs sm:text-sm font-medium transition-colors shrink-0 cursor-pointer ${
+                    isActive
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
         </header>
 
-        {/* 2. IMAGE 09: Wide Architectural Feature (Grand Staircase & Central Atrium) */}
-        {/* "This image works especially well as a wide architectural feature. Use subtle parallax. Do not overlay excessive text on top of the important architectural details." */}
-        <div className="mb-14 lg:mb-16">
-          <div className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-stone-100 shadow-sm">
-            <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden">
-              <img
-                src="/assets/campus/9_facilities_grand_staircase.jpg"
-                alt="Grand Architectural Staircase and Multi-Tier Interior Atrium at UCP Bahawalpur"
-                loading="eager"
-                className="w-full h-full object-cover object-center img-hover-scale"
-              />
-              {/* Minimal gradient at the very bottom only to preserve pure architectural details */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-              
-              {/* Quiet, unoccluding caption at bottom edge */}
-              <div className="absolute bottom-5 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2 text-white pointer-events-none">
-                <div>
-                  <span className="text-[11px] font-sans uppercase tracking-[0.2em] text-rose-300 font-semibold block mb-0.5">
-                    Campus Architecture
-                  </span>
-                  <h3 className="font-serif text-lg sm:text-xl font-medium">
-                    Grand Interior Atrium & Central Staircase
-                  </h3>
-                </div>
-                <span className="text-xs text-slate-300 font-sans tracking-wide">
-                  Purpose-Built Academic Infrastructure · UCP Bahawalpur
-                </span>
+        {/* 1. LEARNING ENVIRONMENT */}
+        {(activeTab === 'all' || activeTab === 'environment') && (
+          <div className="mb-12 sm:mb-16">
+            <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200">
+              <Building2 size={16} className="text-slate-600" />
+              <h3 className="text-base sm:text-lg font-serif font-semibold text-slate-900">
+                Learning Environment & Campus Architecture
+              </h3>
+            </div>
+
+            {/* Main Grand Staircase Card (Full Bleed 16:9, Edge-to-Edge) */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden mb-6 shadow-xs">
+              <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                <img
+                  src="/assets/campus/9_facilities_grand_staircase.jpg"
+                  alt="Campus Grand Staircase and Atrium"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center block"
+                />
+              </div>
+              <div className="p-4 sm:p-5 border-t border-slate-100">
+                <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                  Grand Staircase & Central Atrium
+                </h4>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                  Open multi-level architectural staircase and spacious central atrium designed with natural light.
+                </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* 3. IMAGE 05 & Facilities Grid Composition */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-          
-          {/* IMAGE 05: Bright Interior Lobby Photograph ("Modern Learning Environment") */}
-          <div className="lg:col-span-7 flex flex-col">
-            <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs flex-1 flex flex-col">
-              <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden bg-stone-100">
-                <img
-                  src="/assets/campus/5_facilities_interior_lobby.jpg"
-                  alt="Modern Learning Environment - Bright Interior Lobby and Academic Reception at UCP Bahawalpur"
-                  loading="eager"
-                  className="w-full h-full object-cover object-center img-hover-scale"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs text-[#092242] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded shadow-xs">
-                  Modern Learning Environment
+            {/* 2 Grid Cards: Lobby and Hallways (Full Bleed 16:9, Edge-to-Edge) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/campus/5_facilities_interior_lobby.jpg"
+                    alt="Academic Lobby and Reception"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                  />
                 </div>
-              </div>
-
-              <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <h3 
-                    className="text-xl sm:text-2xl font-serif font-semibold text-[#092242]"
-                    style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-                  >
-                    Bright, Inspiring Academic Spaces
-                  </h3>
-                  <p className="text-sm sm:text-[15px] text-slate-600 leading-relaxed font-sans">
-                    Natural sunlight, generous spatial volume, and quiet acoustics allow students and faculty to move seamlessly between lectures, research sessions, and collaborative group discussions.
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Academic Lobby & Reception
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Spacious reception hall connecting administrative offices and student access corridors.
                   </p>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-                  <div className="space-y-1">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#a30f16]">Acoustic Balance</span>
-                    <p className="text-xs text-slate-500">Sound-dampened corridors and quiet study niches</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#a30f16]">Smart Infrastructure</span>
-                    <p className="text-xs text-slate-500">Fiber Wi-Fi & climate-controlled ventilation</p>
-                  </div>
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/campus/10_campus_sunlit_hallway.jpg"
+                    alt="Campus Corridors and Walkways"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Campus Walkways & Corridors
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Naturally lit corridors providing smooth movement between lecture rooms and study areas.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
+        )}
 
-          {/* Complementary Facilities Showcase Cards */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-5">
-            
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs hover:border-[#a30f16]/30 transition-all duration-300">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-[#a30f16] flex items-center justify-center mb-4">
-                <Cpu size={20} />
-              </div>
-              <h4 className="font-serif text-lg sm:text-xl font-semibold text-[#092242] mb-1">
-                Advanced Computing & AI Labs
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-                Dedicated workstations with high-throughput GPUs, machine learning libraries, and cyber security testbeds for FOIT students.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs hover:border-[#a30f16]/30 transition-all duration-300">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-4">
-                <BookOpen size={20} />
-              </div>
-              <h4 className="font-serif text-lg sm:text-xl font-semibold text-[#092242] mb-1">
-                Digital Resource Commons
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-                Comprehensive digital catalog linked to national research repositories, peer-reviewed journals, and quiet individual carrels.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-xs hover:border-[#a30f16]/30 transition-all duration-300">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-4">
-                <Layers size={20} />
-              </div>
-              <h4 className="font-serif text-lg sm:text-xl font-semibold text-[#092242] mb-1">
-                Multi-Tier Lecture Theatres
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-                Stepped amphitheater seating designed for clear visual lines, dynamic presentation displays, and interactive symposiums.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* 4. IMAGE 10: Sunlit Hallway Photograph (Secondary Interstitial Visual for Rhythm) */}
-      {/* "Use the sunlit hallway photograph as: CAMPUS EXPERIENCE / FACILITIES. Use this as a secondary visual between major sections. It should create visual rhythm between larger images." */}
-      <div className="mt-20 sm:mt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-stone-100 shadow-xs">
-          <div className="relative h-64 sm:h-80 lg:h-96 w-full overflow-hidden">
-            <img
-              src="/assets/campus/10_campus_sunlit_hallway.jpg"
-              alt="Sunlit Hallway and Academic Concourse at UCP Bahawalpur"
-              loading="eager"
-              decoding="async"
-              className="w-full h-full object-cover object-center img-hover-scale"
-            />
-            {/* Subtle scrim */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#092242]/85 via-[#092242]/30 to-transparent pointer-events-none" />
-
-            <div className="absolute inset-0 p-6 sm:p-10 flex flex-col justify-center max-w-xl text-white">
-              <span className="text-[11px] font-sans uppercase tracking-[0.22em] text-amber-300 font-semibold mb-1">
-                Campus Rhythm & Light
-              </span>
-              <h3 
-                className="font-serif text-2xl sm:text-3xl font-semibold text-white leading-tight"
-                style={{ fontFamily: "'Cormorant Garamond', 'Libre Baskerville', Georgia, serif" }}
-              >
-                The Sunlit Concourse
+        {/* 2. CENTRAL LIBRARY */}
+        {(activeTab === 'all' || activeTab === 'library') && (
+          <div className="mb-12 sm:mb-16">
+            <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200">
+              <BookOpen size={16} className="text-slate-600" />
+              <h3 className="text-base sm:text-lg font-serif font-semibold text-slate-900">
+                Central Library
               </h3>
-              <p className="text-xs sm:text-sm text-slate-200 mt-2 font-sans leading-relaxed">
-                Interconnecting the academic wings, our sunlit hallways are designed with architectural rhythm that welcomes morning daylight into everyday student life.
-              </p>
+            </div>
+
+            {/* Main Library Reading Area Card (Full Bleed 16:9, Edge-to-Edge) */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden mb-6 shadow-xs">
+              <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                <img
+                  src="/assets/facilities/library-main-large.jpg"
+                  alt="Central Library Main Reading Hall"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center block"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://i.ibb.co/RkzjL6m7/Whats-App-Image-2026-10-09-at-3-23-24-AM.jpg';
+                  }}
+                />
+              </div>
+              <div className="p-4 sm:p-5 border-t border-slate-100">
+                <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                  Main Reading Hall
+                </h4>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                  Spacious quiet reading hall equipped with dedicated study tables and reference materials.
+                </p>
+              </div>
+            </div>
+
+            {/* 2 Grid Cards: Study Desks & Book Stacks (Vertical 9:16 Frame) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[9/16] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/library-reading-2.jpg"
+                    alt="Quiet Study Desks"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://i.ibb.co/369CDwy/Whats-App-Image-2026-10-09-at-3-42-32-AM.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Individual Study Areas
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Quiet seating arrangements for individual reading, exam revision, and research work.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[9/16] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/library-stacks-new.jpg"
+                    alt="Central Library Reference Section and Book Collections"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://i.ibb.co/S4MMZmXv/Whats-App-Image-2026-10-09-at-9-09-59-AM.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Book Stacks & Collections
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Organized shelves with curriculum textbooks, reference guides, and journals.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        )}
 
+        {/* 3. COMPUTER LABS */}
+        {(activeTab === 'all' || activeTab === 'computer') && (
+          <div className="mb-12 sm:mb-16">
+            <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200">
+              <Cpu size={16} className="text-slate-600" />
+              <h3 className="text-base sm:text-lg font-serif font-semibold text-slate-900">
+                Computer Laboratories
+              </h3>
+            </div>
+
+            {/* 2 Grid Cards: Computer Lab 1 (Landscape) & Computer Lab 2 (Vertical 9:16 Frame) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/comp-lab-1.jpg"
+                    alt="Computer Laboratory Workstations"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://i.ibb.co/XZypYYCk/Whats-App-Image-2026-10-09-at-6-42-28-AM.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Computer Lab 1
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    High-density desktop computing facility for programming, algorithms, and database courses.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[9/16] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/comp-lab-2.jpg"
+                    alt="IT and Computing Lab"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://i.ibb.co/JwR6L6CZ/Whats-App-Image-2026-10-09-at-6-51-57-AM.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Computer Lab 2
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Dedicated computer lab setup for software practicals, networking, and IT projects.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 4. SCIENCE LABS */}
+        {(activeTab === 'all' || activeTab === 'science') && (
+          <div className="mb-10 sm:mb-12">
+            <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200">
+              <Microscope size={16} className="text-slate-600" />
+              <h3 className="text-base sm:text-lg font-serif font-semibold text-slate-900">
+                Science Laboratories
+              </h3>
+            </div>
+
+            {/* 2 Grid Cards: Science Lab 1 & Science Lab 2 (Full Bleed 16:9, Edge-to-Edge) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/science-lab-1.jpg"
+                    alt="Science Laboratory"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/offer-3.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Science Laboratory
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Equipped experimental workstation benches for practical coursework and chemical testing.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-900">
+                  <img
+                    src="/assets/facilities/science-lab-2.jpg"
+                    alt="Life Sciences and Biology Laboratory"
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center block"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/src/assets/images/academic_science_lab_1790317707417.jpg';
+                    }}
+                  />
+                </div>
+                <div className="p-4 border-t border-slate-100">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900">
+                    Life Sciences Laboratory
+                  </h4>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-500 leading-relaxed font-sans">
+                    Practical laboratory space with optical microscopes for life sciences and bioscience study.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Minimal Bottom Action Strip */}
+        <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-600">
+          <span>Explore campus facilities or apply online for admissions.</span>
+          <div className="flex items-center gap-3">
+            {onOpenCampusLifePage && (
+              <button
+                onClick={onOpenCampusLifePage}
+                className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded border border-slate-200 transition-colors cursor-pointer"
+              >
+                Campus Life
+              </button>
+            )}
+            {onOpenApply && (
+              <button
+                onClick={onOpenApply}
+                className="px-3.5 py-1.5 bg-[#a30f16] hover:bg-[#850c12] text-white font-medium rounded transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Apply Now</span>
+                <ArrowRight size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+      </div>
     </section>
   );
 };
+
+export default FacilitiesSection;
+

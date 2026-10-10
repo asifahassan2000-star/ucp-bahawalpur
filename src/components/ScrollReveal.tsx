@@ -26,10 +26,15 @@ export interface ScrollRevealProps extends React.HTMLAttributes<HTMLElement> {
  */
 export const ScrollRevealManager: React.FC = () => {
   useEffect(() => {
-    // 1. Accessibility Check: If user prefers reduced motion, do not initialize reveal mode
+    // 1. Accessibility & Mobile Check: If touch/mobile or prefers reduced motion, reveal everything immediately
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (motionQuery.matches) {
-      document.documentElement.classList.remove('reveal-ready');
+    const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 1024);
+    
+    if (motionQuery.matches || isTouch) {
+      document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+        el.classList.add('is-revealed');
+        el.setAttribute('data-revealed', 'true');
+      });
       return;
     }
 
